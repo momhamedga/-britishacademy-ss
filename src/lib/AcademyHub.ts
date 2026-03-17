@@ -23,7 +23,7 @@ export const ACADEMY_HUB_ITEMS: HubItem[] = [
   { 
     id: 'membership',
     title: 'Elite Membership', 
-    href: '/membership', 
+    href: '/Membership', 
     icon: Shield, 
     description: 'Access exclusive security protocols and community benefits.',
     accentColor: 'from-gold/20 to-transparent'
@@ -31,7 +31,7 @@ export const ACADEMY_HUB_ITEMS: HubItem[] = [
   { 
     id: 'instructors',
     title: 'Expert Faculty', 
-    href: '/instructors', 
+    href: '/Instructors', 
     icon: Users, 
     description: 'Learn from world-class British security specialists.',
     accentColor: 'from-blue-500/10 to-transparent'
@@ -39,7 +39,7 @@ export const ACADEMY_HUB_ITEMS: HubItem[] = [
   { 
     id: 'programs',
     title: 'Strategic Programs', 
-    href: '/programs', 
+    href: '/courses', 
     icon: GraduationCap, 
     description: 'Advanced curriculum engineered for 2026 security challenges.',
     accentColor: 'from-gold/20 to-transparent'
@@ -47,7 +47,7 @@ export const ACADEMY_HUB_ITEMS: HubItem[] = [
   { 
     id: 'center',
     title: 'Command Center', 
-    href: '/training-center', 
+    href: '/contact', 
     icon: Landmark, 
     description: 'Virtual and physical tactical training environments.',
     accentColor: 'from-white/10 to-transparent'
@@ -55,7 +55,7 @@ export const ACADEMY_HUB_ITEMS: HubItem[] = [
   { 
     id: 'certificates',
     title: 'Verify Credentials', 
-    href: '/verify-certificate', 
+    href: '/about', 
     icon: Award, 
     description: 'Instant blockchain-backed certificate authentication.',
     accentColor: 'from-gold/30 to-transparent'
