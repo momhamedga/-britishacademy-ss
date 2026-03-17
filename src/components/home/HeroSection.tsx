@@ -149,10 +149,16 @@ const containerVariants = {
 
 const titleReveal = {
   initial: { y: "100%", opacity: 0 },
-  animate: { y: 0, opacity: 1, transition: { duration: 1, ease: [0.16, 1, 0.3, 1] } },
+  animate: { 
+    y: 0, 
+    opacity: 1, 
+    transition: { 
+      duration: 1, 
+      ease: "easeOut" // أو استخدم قيم جاهزة زي "circOut" لسرعة الـ Build
+    } 
+  },
   exit: { y: "-20%", opacity: 0, transition: { duration: 0.4 } }
 };
-
 const itemVariants = {
   initial: { opacity: 0, x: -20 },
   animate: { opacity: 1, x: 0, transition: { duration: 0.8 } },
