@@ -1,26 +1,121 @@
 @import "tailwindcss";
 
+/* 1. تعريف الـ Variables الأساسية (The Core) */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000B21;
+  --foreground: #FFFFFF;
+  --academy-navy: #00153D;
+  --academy-gold: #D4AF37;
+  --academy-gold-light: #F4DF4E;
+  
+  --font-display: var(--font-syne), "Syne", sans-serif;
+  --font-sans: var(--font-inter), "Inter", sans-serif;
 }
 
+/* 2. إعدادات الـ Theme لـ Tailwind v4 */
 @theme inline {
+  --color-navy: var(--academy-navy);
+  --color-gold: var(--academy-gold);
+  --color-gold-light: var(--academy-gold-light);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --animate-shine: shine 3s infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-scan: scan 3s linear infinite;
+
+  @keyframes shine {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes scan {
+    0% { transform: translateY(-100%); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(300%); opacity: 0; }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* 3. الإعدادات الأساسية (Base Styles) */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased overflow-x-hidden;
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-black tracking-tighter leading-[0.85] italic uppercase;
+    margin: 0;
+  }
+
+  h1 { font-size: clamp(2.5rem, 12vw, 8rem); }
+  h2 { font-size: clamp(2rem, 8vw, 4.5rem); }
+  h3 { font-size: clamp(1.5rem, 5vw, 2.5rem); }
+
+  ::selection {
+    @apply bg-gold/30 text-white;
+  }
+}
+
+/* 4. الإضافات المخصصة (Custom Utilities) */
+@layer utilities {
+  .glass {
+    @apply backdrop-blur-[25px] border border-white/5;
+    background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.03), transparent);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  }
+
+  .text-gradient-gold {
+    @apply bg-clip-text text-transparent bg-gradient-to-b from-gold-light via-gold to-gold/50;
+  }
+
+  .img-cinematic {
+    @apply transition-all duration-1000 ease-in-out;
+    filter: grayscale(1) contrast(1.2) brightness(0.6);
+  }
+
+  .group:hover .img-cinematic {
+    filter: grayscale(0) contrast(1) brightness(0.9);
+    scale: 1.05;
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--background); }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, transparent, var(--academy-gold), transparent);
+    border-radius: 20px;
+  }
+
+  /* تم إصلاح الخطأ هنا: حذف الأقواس المربعة واستخدام CSS صريح */
+  .bg-grid-gold {
+    background-image: 
+      linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: radial-gradient(ellipse at center, black, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black, transparent 80%);
+  }
+
+  .mask-vignette {
+    mask-image: radial-gradient(circle, black 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle, black 40%, transparent 100%);
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
 }
