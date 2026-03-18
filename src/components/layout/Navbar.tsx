@@ -1,14 +1,23 @@
 "use client"
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Bell, User, ChevronRight, BookOpen, Award, Settings, LogOut } from 'lucide-react'
 import { NAV_LINKS } from '@/lib/constants'
+import { StudentRank } from '@/types/portal'
+import { logout } from '@/actions/portal-auth'
 
-const Navbar = () => {
+interface NavbarProps {
+  user?: {
+    name: string;
+    rank: StudentRank;
+  }
+}
+
+const Navbar = ({ user }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
@@ -37,35 +46,35 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Right Actions: Command Center */}
+          {/* Right Actions */}
           <div className="flex items-center gap-2 md:gap-3">
-            
-            {/* 1. Live Notification Hub */}
             <div className="relative group">
               <IconButton icon={<Bell size={18} strokeWidth={1.5} />} label="Alerts" />
-              {/* النبض الذهبي للإشعارات النشطة */}
               <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-gold rounded-full shadow-[0_0_12px_#D4AF37] animate-pulse pointer-events-none" />
             </div>
 
-            {/* 2. User Identity with Quick Menu */}
             <div className="relative">
               <button 
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className={`p-2.5 rounded-xl transition-all duration-300 border ${isProfileOpen ? 'bg-white/10 border-white/20 text-gold' : 'text-white/40 border-transparent hover:text-white'}`}
+                className={`p-2.5 rounded-xl transition-all duration-300 border ${isProfileOpen ? 'bg-white/10 border-white/20 text-gold shadow-[0_0_15px_rgba(212,175,55,0.2)]' : 'text-white/40 border-transparent hover:text-white'}`}
               >
                 <User size={18} strokeWidth={1.5} />
               </button>
               
               <AnimatePresence>
-                {isProfileOpen && <ProfileDropdown close={() => setIsProfileOpen(false)} />}
+                {isProfileOpen && (
+                  <ProfileDropdown 
+                    name={user?.name || "Access Guest"} 
+                    rank={user?.rank || "AGENT"} 
+                    close={() => setIsProfileOpen(false)} 
+                  />
+                )}
               </AnimatePresence>
             </div>
 
-            {/* 3. The Glowing Tactical Separator */}
             <div className="h-8 w-[1px] bg-gradient-to-b from-transparent via-gold/40 to-transparent mx-2 hidden sm:block shadow-[0_0_8px_rgba(212,175,55,0.3)]" />
 
-            {/* Student Portal Button */}
-            <Link href="/portal" className="group relative overflow-hidden bg-white px-6 py-2.5 rounded-xl transition-all duration-500 hover:shadow-[0_0_30px_rgba(212,175,55,0.2)] active:scale-95 hidden sm:flex items-center gap-3">
+            <Link href="/dashboard" className="group relative overflow-hidden bg-white px-6 py-2.5 rounded-xl transition-all duration-500 hover:shadow-[0_0_30px_rgba(212,175,55,0.2)] active:scale-95 hidden sm:flex items-center gap-3">
               <div className="absolute inset-0 bg-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
               <span className="relative z-10 text-navy font-black text-[10px] md:text-[11px] uppercase tracking-widest flex items-center gap-2">
                 Student Portal 
@@ -73,7 +82,6 @@ const Navbar = () => {
               </span>
             </Link>
 
-            {/* Mobile Toggle */}
             <button onClick={() => setIsOpen(!isOpen)} className="xl:hidden p-2 text-gold">
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -86,35 +94,51 @@ const Navbar = () => {
   )
 }
 
-// --- المكونات الفرعية المطورة ---
+// --- المكونات الفرعية ---
 
-const ProfileDropdown = ({ close }: { close: () => void }) => (
+const ProfileDropdown = ({ name, rank, close }: { name: string, rank: string, close: () => void }) => (
   <motion.div 
     initial={{ opacity: 0, y: 10, scale: 0.95 }}
     animate={{ opacity: 1, y: 0, scale: 1 }}
     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-    className="absolute top-14 right-0 w-64 glass border border-white/10 rounded-2xl p-4 shadow-2xl z-50 backdrop-blur-3xl"
+    className="absolute top-14 right-0 w-64 glass border border-white/10 rounded-2xl p-4 shadow-2xl z-50 backdrop-blur-3xl bg-black/80"
   >
     <div className="flex items-center gap-3 pb-4 mb-4 border-b border-white/5">
-      <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center text-gold font-bold">JD</div>
+      <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center text-gold font-bold uppercase text-xs">
+        {name.substring(0, 2)}
+      </div>
       <div className="flex flex-col">
-        <span className="text-white text-[10px] font-black uppercase">John Doe</span>
-        <span className="text-white/40 text-[8px] uppercase tracking-widest">Elite Member</span>
+        <span className="text-white text-[10px] font-black uppercase tracking-tight truncate w-32">{name}</span>
+        <span className="text-gold text-[8px] uppercase tracking-[0.2em] font-bold">{rank} MEMBER</span>
       </div>
     </div>
     
     <div className="space-y-1">
+      {/* Links Section */}
       {[
-        { icon: BookOpen, label: 'My Courses' },
-        { icon: Award, label: 'Certificates' },
-        { icon: Settings, label: 'Settings' },
-        { icon: LogOut, label: 'Sign Out', color: 'text-red-400' },
+        { icon: BookOpen, label: 'My Courses', href: '/dashboard/courses' },
+        { icon: Award, label: 'Certificates', href: '/dashboard/certificates' },
+        { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
       ].map((item) => (
-        <button key={item.label} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition-colors group ${item.color || 'text-white/60 hover:text-white'}`}>
-          <item.icon size={14} className="group-hover:text-gold transition-colors" />
-          <span className="text-[9px] font-black uppercase tracking-widest">{item.label}</span>
-        </button>
+        <Link key={item.label} href={item.href} onClick={close}>
+          <div className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition-colors group text-white/60 hover:text-white">
+            <item.icon size={14} className="group-hover:text-gold transition-colors" />
+            <span className="text-[9px] font-black uppercase tracking-widest">{item.label}</span>
+          </div>
+        </Link>
       ))}
+
+      {/* 🚀 Sign Out Action Section */}
+      <button 
+        onClick={async () => {
+          close();
+          await logout();
+        }}
+        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-red-500/10 transition-all duration-300 group text-red-400/80 hover:text-red-400"
+      >
+        <LogOut size={14} className="group-hover:translate-x-1 transition-transform" />
+        <span className="text-[9px] font-black uppercase tracking-widest">Sign Out</span>
+      </button>
     </div>
   </motion.div>
 )
@@ -122,14 +146,14 @@ const ProfileDropdown = ({ close }: { close: () => void }) => (
 const Logo = () => (
   <Link href="/" className="flex items-center gap-3 group flex-shrink-0 relative z-10">
     <div className="relative w-10 h-10 transition-all duration-700 group-hover:scale-110">
-<Image 
-  src="/logo.webp" 
-  alt="British Academy Logo"
-  fill
-  sizes="(max-width: 768px) 40px, 48px" // يعني في الموبايل 40px وفي الديسكتوب 48px
-  className="object-contain"
-  priority
-/>
+      <Image 
+        src="/logo.webp" 
+        alt="British Academy Logo"
+        fill
+        sizes="40px"
+        className="object-contain"
+        priority
+      />
     </div>
     <div className="flex flex-col">
       <span className="text-white font-black text-sm md:text-lg leading-none tracking-tighter uppercase italic">

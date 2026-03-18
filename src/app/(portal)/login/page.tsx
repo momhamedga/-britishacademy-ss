@@ -1,0 +1,128 @@
+"use client"
+import { useActionState } from 'react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { Lock, User, ShieldCheck, Loader2 } from 'lucide-react';
+import { loginToPortal } from '@/actions/portal-auth';
+
+export default function PortalLoginPage() {
+  const [state, formAction, isPending] = useActionState(loginToPortal, null);
+
+  // تأثير حركي للماوس (Cinematic Mouse Follow)
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
+    const { left, top } = currentTarget.getBoundingClientRect();
+    mouseX.set(clientX - left);
+    mouseY.set(clientY - top);
+  }
+
+  return (
+    <main 
+      onMouseMove={handleMouseMove}
+      className="min-h-screen w-full flex items-center justify-center  relative overflow-hidden group/main"
+    >
+      {/* 🌌 التعديل السينمائي: خلفية متفاعلة مع الماوس */}
+      <motion.div 
+        className="absolute inset-0 z-0 opacity-30 group-hover/main:opacity-50 transition-opacity duration-500"
+        style={{
+          background: `radial-gradient(600px circle at ${mouseX}px ${mouseY}px, rgba(212,175,55,0.15), transparent 80%)`,
+        }}
+      />
+      
+      <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:40px_40px] z-0" />
+
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 w-full max-w-[440px] px-4" // تقليل الـ px للموبايل الصغير
+      >
+        <div className="p-8 md:p-12 rounded-[2.5rem] bg-black/40 backdrop-blur-2xl border border-white/5 shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)] relative overflow-hidden group">
+          
+          {/* الـ Glow الجانبي */}
+          <div className="absolute -top-24 -right-24 w-48 h-48 bg-gold/10 blur-[80px] rounded-full group-hover:bg-gold/20 transition-all duration-1000" />
+
+          <div className="text-center mb-10">
+            <motion.div 
+              whileHover={{ rotateY: 180 }}
+              transition={{ duration: 0.6 }}
+              className="w-16 h-16 bg-gradient-to-br from-gold/20 to-transparent rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gold/20 shadow-[0_0_20px_rgba(212,175,55,0.1)]"
+            >
+              <ShieldCheck className="text-gold" size={30} strokeWidth={1.5} />
+            </motion.div>
+            <h2 className="text-[10px] font-black text-gold uppercase tracking-[0.8em] mb-1 opacity-80">Secure Terminal</h2>
+            <h1 className="text-2xl font-bold text-white tracking-tighter">STUDENT ACCESS</h1>
+          </div>
+
+          <form action={formAction} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest ml-1">Identity Vector</label>
+              <div className="relative group/input">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within/input:text-gold transition-colors" size={16} />
+                <input 
+                  required
+                  name="studentId"
+                  autoComplete="off"
+                  className="w-full bg-white/[0.02] border border-white/10 rounded-2xl pl-12 pr-6 py-4 text-white text-sm focus:border-gold/30 focus:bg-white/[0.05] focus:outline-none transition-all placeholder:text-slate-700"
+                  placeholder="BA-XXXX-XXX"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest ml-1">Access Cipher</label>
+              <div className="relative group/input">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within/input:text-gold transition-colors" size={16} />
+                <input 
+                  required
+                  name="accessCode"
+                  type="password"
+                  className="w-full bg-white/[0.02] border border-white/10 rounded-2xl pl-12 pr-6 py-4 text-white text-sm focus:border-gold/30 focus:bg-white/[0.05] focus:outline-none transition-all placeholder:text-slate-700"
+                  placeholder="••••••••"
+                />
+              </div>
+            </div>
+
+            {state?.error && (
+              <motion.div 
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="bg-red-500/10 border border-red-500/20 py-3 rounded-xl"
+              >
+                <p className="text-red-400 text-[10px] font-black uppercase text-center tracking-widest">
+                  ⚠ {state.error}
+                </p>
+              </motion.div>
+            )}
+
+            <motion.button
+              whileHover={{ scale: 1.01, boxShadow: "0 0 30px rgba(212,175,55,0.2)" }}
+              whileTap={{ scale: 0.98 }}
+              disabled={isPending}
+              className="w-full py-5 bg-gold text-navy font-black uppercase tracking-[0.4em] text-[10px] rounded-2xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden relative"
+            >
+              {isPending ? (
+                <Loader2 className="animate-spin" size={18} />
+              ) : (
+                <>
+                  <span className="relative z-10">Initiate Decryption</span>
+                  <motion.div 
+                    className="absolute inset-0 bg-white/20"
+                    initial={{ x: '-100%' }}
+                    whileHover={{ x: '100%' }}
+                    transition={{ duration: 0.5 }}
+                  />
+                </>
+              )}
+            </motion.button>
+          </form>
+
+          <p className="mt-8 text-center text-[8px] text-slate-600 font-bold tracking-[0.3em] uppercase opacity-50">
+            System Identity: BA-OS-2026
+          </p>
+        </div>
+      </motion.div>
+    </main>
+  );
+}

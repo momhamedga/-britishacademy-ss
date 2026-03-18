@@ -2,7 +2,7 @@ import { getCourseById } from "@/actions/academy-actions";
 import { notFound } from "next/navigation";
 import { Clock, BarChart, ShieldCheck, ArrowLeft, Sparkles } from "lucide-react";
 import Link from "next/link";
-
+import EnrollButton from "@/components/portal/EnrollButton";
 export default async function CourseDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const course = await getCourseById(id);
@@ -88,9 +88,7 @@ export default async function CourseDetailsPage({ params }: { params: Promise<{ 
 
             {/* Call to Action */}
             <div className="mt-12">
-               <button className="px-10 py-5 bg-gold text-navy font-black uppercase italic tracking-widest rounded-2xl hover:bg-white transition-all duration-300 shadow-[0_0_40px_rgba(212,175,55,0.15)] hover:scale-105 active:scale-95">
-                  Enroll in Program
-               </button>
+             <EnrollButton courseId={id} />
             </div>
           </div>
         </div>
