@@ -5,7 +5,8 @@ import Navbar from "@/components/layout/Navbar";
 import NeuralBackground from "@/components/ui/NeuralBackground";
 import Footer from "@/components/layout/Footer";
 import NextTopLoader from 'nextjs-toploader';
-import { sql } from "@/lib/db"; // استيراد محرك الـ DB
+import { sql } from "@/lib/db";
+import { cookies } from 'next/headers'; // استيراد الكوكيز لقراءة الجلسة
 
 const syne = Syne({
   subsets: ["latin"],
@@ -38,27 +39,31 @@ export const metadata: Metadata = {
   },
 };
 
-// تحويل الـ Layout لـ Async لجلب البيانات
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   
-  // 1. جلب بيانات المستخدم الحالية (مؤقتاً BA-2026-001)
-  // في المستقبل، الـ ID هييجي من الـ Auth Session
+  // 1. استخراج الـ ID من الكوكيز (النظام الديناميكي)
+  const cookieStore = await cookies();
+  const userId = cookieStore.get('auth_token')?.value;
+
   let student = null;
-  try {
-    const data = await sql`
-      SELECT name, rank 
-      FROM students 
-      WHERE student_id = 'BA-2026-001' 
-      LIMIT 1
-    `;
-    student = data[0];
-  } catch (error) {
-    console.error("Database Connection Error:", error);
-    // لو حصل خطأ في الـ DB بنسيب الـ student بـ null عشان الـ Navbar تظهر كـ Guest
+
+  // 2. جلب البيانات فقط إذا كان هناك مستخدم مسجل
+  if (userId) {
+    try {
+      const data = await sql`
+        SELECT name, rank 
+        FROM students 
+        WHERE id = ${userId} 
+        LIMIT 1
+      `;
+      student = data[0];
+    } catch (error) {
+      console.error("Database Connection Error:", error);
+    }
   }
 
   return (
@@ -75,11 +80,12 @@ export default async function RootLayout({
           shadow="0 0 15px #D4AF37"
         />
 
+        {/* الخلفية النيورونية - تظهر في كل الموقع */}
         <div className="fixed inset-0 z-0 pointer-events-none">
           <NeuralBackground />
         </div>
         
-        {/* نمرر بيانات الطالب المستخرجة من Neon للـ Navbar */}
+        {/* Navbar الديناميكي: لو مسجل يظهر اسمه، لو مش مسجل يظهر كـ Guest */}
         <Navbar user={student ? { name: student.name, rank: student.rank } : undefined} />
         
         <main className="relative z-10 pt-20 md:pt-32 min-h-screen">

@@ -1,13 +1,16 @@
 "use client"
-import { useActionState } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Lock, User, ShieldCheck, Loader2 } from 'lucide-react';
+import { useActionState, useState } from 'react';
+import { motion, useMotionValue } from 'framer-motion';
+import { Lock, User, ShieldCheck, Loader2, UserPlus } from 'lucide-react';
 import { loginToPortal } from '@/actions/portal-auth';
+import Link from 'next/link';
 
 export default function PortalLoginPage() {
   const [state, formAction, isPending] = useActionState(loginToPortal, null);
+  
+  // ⚡ حالة مراقبة الهوية لتغيير الأجواء البصرية
+  const [isDetected, setIsDetected] = useState(false);
 
-  // تأثير حركي للماوس (Cinematic Mouse Follow)
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -17,36 +20,45 @@ export default function PortalLoginPage() {
     mouseY.set(clientY - top);
   }
 
+  // دالة لمراقبة مدخلات الطالب وتفعيل الـ Identity Aura
+  const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.toUpperCase().startsWith('BA-')) {
+      setIsDetected(true);
+    } else {
+      setIsDetected(false);
+    }
+  };
+
   return (
     <main 
       onMouseMove={handleMouseMove}
-      className="min-h-screen w-full flex items-center justify-center  relative overflow-hidden group/main"
+      className="min-h-screen w-full flex items-center justify-center relative overflow-hidden group/main bg-[#020617]"
     >
-      {/* 🌌 التعديل السينمائي: خلفية متفاعلة مع الماوس */}
+      {/* Dynamic Background Aura */}
       <motion.div 
-        className="absolute inset-0 z-0 opacity-30 group-hover/main:opacity-50 transition-opacity duration-500"
-        style={{
-          background: `radial-gradient(600px circle at ${mouseX}px ${mouseY}px, rgba(212,175,55,0.15), transparent 80%)`,
+        className="absolute inset-0 z-0 transition-opacity duration-1000"
+        animate={{
+          opacity: isDetected ? 0.6 : 0.3,
+          background: `radial-gradient(800px circle at ${mouseX}px ${mouseY}px, ${isDetected ? 'rgba(212,175,55,0.2)' : 'rgba(212,175,55,0.1)'}, transparent 80%)`,
         }}
       />
       
       <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:40px_40px] z-0" />
 
       <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 w-full max-w-[440px] px-4" // تقليل الـ px للموبايل الصغير
+        className="relative z-10 w-full max-w-[440px] px-4"
       >
         <div className="p-8 md:p-12 rounded-[2.5rem] bg-black/40 backdrop-blur-2xl border border-white/5 shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)] relative overflow-hidden group">
           
-          {/* الـ Glow الجانبي */}
-          <div className="absolute -top-24 -right-24 w-48 h-48 bg-gold/10 blur-[80px] rounded-full group-hover:bg-gold/20 transition-all duration-1000" />
+          <div className={`absolute -top-24 -right-24 w-48 h-48 blur-[80px] rounded-full transition-all duration-1000 ${isDetected ? 'bg-gold/30' : 'bg-gold/10'}`} />
 
           <div className="text-center mb-10">
             <motion.div 
-              whileHover={{ rotateY: 180 }}
-              transition={{ duration: 0.6 }}
+              animate={isDetected ? { rotateY: 180, scale: 1.1 } : { rotateY: 0, scale: 1 }}
+              transition={{ duration: 0.8 }}
               className="w-16 h-16 bg-gradient-to-br from-gold/20 to-transparent rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gold/20 shadow-[0_0_20px_rgba(212,175,55,0.1)]"
             >
               <ShieldCheck className="text-gold" size={30} strokeWidth={1.5} />
@@ -63,8 +75,9 @@ export default function PortalLoginPage() {
                 <input 
                   required
                   name="studentId"
+                  onChange={handleIdChange}
                   autoComplete="off"
-                  className="w-full bg-white/[0.02] border border-white/10 rounded-2xl pl-12 pr-6 py-4 text-white text-sm focus:border-gold/30 focus:bg-white/[0.05] focus:outline-none transition-all placeholder:text-slate-700"
+                  className="w-full bg-white/[0.02] border border-white/10 rounded-2xl pl-12 pr-6 py-4 text-white text-sm focus:border-gold/30 focus:bg-white/[0.05] focus:outline-none transition-all placeholder:text-slate-700 uppercase"
                   placeholder="BA-XXXX-XXX"
                 />
               </div>
@@ -76,7 +89,7 @@ export default function PortalLoginPage() {
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within/input:text-gold transition-colors" size={16} />
                 <input 
                   required
-                  name="accessCode"
+                  name="accessCode" 
                   type="password"
                   className="w-full bg-white/[0.02] border border-white/10 rounded-2xl pl-12 pr-6 py-4 text-white text-sm focus:border-gold/30 focus:bg-white/[0.05] focus:outline-none transition-all placeholder:text-slate-700"
                   placeholder="••••••••"
@@ -90,7 +103,7 @@ export default function PortalLoginPage() {
                 animate={{ opacity: 1, x: 0 }}
                 className="bg-red-500/10 border border-red-500/20 py-3 rounded-xl"
               >
-                <p className="text-red-400 text-[10px] font-black uppercase text-center tracking-widest">
+                <p className="text-red-400 text-[10px] font-black uppercase text-center tracking-widest px-2">
                   ⚠ {state.error}
                 </p>
               </motion.div>
@@ -100,7 +113,7 @@ export default function PortalLoginPage() {
               whileHover={{ scale: 1.01, boxShadow: "0 0 30px rgba(212,175,55,0.2)" }}
               whileTap={{ scale: 0.98 }}
               disabled={isPending}
-              className="w-full py-5 bg-gold text-navy font-black uppercase tracking-[0.4em] text-[10px] rounded-2xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden relative"
+              className="w-full py-5 bg-gold text-[#020617] font-black uppercase tracking-[0.4em] text-[10px] rounded-2xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden relative"
             >
               {isPending ? (
                 <Loader2 className="animate-spin" size={18} />
@@ -117,6 +130,23 @@ export default function PortalLoginPage() {
               )}
             </motion.button>
           </form>
+
+          <div className="mt-8 pt-6 border-t border-white/5 text-center space-y-4">
+            <p className="text-[9px] text-slate-500 uppercase font-bold tracking-[0.2em]">
+              New Recruit?
+            </p>
+            <Link href="/register">
+              <motion.div 
+                whileHover={{ gap: '12px' }}
+                className="flex items-center justify-center gap-2 text-gold group/link cursor-pointer"
+              >
+                <UserPlus size={14} className="group-hover/link:rotate-12 transition-transform" />
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] border-b border-gold/20 pb-0.5 group-hover/link:border-gold transition-all">
+                  Initialize Identity Vector
+                </span>
+              </motion.div>
+            </Link>
+          </div>
 
           <p className="mt-8 text-center text-[8px] text-slate-600 font-bold tracking-[0.3em] uppercase opacity-50">
             System Identity: BA-OS-2026

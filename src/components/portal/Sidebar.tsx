@@ -1,14 +1,16 @@
 "use client"
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, BookOpen, Beaker, Settings, LogOut, Shield, Award } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Beaker,  ShieldIcon, Settings, LogOut, Shield, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
   { icon: BookOpen, label: 'My Courses', href: '/dashboard/courses' },
   { icon: Award, label: 'Certificates', href: '/dashboard/certificates' },
+    { icon: ShieldIcon, label: 'profile', href: '/dashboard/profile' },
   { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
+
 ];
 
 export default function Sidebar() {

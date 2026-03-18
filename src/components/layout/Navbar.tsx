@@ -5,16 +5,16 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Bell, User, ChevronRight, BookOpen, Award, Settings, LogOut } from 'lucide-react'
+import { Menu, X, Bell, User, ChevronRight } from 'lucide-react'
 import { NAV_LINKS } from '@/lib/constants'
 import { StudentRank } from '@/types/portal'
-import { logout } from '@/actions/portal-auth'
+import ProfileDropdown from '@/components/portal/ProfileDropdown' // استدعاء المكون الجديد
 
 interface NavbarProps {
   user?: {
     name: string;
     rank: StudentRank;
-  }
+  } | null;
 }
 
 const Navbar = ({ user }: NavbarProps) => {
@@ -48,36 +48,56 @@ const Navbar = ({ user }: NavbarProps) => {
 
           {/* Right Actions */}
           <div className="flex items-center gap-2 md:gap-3">
-            <div className="relative group">
-              <IconButton icon={<Bell size={18} strokeWidth={1.5} />} label="Alerts" />
-              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-gold rounded-full shadow-[0_0_12px_#D4AF37] animate-pulse pointer-events-none" />
-            </div>
+            {user && (
+              <div className="relative group">
+                <IconButton icon={<Bell size={18} strokeWidth={1.5} />} label="Alerts" />
+                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-gold rounded-full shadow-[0_0_12px_#D4AF37] animate-pulse pointer-events-none" />
+              </div>
+            )}
 
+            {/* Profile Section */}
             <div className="relative">
               <button 
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className={`p-2.5 rounded-xl transition-all duration-300 border ${isProfileOpen ? 'bg-white/10 border-white/20 text-gold shadow-[0_0_15px_rgba(212,175,55,0.2)]' : 'text-white/40 border-transparent hover:text-white'}`}
+                className={`relative p-2.5 rounded-xl transition-all duration-300 border overflow-hidden
+                  ${isProfileOpen 
+                    ? 'bg-white/10 border-white/20 text-gold shadow-[0_0_15px_rgba(212,175,55,0.2)]' 
+                    : 'text-white/40 border-transparent hover:text-white hover:bg-white/5'
+                  }`}
               >
-                <User size={18} strokeWidth={1.5} />
+                {user ? (
+                  // شكل الأفاتار الصغير عند تسجيل الدخول
+                  <div className="relative z-10 flex items-center justify-center font-black text-[10px] tracking-tighter">
+                    {user.name.substring(0, 2).toUpperCase()}
+                  </div>
+                ) : (
+                  <User size={18} strokeWidth={1.5} className="relative z-10" />
+                )}
+                
+                {/* تأثير توهج خلفي للطالب المسجل */}
+                {user && <div className="absolute inset-0 bg-gold/5 animate-pulse" />}
               </button>
               
               <AnimatePresence>
                 {isProfileOpen && (
                   <ProfileDropdown 
-                    name={user?.name || "Access Guest"} 
-                    rank={user?.rank || "AGENT"} 
+                    user={user} 
                     close={() => setIsProfileOpen(false)} 
                   />
                 )}
               </AnimatePresence>
             </div>
 
-            <div className="h-8 w-[1px] bg-gradient-to-b from-transparent via-gold/40 to-transparent mx-2 hidden sm:block shadow-[0_0_8px_rgba(212,175,55,0.3)]" />
+            <div className="h-8 w-[1px] bg-gradient-to-b from-transparent via-gold/40 to-transparent mx-2 hidden sm:block opacity-30 shadow-[0_0_8px_rgba(212,175,55,0.3)]" />
 
-            <Link href="/dashboard" className="group relative overflow-hidden bg-white px-6 py-2.5 rounded-xl transition-all duration-500 hover:shadow-[0_0_30px_rgba(212,175,55,0.2)] active:scale-95 hidden sm:flex items-center gap-3">
-              <div className="absolute inset-0 bg-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-              <span className="relative z-10 text-navy font-black text-[10px] md:text-[11px] uppercase tracking-widest flex items-center gap-2">
-                Student Portal 
+            <Link 
+              href={user ? "/dashboard" : "/login"} 
+              className={`group relative overflow-hidden px-6 py-2.5 rounded-xl transition-all duration-500 hover:shadow-[0_0_30px_rgba(212,175,55,0.2)] active:scale-95 hidden sm:flex items-center gap-3 
+                ${user ? 'bg-white text-navy' : 'bg-gold/10 border border-gold/20 text-gold'}`}
+            >
+              <div className={`absolute inset-0 transition-transform duration-500 ${user ? 'bg-gold translate-y-full group-hover:translate-y-0' : 'bg-gold/20 translate-x-full group-hover:translate-x-0'}`} />
+              <span className="relative z-10 font-black text-[10px] md:text-[11px] uppercase tracking-widest flex items-center gap-2 transition-colors duration-500 group-hover:text-navy">
+                {user ? 'Student Portal' : 'Access Terminal'}
                 <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </span>
             </Link>
@@ -89,71 +109,17 @@ const Navbar = ({ user }: NavbarProps) => {
         </motion.div>
       </div>
 
-      <MobileMenu isOpen={isOpen} setIsOpen={setIsOpen} links={NAV_LINKS} />
+      <MobileMenu isOpen={isOpen} setIsOpen={setIsOpen} links={NAV_LINKS} user={user} />
     </nav>
   )
 }
 
-// --- المكونات الفرعية ---
-
-const ProfileDropdown = ({ name, rank, close }: { name: string, rank: string, close: () => void }) => (
-  <motion.div 
-    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-    animate={{ opacity: 1, y: 0, scale: 1 }}
-    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-    className="absolute top-14 right-0 w-64 glass border border-white/10 rounded-2xl p-4 shadow-2xl z-50 backdrop-blur-3xl bg-black/80"
-  >
-    <div className="flex items-center gap-3 pb-4 mb-4 border-b border-white/5">
-      <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center text-gold font-bold uppercase text-xs">
-        {name.substring(0, 2)}
-      </div>
-      <div className="flex flex-col">
-        <span className="text-white text-[10px] font-black uppercase tracking-tight truncate w-32">{name}</span>
-        <span className="text-gold text-[8px] uppercase tracking-[0.2em] font-bold">{rank} MEMBER</span>
-      </div>
-    </div>
-    
-    <div className="space-y-1">
-      {/* Links Section */}
-      {[
-        { icon: BookOpen, label: 'My Courses', href: '/dashboard/courses' },
-        { icon: Award, label: 'Certificates', href: '/dashboard/certificates' },
-        { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
-      ].map((item) => (
-        <Link key={item.label} href={item.href} onClick={close}>
-          <div className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition-colors group text-white/60 hover:text-white">
-            <item.icon size={14} className="group-hover:text-gold transition-colors" />
-            <span className="text-[9px] font-black uppercase tracking-widest">{item.label}</span>
-          </div>
-        </Link>
-      ))}
-
-      {/* 🚀 Sign Out Action Section */}
-      <button 
-        onClick={async () => {
-          close();
-          await logout();
-        }}
-        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-red-500/10 transition-all duration-300 group text-red-400/80 hover:text-red-400"
-      >
-        <LogOut size={14} className="group-hover:translate-x-1 transition-transform" />
-        <span className="text-[9px] font-black uppercase tracking-widest">Sign Out</span>
-      </button>
-    </div>
-  </motion.div>
-)
+// --- Sub Components ---
 
 const Logo = () => (
   <Link href="/" className="flex items-center gap-3 group flex-shrink-0 relative z-10">
     <div className="relative w-10 h-10 transition-all duration-700 group-hover:scale-110">
-      <Image 
-        src="/logo.webp" 
-        alt="British Academy Logo"
-        fill
-        sizes="40px"
-        className="object-contain"
-        priority
-      />
+      <Image src="/logo.webp" alt="British Academy" fill sizes="40px" className="object-contain" priority />
     </div>
     <div className="flex flex-col">
       <span className="text-white font-black text-sm md:text-lg leading-none tracking-tighter uppercase italic">
@@ -188,18 +154,25 @@ const IconButton = ({ icon, label }: { icon: React.ReactNode, label?: string }) 
   </button>
 )
 
-const MobileMenu = ({ isOpen, setIsOpen, links }: any) => (
+const MobileMenu = ({ isOpen, setIsOpen, links, user }: any) => (
   <AnimatePresence>
     {isOpen && (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[90] bg-background/95 backdrop-blur-3xl xl:hidden flex flex-col justify-center p-8">
-        <div className="space-y-6">
+        <div className="space-y-6 text-center">
           {links.map((link: any, i: number) => (
             <motion.div key={link.name} initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: i * 0.1 }}>
-              <Link href={link.href} onClick={() => setIsOpen(false)} className="text-5xl font-black italic uppercase text-white/20 hover:text-gold transition-all">
+              <Link href={link.href} onClick={() => setIsOpen(false)} className="text-4xl sm:text-5xl font-black italic uppercase text-white/20 hover:text-gold transition-all">
                 {link.name}
               </Link>
             </motion.div>
           ))}
+          {!user && (
+             <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.4 }}>
+              <Link href="/login" onClick={() => setIsOpen(false)} className="text-4xl sm:text-5xl font-black italic uppercase text-gold">
+                Login
+              </Link>
+           </motion.div>
+          )}
         </div>
       </motion.div>
     )}
