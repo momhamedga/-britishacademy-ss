@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Mail, ShieldCheck, Facebook, Twitter, Linkedin, Instagram, Globe } from 'lucide-react';
 import NeuralBackground from '../ui/NeuralBackground';
 import { CONTACT_CONFIG } from '@/lib/constants'; // استدعاء الثوابت اللي عدلناها
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -45,14 +46,14 @@ export default function Footer() {
         {/* 3. Modern Contact & Socials Hub */}
         <div className="flex flex-col items-center space-y-8 w-full pt-4">
           {/* Email Button - مربوط بالدومين الجديد */}
-          <a 
+          <Link 
             href={`mailto:${CONTACT_CONFIG.email}`} 
             className="group relative inline-flex items-center gap-3 md:gap-5 px-8 md:px-12 py-4 md:py-5 bg-white/[0.02] border border-white/5 rounded-full text-white/40 hover:text-gold hover:border-gold/40 transition-all duration-500 overflow-hidden text-[10px] md:text-xs"
           >
             <div className="absolute inset-0 bg-gold/5 opacity-0 group-hover:opacity-100 transition-opacity" />
             <Mail size={16} className="text-gold/50 group-hover:scale-110 group-hover:rotate-12 transition-all" />
             <span className="font-syne font-black uppercase tracking-[0.2em]">{CONTACT_CONFIG.email}</span>
-          </a>
+          </Link>
 
           {/* Social Media - الحد الأدنى من التصميم مع أقصى تأثير */}
           <div className="flex items-center gap-8">
@@ -92,7 +93,7 @@ export default function Footer() {
               © British Academy Intelligence Group. Secure Deployment
             </p>
             <p className="text-[6px] text-gold/20 uppercase tracking-[0.5em] font-bold">
-              britishacademy-ss.online
+              britishacademy-ss.com
             </p>
           </div>
         </div>

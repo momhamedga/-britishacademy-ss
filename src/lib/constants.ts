@@ -146,8 +146,8 @@ export const STATS = [
  */
 export const CONTACT_CONFIG = {
   // البريد الرسمي المرتبط بالدومين الجديد لزيادة الموثوقية
-  email: "info@britishacademy-ss.online", 
-  supportEmail: "support@britishacademy-ss.online",
+  email: "info@britishacademy-ss.com", 
+  supportEmail: "support@britishacademy-ss.com",
   
   // رقم التواصل الدولي (لندن)
   phone: "+44 20 7946 0000", 
