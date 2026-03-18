@@ -2,28 +2,35 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  // 1. استخراج التوكن من الكوكيز
   const token = request.cookies.get('auth_token')?.value;
+  const { pathname } = request.nextUrl;
 
-  // 2. تحديد المسارات المحمية (التي تتطلب تسجيل دخول)
-  const isDashboardPage = request.nextUrl.pathname.startsWith('/dashboard');
-  const isCoursesPage = request.nextUrl.pathname.startsWith('/courses');
+  // 1. حقن المسار الحالي في الهيدرز عشان الـ Layout يشوفه (حل مشكلة السايدبار)
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-pathname', pathname);
 
-  // 3. لو اليوزر بيحاول يدخل صفحة محمية وهو مش مسجل
-  if ((isDashboardPage || isCoursesPage) && !token) {
-    // توجيهه لصفحة الـ login مع حفظ الصفحة اللي كان عايز يروحها (اختياري)
-    return NextResponse.redirect(new URL('/login', request.url));
+  // 2. تحديد المسارات
+  const isDashboardPage = pathname.startsWith('/dashboard');
+  const isLoginPage = pathname === '/dashboard/login' || pathname === '/login';
+
+  // 3. لو مش مسجل وبيحاول يدخل Dashboard
+  if (isDashboardPage && !isLoginPage && !token) {
+    return NextResponse.redirect(new URL('/dashboard/login', request.url));
   }
 
-  // 4. لو اليوزر مسجل وبيحاول يروح لصفحة الـ login، وديه الـ dashboard
- if ((request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/register') && token) {
-  return NextResponse.redirect(new URL('/dashboard', request.url));
+  // 4. لو مسجل وبيحاول يروح للـ login
+  if (isLoginPage && token) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+
+  // نمرر الهيدرز الجديدة للـ Response
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
 }
 
-  return NextResponse.next();
-}
-
-// وتحديث الـ config matcher ليشمل التسجيل
 export const config = {
   matcher: ['/dashboard/:path*', '/courses/:path*', '/login', '/register'],
 };

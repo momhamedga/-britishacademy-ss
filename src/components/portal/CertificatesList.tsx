@@ -1,12 +1,25 @@
 import { sql } from "@/lib/db";
 import CertificateCard from "@/components/portal/CertificateCard";
 import { ShieldCheck } from 'lucide-react';
+import { cookies } from "next/headers"; // ✅ استيراد الكوكيز لقراءة الهوية
 
 export default async function CertificatesList() {
-  const STUDENT_ID = '4af3f081-0b21-44a5-a358-81904ce5854e';
+  // 🛰️ سحب الهوية من الكوكيز الحالية (auth_token أو user_id)
+  const cookieStore = await cookies();
+  const userId = cookieStore.get("user_id")?.value || cookieStore.get("auth_token")?.value;
+
+  // 🛡️ حماية: لو مفيش يوزر، رجع رسالة "لا توجد شهادات" فوراً
+  if (!userId) {
+    return (
+      <div className="glass border border-white/5 rounded-[3rem] p-24 text-center bg-white/[0.01]">
+        <ShieldCheck className="mx-auto size-20 text-white/5 mb-6" />
+        <p className="text-white/20 font-black uppercase tracking-[.6em] text-[10px]">Unauthorized Access</p>
+      </div>
+    );
+  }
   
   try {
-    // استعلام ليزر: جلب الشهادات والكورسات المرتبطة بها مباشرة
+    // 🔍 استعلام ديناميكي بناءً على اليوزر الفعلي
     const completedCourses = await sql`
       SELECT 
         c.title, 
@@ -15,7 +28,7 @@ export default async function CertificatesList() {
         cert.issued_at
       FROM certificates cert
       JOIN courses c ON cert.course_id = c.id
-      WHERE cert.student_id = ${STUDENT_ID}
+      WHERE cert.student_id = ${userId}
       ORDER BY cert.issued_at DESC
     `;
 

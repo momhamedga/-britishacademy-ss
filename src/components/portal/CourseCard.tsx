@@ -1,74 +1,76 @@
 "use client"
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Clock, BarChart3, ShieldCheck } from 'lucide-react';
+import { Clock, ShieldCheck, Target, ChevronRight } from 'lucide-react';
+import { CourseCardProps } from '@/types/cardCoursesPortal';
 
-interface CourseCardProps {
-  title: string;
-  category: string;
-  progress: number;
-  thumbnail: string;
-  level: string;
-  duration: string;
-}
+
 
 export default function CourseCard({ title, category, progress, thumbnail, level, duration }: CourseCardProps) {
-  // لون مخصص بناءً على المستوى
-  const levelColor = level === 'Advanced' ? 'text-red-400 border-red-400/20 bg-red-400/5' : 
-                     level === 'Intermediate' ? 'text-gold border-gold/20 bg-gold/5' : 
-                     'text-emerald-400 border-emerald-400/20 bg-emerald-400/5';
+  const levelStyles = 
+    level === 'Advanced' ? 'text-red-400 bg-red-400/10 border-red-400/20' : 
+    level === 'Intermediate' ? 'text-gold bg-gold/10 border-gold/20' : 
+    'text-emerald-400 bg-emerald-400/10 border-emerald-400/20';
 
   return (
     <motion.div 
-      whileHover={{ y: -8 }}
-      className="group relative bg-[#000810]/60 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-4 transition-all duration-500 hover:border-gold/30 shadow-2xl"
+      whileHover={{ y: -5 }}
+      whileTap={{ scale: 0.98 }}
+      className="group relative  border border-white/5 rounded-[1.8rem] md:rounded-[2.2rem] p-4 md:p-5 transition-all duration-500 hover:border-gold/20 backdrop-blur-3xl shadow-2xl"
     >
-      {/* Visual Header (Logo Area) */}
-      <div className="relative h-44 w-full rounded-[2rem] bg-gradient-to-br from-white/5 to-transparent overflow-hidden flex items-center justify-center border border-white/5">
-        <div className="relative w-24 h-24 transition-transform duration-700 group-hover:scale-110 opacity-40 group-hover:opacity-100 grayscale group-hover:grayscale-0">
-          <Image src={thumbnail} alt="Academy" fill className="object-contain" />
+      {/* Visual Area */}
+      <div className="relative h-40 md:h-48 w-full rounded-[1.4rem] md:rounded-[1.8rem] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden flex items-center justify-center border border-white/5">
+        <div className="relative w-24 h-24 transition-all duration-700 group-hover:scale-110 group-hover:drop-shadow-[0_0_20px_rgba(212,175,55,0.3)]">
+          <Image src={thumbnail} alt={title} fill className="object-contain p-4" priority />
         </div>
         
-        {/* Floating Badges */}
-        <div className={`absolute top-4 right-4 px-3 py-1 rounded-full border text-[8px] font-black uppercase tracking-widest ${levelColor}`}>
+        <div className={`absolute top-3 right-3 px-3 py-1 rounded-full border text-[7px] font-black uppercase tracking-[0.2em] backdrop-blur-md ${levelStyles}`}>
           {level}
         </div>
       </div>
 
-      {/* Course Info */}
-      <div className="mt-6 px-2 pb-2">
-        <div className="flex items-center gap-2 mb-2">
-           <ShieldCheck size={12} className="text-gold" />
-           <span className="text-slate-500 font-black text-[9px] uppercase tracking-[0.2em]">{category}</span>
+      {/* Content Area */}
+      <div className="mt-5 px-1">
+        <div className="flex items-center gap-2 mb-2 opacity-70">
+           <ShieldCheck size={10} className="text-gold" />
+           <span className="text-white font-black text-[8px] uppercase tracking-[0.25em]">{category}</span>
         </div>
         
-        <h3 className="text-white font-bold text-xl mb-6 line-clamp-1 italic">{title}</h3>
+        <h3 className="text-white font-bold text-lg md:text-xl mb-5 italic uppercase tracking-tight line-clamp-1 group-hover:text-gold transition-colors">
+          {title}
+        </h3>
         
-        {/* Stats Row */}
-        <div className="flex items-center gap-6 mb-6">
-           <div className="flex items-center gap-2 text-slate-400">
-              <Clock size={14} />
-              <span className="text-[10px] font-bold uppercase">{duration}</span>
+        <div className="grid grid-cols-2 gap-4 mb-6 border-y border-white/5 py-4">
+           <div className="flex items-center gap-2 text-slate-500">
+              <Clock size={12} />
+              <span className="text-[9px] font-bold uppercase tracking-widest">{duration}</span>
            </div>
-           <div className="flex items-center gap-2 text-slate-400">
-              <BarChart3 size={14} />
-              <span className="text-[10px] font-bold uppercase italic">Rank Required</span>
+           <div className="flex items-center gap-2 text-slate-500">
+              <Target size={12} />
+              <span className="text-[9px] font-bold uppercase tracking-widest italic font-mono text-gold/50">Vector OK</span>
            </div>
         </div>
 
-        {/* Tactical Progress Bar */}
-        <div className="space-y-3">
-          <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-            <span className="text-slate-500">Operation Progress</span>
+        {/* Tactical Progress */}
+        <div className="space-y-2.5">
+          <div className="flex justify-between items-end text-[8px] font-black uppercase tracking-[0.3em]">
+            <span className="text-slate-600 italic">Sync Status</span>
             <span className="text-gold">{progress}%</span>
           </div>
-          <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden p-[1px] border border-white/5">
+          <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 relative">
             <motion.div 
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
-              className="h-full bg-gradient-to-r from-gold/50 to-gold rounded-full shadow-[0_0_15px_rgba(212,175,55,0.4)]"
+              transition={{ duration: 1.2, ease: "circOut" }}
+              className="h-full bg-gradient-to-r from-gold/40 to-gold rounded-full relative shadow-[0_0_10px_rgba(212,175,55,0.3)]"
             />
           </div>
+        </div>
+
+        <div className="mt-4 flex justify-end opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+            <span className="text-[8px] font-black text-gold flex items-center gap-1 uppercase tracking-widest">
+                Deploy <ChevronRight size={10} />
+            </span>
         </div>
       </div>
     </motion.div>

@@ -11,7 +11,7 @@ export default async function HomePage() {
   return (
     <main className="relative min-h-screen">
       {/* 1. السكشن الرئيسي */}
-      <HeroSection />
+      <HeroSection  />
 
       {/* 2. سكشن الأكاديمية (Hub) */}
       <AcademyHub />
