@@ -3,50 +3,70 @@ import { motion } from 'framer-motion';
 import { useAcademyStore, useAcademyActions } from "@/store/useAcademyStore";
 import { CATEGORIES } from '@/lib/constants';
 
-
-
 export default function CourseFilters() {
   const { activeCategory } = useAcademyStore();
   const { setActiveCategory } = useAcademyActions();
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-full overflow-hidden">
-      {/* Label Section */}
-      <div className="flex items-center gap-3 px-1">
+    <div className="flex flex-col gap-6 w-full max-w-full overflow-hidden mb-12">
+      {/* 🧭 Sector Label - التسمية العلوية */}
+      <div className="flex items-center gap-3 px-2">
         <div className="h-[1px] w-6 md:w-8 bg-gold/50" />
-        <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] text-slate-500">
-          Filter by Sector
+        <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/40 italic">
+          Select Mission Sector
         </span>
       </div>
 
-      {/* Container الرئيسي: بيسمح بالتمرير في الموبايل والترتيب المنظم في الديسكتوب */}
-      <div className="w-full relative px-1">
-        <nav className="flex flex-nowrap md:flex-wrap items-center gap-2 md:gap-3 overflow-x-auto md:overflow-visible no-scrollbar pb-4 md:pb-0">
-          <div className="flex p-1.5 glass rounded-[2.5rem] border border-white/5 backdrop-blur-2xl shadow-2xl w-max md:w-full md:grid md:grid-cols-4 lg:flex lg:w-max">
+      {/* 🕹️ Navigation Container */}
+      <div className="relative px-1 group">
+        <nav className="flex flex-nowrap md:flex-wrap items-center gap-2 md:gap-3 overflow-x-auto md:overflow-visible no-scrollbar pb-6 md:pb-0">
+          
+          {/* الـ Container الزجاجي المحيط بالأزرار */}
+          <div className="flex p-2 bg-white/[0.02] backdrop-blur-3xl rounded-[2.8rem] border border-white/5 shadow-2xl w-max md:w-full md:grid md:grid-cols-2 lg:flex lg:w-max group-hover:border-white/10 transition-colors">
+            
             {CATEGORIES.map((cat) => {
               const Icon = cat.icon;
+              // تأكد أن activeCategory يتطابق مع الـ ID القادم من الثوابت
               const isActive = activeCategory === cat.id;
 
               return (
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`relative flex items-center justify-center gap-2 md:gap-3 px-5 md:px-8 py-3.5 md:py-4 rounded-[1.8rem] text-[9px] md:text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.15em] transition-all duration-700 z-10 whitespace-nowrap 
-                    ${isActive ? 'text-navy' : 'text-slate-400 hover:text-white'} 
-                    flex-shrink-0 md:flex-1 lg:flex-none transition-all`}
+                  className={`
+                    relative flex items-center justify-center gap-3 
+                    px-6 md:px-10 py-4 md:py-4.5 rounded-[2.2rem] 
+                    text-[10px] md:text-[11px] font-black uppercase 
+                    tracking-[0.15em] transition-all duration-500 
+                    flex-shrink-0 md:flex-1 lg:flex-none outline-none
+                    ${isActive ? 'text-[#020617]' : 'text-white/40 hover:text-white'}
+                  `}
                 >
+                  {/* Icon - لون الأيقونة يتغير بناءً على الحالة */}
                   <Icon 
-                    size={14} 
-                    className={`${isActive ? 'text-navy' : 'text-gold/60'} transition-colors duration-500 flex-shrink-0`} 
+                    size={15} 
+                    className={`relative z-20 transition-colors duration-500 ${isActive ? 'text-[#020617]' : 'text-gold/50'}`} 
                   />
                   
-                  <span className="relative z-20">{cat.label}</span>
+                  <span className="relative z-20 italic">{cat.label}</span>
 
+                  {/* 🚀 The Active Pill (Framer Motion) */}
                   {isActive && (
                     <motion.div
                       layoutId="activeFilterPill"
-                      className="absolute inset-0 bg-gold rounded-[1.6rem] shadow-[0_15px_35px_rgba(212,175,55,0.4)]"
-                      transition={{ type: "spring", bounce: 0.25, duration: 0.7 }}
+                      className="absolute inset-0 bg-gold rounded-[2rem] shadow-[0_0_30px_rgba(212,175,55,0.3)] z-10"
+                      transition={{ 
+                        type: "spring", 
+                        stiffness: 400, 
+                        damping: 30,
+                      }}
+                    />
+                  )}
+                  
+                  {/* Hover effect - هالة خفيفة عند الوقوف بالماوس */}
+                  {!isActive && (
+                    <motion.div 
+                      className="absolute inset-0 bg-white/5 rounded-[2rem] opacity-0 hover:opacity-100 transition-opacity" 
                     />
                   )}
                 </button>
@@ -55,8 +75,8 @@ export default function CourseFilters() {
           </div>
         </nav>
         
-        {/* تأثير الـ Gradient الصغير في الأطراف (فقط في الموبايل) ليوحي بوجود تمرير */}
-        <div className="absolute right-0 top-0 bottom-4 w-12 bg-gradient-to-l from-navy to-transparent pointer-events-none md:hidden" />
+        {/* Mobile Fade-out mask - تلاشي جانبي في الموبايل عشان يحسس المستخدم إن فيه تكملة */}
+        <div className="absolute right-0 top-0 bottom-6 w-16 bg-gradient-to-l from-[#020617] to-transparent pointer-events-none md:hidden z-30" />
       </div>
     </div>
   );

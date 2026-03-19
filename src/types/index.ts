@@ -1,12 +1,29 @@
 export interface Course {
-  id: number;
+  id: string; // UUID من النوع string
   title: string;
+  slug: string;
   category: string;
   duration: string;
-  level: string;
-  created_at?: string;
+  level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert' | 'Professional'; 
+  price: number;
+  
+  // حقول العرض في الـ Grid
+  short_description?: string;
+  enrollment_count?: number;
+  image_url?: string;
+  
+  // المحتوى التفصيلي (بما إننا هنخزنه كـ JSON في الـ DB أو ندمجه)
+  full_content?: {
+    overview: string;
+    benefits: string[];
+    curriculum: string[];
+    location: string;
+    requirements: string;
+  };
+  
+  is_sia_accredited: boolean;
+  created_at?: string | Date;
 }
-
 // src/types/index.ts (أو ملف التايبس الخاص بك)
 
 export interface HeroSlide {

@@ -223,3 +223,27 @@ export const SOCIAL_LINKS = [
   { name: 'Instagram', href: '#', icon: 'InstagramIcon' },
 ];
 
+// src/lib/constants.ts
+
+export const FEATURE_POINTS = [
+  {
+    id: "dream-job",
+    title: "Land Your Dream Job",
+    description: "Gain the essential skills and qualifications employers are looking for.",
+  },
+  {
+    id: "career-prospects",
+    title: "Boost Your Career",
+    description: "Advance in your current field or explore exciting new opportunities.",
+  },
+  {
+    id: "ahead-curve",
+    title: "Stay Ahead Of Curve",
+    description: "Keep your skills current and relevant in the ever-evolving market.",
+  },
+  {
+    id: "earning-potential",
+    title: "Increase Earning Potential",
+    description: "Higher qualifications often lead to higher salaries.",
+  },
+];

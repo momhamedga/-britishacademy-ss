@@ -22,7 +22,6 @@ const LoginSchema = z.object({
 export async function loginToPortal(prevState: any, formData: FormData) {
   const studentId = formData.get('studentId');
   const accessCode = formData.get('accessCode'); 
-
   const validated = LoginSchema.safeParse({ studentId, accessCode });
 
   if (!validated.success) {
@@ -32,7 +31,6 @@ export async function loginToPortal(prevState: any, formData: FormData) {
   let loginSuccessful = false;
 
   try {
-    // جلب بيانات الطالب (التحقق من access_code)
     const students = await sql`
       SELECT id, student_id, access_code, name, rank 
       FROM students 
@@ -46,11 +44,11 @@ export async function loginToPortal(prevState: any, formData: FormData) {
       return { error: "ACCESS DENIED: IDENTITY NOT RECOGNIZED" };
     }
 
-    // تحديث الطابع الزمني لآخر وصول
     await sql`UPDATE students SET last_access = NOW() WHERE id = ${student.id}`;
 
-    // إدارة الجلسة (Cookies)
     const cookieStore = await cookies();
+    
+    // ✅ توحيد الكوكيز لضمان عمل الـ Enroll
     cookieStore.set('auth_token', student.id, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -59,7 +57,7 @@ export async function loginToPortal(prevState: any, formData: FormData) {
     });
 
     cookieStore.set('user_id', student.id, {
-      httpOnly: false, 
+      httpOnly: false, // متاح للـ Client إذا احتجته
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24,
       path: '/',
@@ -68,13 +66,11 @@ export async function loginToPortal(prevState: any, formData: FormData) {
     loginSuccessful = true;
   } catch (error) {
     if (error instanceof Error && error.message.includes('NEXT_REDIRECT')) throw error;
-    console.error("Auth Error:", error);
     return { error: "TERMINAL OFFLINE: DATABASE CONNECTION FAILED" };
   }
 
   if (loginSuccessful) redirect('/dashboard');
 }
-
 /**
  * تحديث إعدادات الملف الشخصي
  */
@@ -178,8 +174,17 @@ export async function registerStudent(prevState: any, formData: FormData) {
 
     const newStudent = result[0];
     const cookieStore = await cookies();
+    
+    // ✅ يجب إضافة user_id هنا أيضاً عند التسجيل الجديد
     cookieStore.set('auth_token', newStudent.id, {
       httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24,
+      path: '/',
+    });
+
+    cookieStore.set('user_id', newStudent.id, {
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24,
       path: '/',
@@ -193,7 +198,6 @@ export async function registerStudent(prevState: any, formData: FormData) {
 
   if (success) redirect('/dashboard');
 }
-
 /**
  * تسجيل الخروج
  */
@@ -202,31 +206,4 @@ export async function logout() {
   cookieStore.delete("auth_token");
   cookieStore.delete("user_id");
   redirect("/login");
-}
-
-/**
- * الاشتراك في كورس جديد
- */
-export async function enrollInCourse(courseId: string, studentId: string) {
-  try {
-    const existing = await sql`
-      SELECT id FROM student_courses 
-      WHERE student_id = ${studentId} AND course_id = ${courseId}
-    `;
-
-    if (existing.length > 0) {
-      return { error: "ALREADY ENROLLED IN THIS VECTOR" };
-    }
-
-    await sql`
-      INSERT INTO student_courses (student_id, course_id, enrolled_at)
-      VALUES (${studentId}, ${courseId}, NOW())
-    `;
-
-    revalidatePath('/dashboard');
-    return { success: true };
-  } catch (error) {
-    console.error("Enrollment Error:", error);
-    return { error: "TERMINAL ERROR: ENROLLMENT FAILED" };
-  }
 }

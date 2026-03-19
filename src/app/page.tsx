@@ -3,6 +3,7 @@ import HeroSection from "@/components/home/HeroSection";
 import AcademyAbout from "@/components/home/AcademyAbout";
 import HomeCoursesPreview from "@/components/home/CoursePreview";
 import AcademyHub from "@/components/home/AcademyHub";
+import { FeatureGrid } from "@/components/features/feature-grid";
 
 export default async function HomePage() {
   // جلب البيانات من Neon DB
@@ -16,8 +17,10 @@ export default async function HomePage() {
       {/* 2. سكشن الأكاديمية (Hub) */}
       <AcademyHub />
       <AcademyAbout />
+
       <HomeCoursesPreview initialCourses={initialCourses} />
-     
+
+     <FeatureGrid/>
 
       <div className="h-24" />
     </main>
