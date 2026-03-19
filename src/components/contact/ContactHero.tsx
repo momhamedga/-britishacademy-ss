@@ -6,75 +6,73 @@ export default function ContactHero() {
   const containerRef = useRef(null);
   const { scrollY } = useScroll();
   
-  // تأثير بارالاكس (Parallax) أعمق للنصوص
-  const y1 = useTransform(scrollY, [0, 500], [0, 150]);
-  const y2 = useTransform(scrollY, [0, 500], [0, 80]);
-  const opacity = useTransform(scrollY, [0, 400], [1, 0]);
+  // بارالاكس خفيف جداً للهيبة فقط
+  const y = useTransform(scrollY, [0, 500], [0, 80]);
+  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
 
   return (
     <section 
       ref={containerRef}
-      className="relative pt-32 pb-16 md:pt-52 md:pb-24 px-6 overflow-hidden"
+      className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6 overflow-hidden flex flex-col items-center justify-center"
     >
+      {/* 🌑 Background Aura - هالة خفيفة جداً في الخلفية */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gold/5 blur-[120px] rounded-full pointer-events-none" />
 
-      <motion.div
-        style={{ opacity }}
-        className="relative z-10 text-center flex flex-col items-center"
-      >
-        {/* Badge علوي متطور */}
+      <motion.div style={{ opacity, y }} className="relative z-10 text-center max-w-5xl">
+        
+        {/* 📟 Small Tagline */}
         <motion.div 
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className="inline-flex items-center gap-4 mb-8"
+          initial={{ opacity: 0, letterSpacing: "0.2em" }}
+          animate={{ opacity: 1, letterSpacing: "0.6em" }}
+          transition={{ duration: 1.5 }}
+          className="text-gold/60 text-[10px] md:text-xs font-black uppercase mb-8 md:mb-12 tracking-[0.6em]"
         >
-          <div className="h-[1px] w-6 md:w-12 bg-gradient-to-r from-transparent to-gold" />
-          <span className="text-gold text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] whitespace-nowrap drop-shadow-[0_0_10px_rgba(212,175,55,0.3)]">
-            Establish Secure Connection
-          </span>
-          <div className="h-[1px] w-6 md:w-12 bg-gradient-to-l from-transparent to-gold" />
+          Secure Protocol 01
         </motion.div>
 
-        {/* العنوان الرئيسي: استعملنا Clamp لضمان التجاوب على كل الشاشات */}
-        <motion.h1 
-          style={{ y: y1 }}
-          className="text-[clamp(2.5rem,12vw,8rem)] font-black text-white italic uppercase tracking-tighter leading-[0.8] mb-10"
-        >
-          Contact <br />
-          <span 
-            className="text-transparent bg-clip-text bg-gradient-to-b from-white via-white/90 to-white/20 inline-block"
-            style={{ WebkitTextStroke: '1px rgba(255,255,255,0.15)' }}
+        {/* 🏆 The Title - الفخامة في الخط */}
+        <div className="relative inline-block mb-10">
+          <motion.h1 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            className="text-[clamp(3.5rem,12vw,10rem)] font-black text-white leading-none uppercase tracking-tighter"
           >
-            Mission Control
-          </span>
-        </motion.h1>
-        
-        {/* الوصف مع "برواز" جانبي أنيق */}
-        <motion.div
-          style={{ y: y2 }}
+            Get In <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/20 italic">Touch</span>
+          </motion.h1>
+          
+          {/* خط رفيع جداً تحت العنوان بيتحرك بنعومة */}
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: '100%' }}
+            transition={{ delay: 0.5, duration: 1.5 }}
+            className="h-[1px] bg-gradient-to-r from-transparent via-gold/40 to-transparent mt-4"
+          />
+        </div>
+
+        {/* 📄 Simple Description */}
+        <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 1 }}
-          className="relative max-w-2xl group"
+          transition={{ delay: 0.8, duration: 1 }}
+          className="text-slate-400 text-sm md:text-xl font-light max-w-xl mx-auto leading-relaxed tracking-wide"
         >
-          <div className="absolute -inset-x-4 -inset-y-2 border-x border-white/5 group-hover:border-gold/20 transition-colors duration-1000" />
-          <p className="text-slate-400 text-sm md:text-lg font-medium leading-relaxed px-4">
-            Connect with the <span className="text-white italic">British Academy for Strategic Security</span>. 
-            Our elite operators are ready for deployment briefings at 
-            <span className="text-gold/80 ml-2 font-mono text-xs md:text-base tracking-tighter group-hover:text-gold transition-colors">britishacademy-ss.online</span>
-          </p>
-        </motion.div>
+          Your strategic inquiry is our priority. Connect with the 
+          <span className="text-white font-medium"> Intelligence Unit</span> directly.
+        </motion.p>
+
       </motion.div>
 
-      {/* 2. عنصر الـ Scanline السفلي المتحرك */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden">
-        <motion.div 
-          animate={{ x: ['-100%', '100%'] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-          className="w-1/2 h-[1px] bg-gradient-to-r from-transparent via-gold/40 to-transparent" 
-        />
-        <div className="w-full h-px bg-white/5" />
-      </div>
+      {/* 🛰️ Minimal HUD Decor - عنصر واحد بس بيتحرك بهدوء */}
+      <motion.div 
+        animate={{ y: [0, -10, 0] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-20"
+      >
+        <div className="w-[1px] h-12 bg-gradient-to-b from-gold to-transparent" />
+        <span className="text-[8px] text-gold uppercase tracking-[0.3em]">Scroll</span>
+      </motion.div>
+
     </section>
   );
 }

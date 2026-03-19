@@ -30,7 +30,7 @@ export default function CourseCard({ title, category, progress, thumbnail, level
         className="relative border border-white/5 rounded-[2rem] md:rounded-[2.5rem] p-5 transition-all duration-500 hover:border-gold/30 backdrop-blur-3xl bg-navy/20 shadow-2xl overflow-hidden"
       >
         {/* 🛡️ Visual Area */}
-        <div className="relative h-44 md:h-52 w-full rounded-[1.6rem] md:rounded-[2rem] bg-[#0A0F1D] overflow-hidden flex items-center justify-center border border-white/5 shadow-inner">
+        <div className="relative h-44 md:h-52 w-full rounded-[1.6rem] md:rounded-[2rem] overflow-hidden flex items-center justify-center border border-white/5 shadow-inner">
           <div className="absolute inset-0 bg-gradient-to-t from-gold/[0.03] to-transparent pointer-events-none" />
           <div className="absolute w-32 h-32 bg-gold/5 blur-[40px] rounded-full group-hover:bg-gold/10 transition-colors duration-700" />
 
@@ -40,7 +40,7 @@ export default function CourseCard({ title, category, progress, thumbnail, level
               src={thumbnail || "/logo.webp"} // ✅ يستخدم الصورة القادمة من الداتا بيز
               alt={title}
               fill 
-              className="object-contain p-2 drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]" 
+              className="object-contain p-2" 
               priority 
             />
           </div>

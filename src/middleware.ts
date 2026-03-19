@@ -11,11 +11,11 @@ export function middleware(request: NextRequest) {
 
   // 2. تحديد المسارات
   const isDashboardPage = pathname.startsWith('/dashboard');
-  const isLoginPage = pathname === '/dashboard/login' || pathname === '/login';
+  const isLoginPage = pathname === '/login' || pathname === '/login';
 
   // 3. لو مش مسجل وبيحاول يدخل Dashboard
   if (isDashboardPage && !isLoginPage && !token) {
-    return NextResponse.redirect(new URL('/dashboard/login', request.url));
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
   // 4. لو مسجل وبيحاول يروح للـ login

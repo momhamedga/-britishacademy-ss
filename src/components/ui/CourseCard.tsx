@@ -1,105 +1,124 @@
-"use client"
+"use client";
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Clock, ShieldCheck, Target, ChevronRight, Zap } from 'lucide-react';
-import { Course } from '@/types'; // نستخدم الـ Interface الموحدة
+import { Clock, ShieldCheck, Zap, ArrowUpRight, Users } from 'lucide-react';
+import { Course } from '@/types';
+
+// 1. نظام الألوان التكتيكي (Mapping) - أسرع وأنظف
+const LEVEL_CONFIG: Record<string, string> = {
+  advanced: 'text-red-400 border-red-400/30 bg-red-400/10 shadow-[0_0_15px_rgba(248,113,113,0.2)]',
+  intermediate: 'text-gold border-gold/30 bg-gold/10 shadow-[0_0_15px_rgba(212,175,55,0.2)]',
+  professional: 'text-purple-400 border-purple-400/30 bg-purple-400/10',
+  beginner: 'text-emerald-400 border-emerald-400/30 bg-emerald-400/10 shadow-[0_0_15px_rgba(52,211,153,0.2)]',
+};
 
 export default function CourseCard({ course }: { course: Course }) {
   
-  // نظام ألوان تكتيكي بناءً على المستوى (Level) القادم من الداتا بيز
-  const getLevelStyles = (lvl: string) => {
-    switch (lvl) {
-      case 'Advanced': return 'text-red-400 bg-red-400/10 border-red-400/20 shadow-[0_0_10px_rgba(248,113,113,0.1)]';
-      case 'Intermediate': return 'text-gold bg-gold/10 border-gold/20 shadow-[0_0_10px_rgba(212,175,55,0.1)]';
-      case 'Professional': return 'text-purple-400 bg-purple-400/10 border-purple-400/20';
-      default: return 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20 shadow-[0_0_10px_rgba(52,211,153,0.1)]';
-    }
-  };
+  // تأمين استخراج الاستايل بغض النظر عن حالة الأحرف (SIA أو sia أو Sia)
+  const currentLevel = course.level?.toLowerCase() || 'beginner';
+  const levelStyle = LEVEL_CONFIG[currentLevel] || LEVEL_CONFIG.beginner;
 
   return (
-    <Link href={`/courses/${course.slug}`}>
+    <Link href={`/courses/${course.slug}`} className="block h-full outline-none">
       <motion.div 
-        whileHover={{ y: -8, scale: 1.01 }}
         whileTap={{ scale: 0.98 }}
-        className="group relative border border-white/5 rounded-[2.5rem] p-5 transition-all duration-500 hover:border-gold/30 backdrop-blur-3xl bg-white/[0.01] shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden cursor-pointer h-full flex flex-col"
+        className="group relative h-full flex flex-col  border border-white/10 rounded-[2.2rem] overflow-hidden transition-all duration-500 
+                   md:hover:border-gold/40 md:hover:shadow-[0_0_40px_rgba(212,175,55,0.15)]"
       >
-        {/* إضاءة خلفية تكتيكية عند الهوفر */}
-        <div className="absolute -right-10 -top-10 w-32 h-32 bg-gold/5 blur-[50px] group-hover:bg-gold/15 transition-all duration-700 pointer-events-none" />
-
-        {/* المساحة البصرية / اللوجو */}
-        <div className="relative h-48 w-full rounded-[2rem] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden flex items-center justify-center border border-white/5 group-hover:border-gold/20 transition-colors">
-          <div className="relative w-32 h-32 transition-all duration-700 group-hover:scale-110 group-hover:rotate-2 group-hover:drop-shadow-[0_0_40px_rgba(212,175,55,0.3)]">
+        
+        {/* --- Header Area --- */}
+        <div className="relative h-52 sm:h-48 w-full overflow-hidden bg-navy ">
+          {/* صورة اللوجو مع تأثير Scale هادئ */}
+          <div className="relative w-full h-full p-8 transition-all duration-700 md:group-hover:scale-110 md:group-hover:rotate-1">
             <Image 
               src={course.image_url || '/logo.webp'} 
               alt={course.title} 
               fill 
-              className="object-contain p-4 filter grayscale group-hover:grayscale-0 transition-all duration-700" 
-              priority 
+              className="object-contain filter brightness-90 md:group-hover:brightness-110 transition-all duration-500"
+              sizes="(max-width: 768px) 100vw, 33vw"
             />
           </div>
-          
-          {/* Badge: السعر يظهر فوق الصورة بشكل فخم */}
-          <div className="absolute bottom-4 left-4 px-4 py-2 bg-black/60 backdrop-blur-md rounded-2xl border border-white/10">
-            <span className="text-gold font-black text-xs">£{course.price}</span>
+
+          {/* Level Badge - توب رايت (الآن يقرأ الألوان صح) */}
+          <div className={`absolute top-5 right-5 px-3.5 py-1 rounded-full border text-[8px] font-black uppercase tracking-[0.15em] backdrop-blur-xl z-10 transition-all ${levelStyle}`}>
+            {course.level}
           </div>
 
-          {/* Badge: المستوى */}
-          <div className={`absolute top-4 right-4 px-4 py-1.5 rounded-full border text-[8px] font-black uppercase tracking-[0.2em] backdrop-blur-xl z-20 ${getLevelStyles(course.level)}`}>
-            {course.level}
+          {/* Price Tag */}
+          <div className="absolute bottom-5 left-5 flex items-center gap-2 bg-black/60 backdrop-blur-md border border-white/5 px-4 py-2 rounded-2xl">
+            <span className="text-gold font-black text-[13px] italic tracking-tighter">£{course.price}</span>
           </div>
         </div>
 
-        {/* منطقة المحتوى */}
-        <div className="mt-6 px-1 flex flex-col flex-grow">
-          <div className="flex items-center gap-2 mb-3 opacity-60 group-hover:opacity-100 transition-opacity">
-             <ShieldCheck size={12} className="text-gold" />
-             <span className="text-white font-bold text-[9px] uppercase tracking-[0.3em]">{course.category}</span>
+        {/* --- Content Area --- */}
+        <div className="p-7 flex flex-col flex-grow bg-gradient-to-b from-transparent to-white/[0.01]">
+          {/* Category Label */}
+          <div className="flex items-center gap-2 mb-4">
+             <div className="w-1.5 h-1.5 rounded-full bg-gold shadow-[0_0_8px_rgba(212,175,55,0.8)] animate-pulse" />
+             <span className="text-white/40 font-bold text-[9px] uppercase tracking-[0.25em] md:group-hover:text-gold transition-colors italic">
+               {course.category} Division
+             </span>
           </div>
           
-          <h3 className="text-white font-black text-xl mb-4 italic uppercase tracking-tighter line-clamp-2 group-hover:text-gold transition-colors leading-none min-h-[2.5rem]">
+          {/* Title */}
+          <h3 className="text-white font-black text-xl mb-5 uppercase leading-[1.1] tracking-tight md:group-hover:text-gold transition-colors line-clamp-2 italic">
             {course.title}
           </h3>
           
-          {/* الإحصائيات التكتيكية */}
-          <div className="grid grid-cols-2 gap-4 mb-6 border-y border-white/5 py-5 relative">
-             <div className="flex items-center gap-2.5 text-slate-400 group-hover:text-slate-200 transition-colors">
-                <Clock size={14} className="text-gold/50" />
-                <span className="text-[10px] font-black uppercase tracking-widest">{course.duration}</span>
+          {/* Technical Grid */}
+          <div className="grid grid-cols-2 gap-3 mb-6">
+             <div className="flex flex-col gap-1 px-4 py-3 bg-white/[0.02] border border-white/5 rounded-2xl">
+                <div className="flex items-center gap-2">
+                   <Clock size={12} className="text-gold/50" />
+                   <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Duration</span>
+                </div>
+                <span className="text-[11px] font-bold text-slate-200 uppercase tracking-tighter">{course.duration}</span>
              </div>
-             <div className="flex items-center gap-2.5 text-slate-400">
-                <Zap size={14} className="text-gold" />
-                <span className="text-[10px] font-black uppercase tracking-widest italic font-mono text-gold/60">
+             
+             <div className="flex flex-col gap-1 px-4 py-3 bg-white/[0.02] border border-white/5 rounded-2xl">
+                <div className="flex items-center gap-2">
+                   <Users size={12} className="text-gold/50" />
+                   <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Active</span>
+                </div>
+                <span className="text-[11px] font-bold text-gold uppercase tracking-tighter">
                    {course.enrollment_count || 0} Joined
                 </span>
              </div>
           </div>
 
-          {/* شريط التقدم (أو الحالة التجميلية) */}
-          <div className="mt-auto space-y-3">
-            <div className="flex justify-between items-end text-[8px] font-black uppercase tracking-[0.4em]">
-              <span className="text-slate-500 italic group-hover:text-gold transition-colors">Access Granted</span>
-              <span className="text-gold">Ready</span>
+          {/* --- Footer Area --- */}
+          <div className="mt-auto pt-5 border-t border-white/5">
+            <div className="flex justify-between items-center mb-4">
+                <span className="text-[9px] font-black text-white/30 uppercase tracking-[0.3em]">British-A-SS </span>
+                <div className="flex items-center gap-1.5">
+                   <div className="w-1 h-1 rounded-full bg-emerald-500 animate-ping" />
+                   <span className="text-emerald-400 text-[9px] font-black uppercase tracking-[0.2em]">Verified</span>
+                </div>
             </div>
-            <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 relative">
-              <motion.div 
-                initial={{ width: "10%" }}
-                whileInView={{ width: "100%" }}
-                className="h-full bg-gold rounded-full shadow-[0_0_15px_rgba(212,175,55,0.4)]"
-              />
+            
+            {/* Animated Progress Bar */}
+            <div className="h-1 w-full bg-white/[0.03] rounded-full overflow-hidden relative">
+                <motion.div 
+                   initial={{ width: "0%" }}
+                   whileInView={{ width: "100%" }}
+                   viewport={{ once: true }}
+                   transition={{ duration: 2, ease: "easeInOut" }}
+                   className="h-full bg-gradient-to-r from-gold/5 via-gold to-gold/5 w-full rounded-full opacity-60"
+                />
             </div>
-          </div>
 
-          {/* سهم الانتقال */}
-          <div className="mt-6 flex justify-end">
-              <div className="text-[9px] font-black text-white/20 group-hover:text-gold flex items-center gap-2 uppercase tracking-[0.4em] transition-all">
-                  Inspect Intel <ChevronRight size={12} className="group-hover:translate-x-1 transition-transform" />
-              </div>
+            <div className="mt-6 flex items-center justify-between">
+                <span className="text-[10px] font-black text-white/10 uppercase tracking-[0.4em] italic group-hover:text-white/30 transition-colors">enroll</span>
+                <div className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center bg-white/[0.02] md:group-hover:bg-gold md:group-hover:border-gold md:group-hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all duration-500">
+                    <ArrowUpRight size={16} className="text-white/40 md:group-hover:text-black transition-colors" />
+                </div>
+            </div>
           </div>
         </div>
 
-        {/* تأثير الخط الذهبي في الأسفل عند الهوفر */}
-        <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gold to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-700" />
+        {/* Glow Effect on Hover (Desktop Only) */}
+        <div className="absolute inset-0 bg-gold/[0.02] opacity-0 md:group-hover:opacity-100 transition-opacity pointer-events-none" />
       </motion.div>
     </Link>
   );

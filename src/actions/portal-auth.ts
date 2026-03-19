@@ -7,7 +7,6 @@ import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { Resend } from 'resend';
 
-// تهيئة Resend باستخدام الـ API Key من البيئة
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // 1. Schema التحقق من البيانات
@@ -48,7 +47,6 @@ export async function loginToPortal(prevState: any, formData: FormData) {
 
     const cookieStore = await cookies();
     
-    // ✅ توحيد الكوكيز لضمان عمل الـ Enroll
     cookieStore.set('auth_token', student.id, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -57,7 +55,7 @@ export async function loginToPortal(prevState: any, formData: FormData) {
     });
 
     cookieStore.set('user_id', student.id, {
-      httpOnly: false, // متاح للـ Client إذا احتجته
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24,
       path: '/',
@@ -71,133 +69,143 @@ export async function loginToPortal(prevState: any, formData: FormData) {
 
   if (loginSuccessful) redirect('/dashboard');
 }
+
 /**
  * تحديث إعدادات الملف الشخصي
  */
 export async function updateSettings(prevState: any, formData: FormData) {
-  const studentId = formData.get("studentId") as string;
-  const name = formData.get("name") as string;
-  const password = formData.get("password") as string; // نستخدم التسمية القادمة من الفورم
+  const studentId = formData.get('studentId') as string;
+  const name = formData.get('name') as string;
+  const password = formData.get('password') as string;
 
   try {
-    await sql`
-      UPDATE students 
-      SET name = ${name}
-      ${password ? sql`, access_code = ${password}` : sql``} 
-      WHERE id = ${studentId}
-    `;
+    if (!studentId) return { error: "CRITICAL: IDENTITY VECTOR MISSING" };
 
-    revalidatePath("/dashboard", "layout");
-    revalidatePath("/dashboard/settings");
+    await sql`UPDATE students SET name = ${name} WHERE id = ${studentId}`;
 
-    return { success: true, message: "IDENTITY SYNCED" };
-  } catch (e) {
-    console.error("DB Error:", e);
-    return { error: true, message: "DATABASE UPLINK ERROR" };
+    if (password && password.trim() !== "") {
+      await sql`UPDATE students SET access_code = ${password} WHERE id = ${studentId}`;
+    }
+
+    revalidatePath('/dashboard/settings');
+    revalidatePath('/dashboard');
+
+    return { success: true, message: "IDENTITY SYNCED SUCCESSFULLY" };
+  } catch (error) {
+    console.error("🔴 Settings Update Error:", error);
+    return { error: "TERMINAL ERROR: PROTOCOL SYNC FAILED" };
   }
 }
 
 /**
- * استعادة بيانات الدخول (Identity Recovery)
+ * استعادة بيانات الدخول
  */
 export async function requestPasswordReset(prevState: any, formData: FormData) {
   const email = formData.get("email") as string;
 
   try {
-    // جلب البيانات من Neon (التعامل مع المصفوفة مباشرة)
-    const students = await sql`
-      SELECT name, student_id, access_code, rank 
+    // 🔍 1. استرجاع البيانات (تأكد من دعم الهيكلتين rows أو مصفوفة مباشرة)
+    const result = await sql`
+      SELECT name, student_id, access_code 
       FROM students 
       WHERE email = ${email} 
       LIMIT 1
     `;
+    
+    const user = result[0] || (result as any).rows?.[0];
 
-    if (!students || students.length === 0) {
-      return { error: "ACCESS DENIED: Identity not found in Academy archives." };
+    if (!user) {
+      return { error: "ACCESS DENIED: Identity not found in archives." };
     }
 
-    const user = students[0];
-
-    // إرسال الإيميل Cinematic عبر Resend
-    const { error } = await resend.emails.send({
-      from: 'Academy Terminal <onboarding@resend.dev>',
-      to: [email], 
+    // 📧 2. إرسال الإيميل (مع معالجة أخطاء Resend بهدوء)
+    const { data, error } = await resend.emails.send({
+      from: 'Academy Terminal <info@britishacademy-ss.com>',
+      to: [email], // ⚠️ ملاحظة: Resend المجاني يرسل فقط لإيميلك المسجل لديهم
       subject: '🔒 Identity Recovery Protocol',
       html: `
-        <div style="background-color: #020617; color: #ffffff; padding: 40px; font-family: 'Courier New', Courier, monospace; border: 2px solid #d4af37; border-radius: 15px; max-width: 500px; margin: auto;">
-          <h2 style="color: #d4af37; text-transform: uppercase; letter-spacing: 3px; text-align: center;">Identity Retrieved</h2>
-          <p style="border-bottom: 1px solid #1e293b; padding-bottom: 10px; text-align: center;">Welcome back, Agent <strong>${user.name}</strong>.</p>
-          <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; margin-top: 20px; border: 1px solid rgba(212,175,55,0.2);">
-            <p style="margin: 10px 0;"><strong>SYSTEM ID:</strong> <span style="color: #d4af37;">${user.student_id}</span></p>
-            <p style="margin: 10px 0;"><strong>ACCESS CIPHER:</strong> <span style="color: #d4af37;">${user.access_code}</span></p>
-          </div>
-          <p style="font-size: 10px; color: #64748b; margin-top: 30px; text-align: center;">TERMINAL: BA-REC-2026 // AD-NODE-01</p>
+        <div style="background-color: #020617; color: white; padding: 40px; border: 2px solid #d4af37; border-radius: 15px; font-family: monospace;">
+          <h2 style="color: #d4af37;">IDENTITY RETRIEVED</h2>
+          <p>Agent: <strong>${user.name}</strong></p>
+          <p>SYSTEM ID: <strong>${user.student_id}</strong></p>
+          <p>ACCESS CIPHER: <strong>${user.access_code}</strong></p>
         </div>
       `,
     });
 
-    if (error) throw new Error(error.message);
+    // 🛡️ إذا فشل الإرسال (بسبب Sandbox أو غيره) لا نريد تعطيل النظام بالكامل
+    if (error) {
+      console.error("Resend Technical Error:", error.message);
+      return { 
+        error: `UPLINK BLOCKED: ${error.message}. (Note: Resend Free only allows sending to your own registered email).` 
+      };
+    }
 
     return { success: true, email: email };
 
   } catch (e) {
-    console.error("Recovery Crash:", e);
-    return { error: "UPLINK FAILURE: Could not dispatch recovery packet." };
+    console.error("Critical System Crash:", e);
+    return { error: "TERMINAL OFFLINE: Internal Database Sync Failed." };
   }
 }
-
 /**
- * تسجيل طالب جديد
+ * تسجيل طالب جديد - (تم إصلاح خطأ الـ rows[0])
  */
 export async function registerStudent(prevState: any, formData: FormData) {
   const name = formData.get('name') as string;
   const email = formData.get('email') as string;
-  const studentId = formData.get('studentId') as string;
-  const accessCipher = formData.get('password') as string;
-
-  let success = false;
+  const password = formData.get('password') as string;
+  const student_id = formData.get('student_id') as string;
+  const callbackUrl = (formData.get('callbackUrl') as string) || '/dashboard';
 
   try {
-    const existing = await sql`
-      SELECT id FROM students WHERE student_id = ${studentId} OR email = ${email} LIMIT 1
-    `;
+    if (!name || !email || !student_id || !password) {
+       return { error: "CRITICAL: INCOMPLETE DATA VECTOR" };
+    }
 
-    if (existing.length > 0) {
+    // 🛡️ فحص إذا كان الإيميل أو الـ ID موجود مسبقاً لمنع خطأ الـ Unique
+    const existing = await sql`SELECT id FROM students WHERE email = ${email} OR student_id = ${student_id} LIMIT 1`;
+    if (existing && existing.length > 0) {
       return { error: "IDENTITY VECTOR OR EMAIL ALREADY ASSIGNED" };
     }
 
+    // التنفيذ مع جلب الـ ID المولد (UUID)
     const result = await sql`
-      INSERT INTO students (name, email, student_id, access_code) 
-      VALUES (${name}, ${email}, ${studentId}, ${accessCipher})
+      INSERT INTO students (name, email, student_id, access_code, rank, progress) 
+      VALUES (${name}, ${email}, ${student_id}, ${password}, 'AGENT', 0)
       RETURNING id
     `;
 
-    const newStudent = result[0];
-    const cookieStore = await cookies();
-    
-    // ✅ يجب إضافة user_id هنا أيضاً عند التسجيل الجديد
-    cookieStore.set('auth_token', newStudent.id, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24,
-      path: '/',
-    });
+    // 🛰️ إصلاح الخطأ: في بعض إصدارات المكتبة النتيجة تكون المصفوفة مباشرة
+    const newId = result[0]?.id || result.rows?.[0]?.id;
 
-    cookieStore.set('user_id', newStudent.id, {
+    if (!newId) throw new Error("ID_GENERATION_FAILED");
+
+    const cookieStore = await cookies();
+    cookieStore.set('user_id', newId.toString(), {
       httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24,
       path: '/',
     });
 
-    success = true;
-  } catch (error) {
-    console.error("Registration Error:", error);
+    cookieStore.set('auth_token', newId.toString(), {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24,
+        path: '/',
+    });
+
+  } catch (error: any) {
+    if (error.message?.includes('NEXT_REDIRECT')) throw error;
+    console.error("🔴 Registration Error Detail:", error);
     return { error: "TERMINAL ERROR: DATABASE SYNC FAILED" };
   }
 
-  if (success) redirect('/dashboard');
+  revalidatePath('/');
+  redirect(callbackUrl);
 }
+
 /**
  * تسجيل الخروج
  */

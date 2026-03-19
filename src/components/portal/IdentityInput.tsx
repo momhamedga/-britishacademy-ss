@@ -18,7 +18,7 @@ export default function IdentityInput({ isPending }: { isPending: boolean }) {
       <label className="text-[8px] font-black text-gold/60 uppercase tracking-widest ml-2">System Identity ID</label>
       <div className="relative">
         <input 
-          name="studentId" 
+          name="student_id" 
           required 
           value={generatedId}
           onChange={(e) => setGeneratedId(e.target.value.toUpperCase())}
