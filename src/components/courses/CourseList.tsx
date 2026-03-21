@@ -36,9 +36,9 @@ export default function CourseList({ initialData }: CourseListProps) {
   }, [courses, initialData, activeCategory]);
 
   return (
-    <div className="relative min-h-[600px]">
+    <div className="relative min-h-150">
       {/* تأثير الإضاءة الخلفية الذهبية */}
-      <div className="absolute inset-0 bg-gold/[0.02] blur-[150px] pointer-events-none" />
+      <div className="absolute inset-0 bg-gold/2 blur-[150px] pointer-events-none" />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
         <AnimatePresence mode="popLayout">
@@ -68,9 +68,9 @@ export default function CourseList({ initialData }: CourseListProps) {
           <motion.div 
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
-            className="col-span-full text-center py-40 glass rounded-[3rem] border border-white/5 bg-white/[0.01] backdrop-blur-3xl overflow-hidden relative"
+            className="col-span-full text-center py-40 glass rounded-[3rem] border border-white/5 bg-white/1 backdrop-blur-3xl overflow-hidden relative"
           >
-             <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:20px_20px]" />
+             <div className="absolute inset-0 bg-grid-white/[0.02] bg-size[20px_20px]" />
              <div className="relative z-10 space-y-6">
                 <div className="mx-auto w-16 h-16 rounded-full border border-gold/20 flex items-center justify-center bg-gold/5 animate-pulse shadow-[0_0_30px_rgba(212,175,55,0.1)]">
                    <span className="text-gold text-xl italic font-black">!</span>
@@ -78,7 +78,7 @@ export default function CourseList({ initialData }: CourseListProps) {
                 <div className="space-y-2">
                    <p className="text-gold font-display italic tracking-[0.5em] uppercase text-[10px] font-black">Sector Restricted</p>
                    <h4 className="text-white/40 text-xs font-bold uppercase tracking-widest italic">
-                     No active missions found for <span className="text-white">"{activeCategory}"</span>
+                     No active missions found for <span className="text-white">{activeCategory}</span>
                    </h4>
                 </div>
                 <button 

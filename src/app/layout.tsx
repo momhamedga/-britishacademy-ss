@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer";
 import NextTopLoader from 'nextjs-toploader';
 import { sql } from "@/lib/db";
 import { cookies } from 'next/headers'; // استيراد الكوكيز لقراءة الجلسة
+import AnimatedFavicon from "@/components/ui/AnimatedFavicon";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -89,6 +90,7 @@ export default async function RootLayout({
         <Navbar user={student ? { name: student.name, rank: student.rank } : undefined} />
         
         <main className="relative z-10 pt-20 md:pt-32 min-h-screen">
+          <AnimatedFavicon />
           {children}
         </main>
 
