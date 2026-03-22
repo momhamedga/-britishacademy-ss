@@ -102,22 +102,22 @@ export default function AboutStory() {
             {/* The Main Hook Text */}
             <div className="relative pl-6 border-l-2 border-gold/40">
               <p className="text-white text-lg md:text-2xl font-medium leading-relaxed italic opacity-95">
-                Founded on the principles of <span className="text-gold">high-level defense</span>, we have evolved into the premiere destination for global security excellence.
+           {`   Investing in your professional development is`} <span className="text-gold">{`one of the smartest decisions you can make.`} </span>,{`With Integra Training Academy as your partner, you'll gain the skills and confidence`}
               </p>
             </div>
 
             {/* Sub-text with Tactical Keywords */}
             <div className="space-y-6">
               <p className="text-slate-400 text-sm md:text-lg leading-relaxed">
-                Our methodology combines <span className="text-white font-bold border-b border-gold/20 pb-0.5">"Data-First"</span> tactical efficiency with traditional British discipline. We engineer the leaders of homeland defense for the 2026 landscape.
+             {`We're known throughout the UK for our comprehensive training programs. Whether it’s first aid, security training, or courses tailored for the service industry, we cover it all. Our trainers are experts in their fields who are focused on teaching and helping you grow.`}
               </p>
               
               {/* Tactical Tags Grid */}
               <div className="flex flex-wrap gap-3 pt-4">
                 {[
-                    { label: 'Strategic Intel', icon: Target },
-                    { label: 'Tactical Mastery', icon: ShieldAlert },
-                    { label: 'Crisis Control', icon: Zap }
+                    { label: 'Land your dream job ', icon: Target },
+                    { label: 'Command a higher salary ', icon: ShieldAlert },
+                    { label: 'Advance in your current role ', icon: Zap }
                 ].map((tag, idx) => (
                   <motion.div 
                     key={idx}

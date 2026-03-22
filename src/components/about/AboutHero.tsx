@@ -1,106 +1,89 @@
 "use client";
+import { ACADEMY_DATA } from '@/lib/membership/about';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Play, Shield, Target, ChevronRight } from 'lucide-react';
+import { Target, ShieldCheck } from 'lucide-react';
 import { useRef } from 'react';
 
 export default function AboutHero() {
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLElement>(null);
   const { scrollY } = useScroll();
   
-  // تأثير Parallax خفيف للصورة عند السكرول
-  const yImage = useTransform(scrollY, [0, 500], [0, 100]);
-  const opacityText = useTransform(scrollY, [0, 300], [1, 0]);
+  const yImage = useTransform(scrollY, [0, 500], [0, 80]);
+  const opacityText = useTransform(scrollY, [0, 400], [1, 0]);
 
   return (
-    <section ref={containerRef} className="relative h-[100svh] min-h-[700px] flex items-center justify-center overflow-hidden ">
+    <section ref={containerRef} className="relative h-svh min-h-[650px] flex items-center justify-center overflow-hidden ">
       
-      {/* 1. طبقة الخلفية السينمائية (The Cinematic Layer) */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 z-10" />
-        <div className="absolute inset-0 z-10" />
+    
 
-        <motion.div 
-          style={{ y: yImage }}
-          initial={{ scale: 1.2, filter: "blur(20px) brightness(0)" }}
-          animate={{ scale: 1, filter: "blur(0px) brightness(0.5)" }}
-          transition={{ duration: 2, ease: "easeOut" }}
-          className="w-full h-full bg-[url('/about-hero.webp')] bg-cover bg-[center_top] md:bg-center grayscale-[0.3] contrast-[1.2]" 
-        />
-        
-        {/* 📟 Tactical Laser Scan Line */}
-        <motion.div 
-          animate={{ top: ['-10%', '110%'] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-          className="absolute left-0 w-full h-[2px] bg-gold/20 blur-sm z-20 pointer-events-none"
-        />
-      </div>
-
-      {/* 2. المحتوى المركزي (The Mission Core) */}
+      {/* 2. Content Core */}
       <motion.div 
         style={{ opacity: opacityText }}
-        className="relative z-20 text-center px-6 max-w-6xl mx-auto mt-10"
+        className="relative z-20 text-center px-4 md:px-6 w-full max-w-5xl mx-auto"
       >
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1, ease: "easeOut" }}
         >
-          {/* Badge: التأسيس */}
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="h-[1px] w-8 bg-gold/40" />
+          {/* Badge: Refined & Small */}
+          <div className="flex items-center justify-center gap-3 mb-6 md:mb-8">
+            <div className="h-[1px] w-6 md:w-10 bg-gold/20" />
             <div className="flex items-center gap-2">
-              <Target size={12} className="text-gold animate-pulse" />
-              <span className="text-gold text-[9px] md:text-xs font-black uppercase tracking-[0.5em] italic">
-                Established Excellence 2012
+              <ShieldCheck size={12} className="text-gold/80" />
+              <span className="text-gold/80 text-[8px] md:text-[10px] font-bold uppercase tracking-[0.4em]">
+                {ACADEMY_DATA.location} Strategic Hub
               </span>
             </div>
-            <div className="h-[1px] w-8 bg-gold/40" />
+            <div className="h-[1px] w-6 md:w-10 bg-gold/20" />
           </div>
 
-          {/* العنوان الضخم: Cinematic Typo */}
-          <h1 className="font-display text-[clamp(2.8rem,14vw,8rem)] font-black text-white italic uppercase tracking-[-0.04em] leading-[0.85] mb-8">
-            DEFINERS <br /> 
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/90 to-gold/50 drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
-              OF SECURITY
+          {/* Title: Eye-Friendly Size */}
+          <h1 className="font-display text-[clamp(2rem,10vw,4.5rem)] font-black text-white uppercase tracking-tight leading-[0.95] mb-8 md:mb-10">
+            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 block mb-1">
+              Professional
+            </span>
+            <span className="italic text-gold drop-shadow-[0_0_20px_rgba(212,175,55,0.2)]">
+               Development Partner
             </span>
           </h1>
           
-          {/* النص الوصفي: Tactical Briefing Style */}
-          <div className="relative max-w-2xl mx-auto mb-12">
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-              className="text-slate-300 text-sm md:text-xl font-medium leading-relaxed italic border-l-2 border-gold/60 pl-6 text-left md:text-center md:border-l-0 md:pl-0"
+          {/* Description Card: Mobile Creative Touch */}
+          <div className="relative max-w-2xl mx-auto px-2">
+            <motion.div
+              whileTap={{ scale: 0.98 }} // Mobile Haptic feel
+              className="relative backdrop-blur-xl bg-white/[0.03] border border-white/10 rounded-[2rem] p-6 md:p-10 overflow-hidden group shadow-2xl"
             >
-              British Academy (IAHS) is a <span className="text-white font-bold">global ecosystem</span> engineered for 
-              elite security professionals and homeland defense leaders.
-            </motion.p>
-            {/* Mobile Decorative ID */}
-            <div className="absolute -top-4 -right-2 hidden md:block opacity-20">
-               <span className="text-[10px] text-white font-mono uppercase tracking-[0.5em]">Auth_Status: Cleared</span>
+              {/* Corner Accents */}
+              <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-gold/30 rounded-tl-xl" />
+              <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-gold/30 rounded-br-xl" />
+
+              <p className="text-slate-300 text-sm md:text-lg font-medium leading-relaxed md:leading-loose text-center">
+                {ACADEMY_DATA.description}
+              </p>
+
+              {/* Scanning Glow Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+            </motion.div>
+
+            {/* Micro-Data Labels */}
+            <div className="mt-6 flex justify-center items-center gap-4 md:gap-8 opacity-20">
+               <span className="text-[7px] md:text-[9px] text-white font-mono uppercase tracking-widest">Wembley_Station.v4</span>
+               <div className="w-1 h-1 rounded-full bg-gold" />
+               <span className="text-[7px] md:text-[9px] text-white font-mono uppercase tracking-widest">Encr_Auth_2026</span>
             </div>
           </div>
         </motion.div>
-
-
       </motion.div>
 
-      {/* 3. مؤشر السكرول (Scroll Beacon) */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20">
-        <span className="text-[8px] text-white/30 uppercase tracking-[0.8em] font-black mb-2">Advance</span>
-        <div className="w-6 h-10 border border-white/20 rounded-full flex justify-center p-1">
-          <motion.div 
-            animate={{ y: [0, 16, 0] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-            className="w-1 h-1 bg-gold rounded-full"
-          />
-        </div>
+      {/* 3. Minimal Scroll Beacon */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20">
+        <div className="w-[1px] h-12 bg-gradient-to-b from-gold/0 via-gold/50 to-gold/0" />
+        <span className="text-[7px] text-white/20 uppercase tracking-[0.6em] font-black">Scroll</span>
       </div>
 
-      {/* Cinematic Overlays */}
-      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] pointer-events-none z-40 mix-blend-overlay" />
-      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black to-transparent z-10" />
+      {/* Overlays */}
+      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] pointer-events-none z-40" />
     </section>
   );
 }

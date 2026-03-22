@@ -22,29 +22,29 @@ export const NAV_LINKS: NavLink[] = [
 export const HERO_SLIDES: HeroSlide[] = [
   {
     id: "01",
-    title: "British Academy",
-    subtitle: "Security Standards",
-    description: "Deployment of elite British methodologies to engineer a resilient global security infrastructure.",
-    accent: "Strategic Excellence",
+    title: "Discover Our",
+    subtitle: "Accredited Training",
+    description: `Upskilling and career development are at your fingertips with the skills enhancement centre Integra Training Academy. Located conveniently in Wembley, we offer a range of high-quality training courses, from Traffic Marshal training to Door Supervisor training, designed to equip you with the knowledge and skills you need to succeed in today's job market.`,
+    accent: "In Wembley",
     // تأكد من وجود الصور في مجلد public
     image: "/hero-double-exposure-methodology.webp" 
   },
-  {
-    id: "02",
-    title: "Tactical Future",
-    subtitle: "2026 Intelligence",
-    description: "Integrating next-generation AI and world-class digital overlays to qualify the security elite.",
-    accent: "Autonomous Defense",
-    image: "/hero-digital-overlay-technology.webp"
-  },
-  {
-    id: "03",
-    title: "Global Command",
-    subtitle: "SS.Online Network",
-    description: "Connecting our London HQ with international operations through the britishacademy-ss.online secure portal.",
-    accent: "Mission Ready",
-    image: "/hero-global-network.webp" // يمكنك إضافة سلايد ثالث لتعزيز الدومين الجديد
-  }
+{
+  id: "02",
+  title: "Tactical Future",
+  subtitle: "Elite Training AI",
+  description: "Experience the next generation of security training. We integrate advanced AI-driven simulations and digital tactical overlays to prepare the security elite for 2026 challenges.",
+  accent: "Autonomous Training",
+  image: "/hero-digital-overlay-technology.webp"
+},
+{
+  id: "03",
+  title: "Global Command",
+  subtitle: "Digital Academy Hub",
+  description: "Bridge the gap between London's excellence and international standards. Access our secure SS.Online portal for accredited remote learning and mission-ready certifications.",
+  accent: "Mission Ready 24/7",
+  image: "/hero-global-network.webp" 
+}
 ];
 /** * 3. Academy Hub 
  * مسارات الصور مرتبة لخدمة الـ UI Cards

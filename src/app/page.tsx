@@ -4,6 +4,9 @@ import AcademyAbout from "@/components/home/AcademyAbout";
 import HomeCoursesPreview from "@/components/home/CoursePreview";
 import AcademyHub from "@/components/home/AcademyHub";
 import { FeatureGrid } from "@/components/features/feature-grid";
+import SiaRefresher from "@/components/home/SiaRefresher";
+import ClientReviews from "@/components/home/ClientReviews";
+import StrategicAdvantages from "@/components/home/StrategicAdvantages";
 
 export default async function HomePage() {
   // جلب البيانات من Neon DB
@@ -16,11 +19,16 @@ export default async function HomePage() {
 
       {/* 2. سكشن الأكاديمية (Hub) */}
       <AcademyHub />
-      <AcademyAbout />
+         <FeatureGrid/>
+      
 
       <HomeCoursesPreview initialCourses={initialCourses} />
 
-     <FeatureGrid/>
+          <SiaRefresher/>
+          <ClientReviews/>
+          <StrategicAdvantages/>
+
+  
 
       <div className="h-24" />
     </main>

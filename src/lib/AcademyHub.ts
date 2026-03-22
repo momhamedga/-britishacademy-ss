@@ -5,7 +5,9 @@ import {
   Landmark, 
   Award, 
   LayoutDashboard,
-  LucideIcon 
+  LucideIcon, 
+  Trophy,
+  Star
 } from "lucide-react";
 import React from "react";
 
@@ -19,45 +21,30 @@ export interface HubItem {
   accentColor: string;
 }
 
+
 export const ACADEMY_HUB_ITEMS: HubItem[] = [
   { 
-    id: 'membership',
-    title: 'Elite Membership', 
-    href: '/Membership', 
+    id: 'best-price',
+    title: 'Best Price', 
+    href: '/pricing', 
     icon: Shield, 
-    description: 'Access exclusive security protocols and community benefits.',
+    description: 'Premier accredited training with our exclusive price-match guarantee.',
     accentColor: 'from-gold/20 to-transparent'
   },
   { 
-    id: 'instructors',
-    title: 'Expert Faculty', 
-    href: '/Instructors', 
-    icon: Users, 
-    description: 'Learn from world-class British security specialists.',
-    accentColor: 'from-blue-500/10 to-transparent'
-  },
-  { 
-    id: 'programs',
-    title: 'Strategic Programs', 
-    href: '/courses', 
-    icon: GraduationCap, 
-    description: 'Advanced curriculum engineered for 2026 security challenges.',
-    accentColor: 'from-gold/20 to-transparent'
-  },
-  { 
-    id: 'center',
-    title: 'Command Center', 
-    href: '/contact', 
-    icon: Landmark, 
-    description: 'Virtual and physical tactical training environments.',
-    accentColor: 'from-white/10 to-transparent'
-  },
-  { 
-    id: 'certificates',
-    title: 'Verify Credentials', 
+    id: 'industry-experience',
+    title: '15 Years Experience', 
     href: '/about', 
-    icon: Award, 
-    description: 'Instant blockchain-backed certificate authentication.',
+    icon: Trophy, 
+    description: 'Over 15 years of world-class security training and strategic leadership.',
+    accentColor: 'from-gold/10 to-transparent'
+  },
+  { 
+    id: 'reputation',
+    title: 'Enviable Reputation', 
+    href: '/reviews', 
+    icon: Star, 
+    description: 'A prestigious track record of excellence recognized across the UK.',
     accentColor: 'from-gold/30 to-transparent'
   },
 ];
