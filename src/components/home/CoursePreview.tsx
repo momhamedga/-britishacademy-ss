@@ -1,137 +1,137 @@
-"use client"
-import { useEffect, useState, useMemo } from "react";
+"use client";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import dynamic from 'next/dynamic';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Sparkles } from "lucide-react";
 
-// 1. الواجهة الكاملة لمنع أي تعارض في الأنواع (TypeScript Safe)
-interface Course {
-  id: string | number;
-  title: string;
-  duration?: string;
-  level?: string;
-  image?: string;
-}
+// استرجاع تدرج الألوان الملكي القديم مع تحسين الصياغة للـ Compiler
+const COLORS = {
+  navy: "oklch(25% 0.08 260)",     // Academy Navy
+  mediumBlue: "oklch(45% 0.12 255)", // الـ Medium Blue اللي بيعمل التوهج
+  gold: "#D4AF37",                 // Gold Accent
+};
 
-// 2. التحميل الديناميكي لضمان أداء 100/100 في الـ Lighthouse
 const CourseList = dynamic(() => import("@/components/courses/CourseList"), {
   ssr: false,
   loading: () => <CourseListSkeleton />
 });
 
-export default function HomeCoursesPreview({ initialCourses }: { initialCourses: Course[] }) {
+export default function HomeCoursesPreview({ initialCourses }: { initialCourses: any[] }) {
   const [isMounted, setIsMounted] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
-  // 🔥 الحل السحري اللي وصلت له لإبادة الـ Hydration Error تماماً
   useEffect(() => {
-    const frame = requestAnimationFrame(() => {
-      setIsMounted(true);
-    });
-    return () => cancelAnimationFrame(frame);
+    let frameId = requestAnimationFrame(() => setIsMounted(true));
+    return () => cancelAnimationFrame(frameId);
   }, []);
 
-  const previewCourses = useMemo(() => 
-    initialCourses?.slice(0, 3) || [], 
-    [initialCourses]
-  );
-
-  // التفاعلات البصرية (Variants) بنوعها الصريح
-  const containerVariants: Variants = {
-    hidden: { opacity: 0, scale: 0.98, y: 15 },
-    visible: { 
-      opacity: 1, 
-      scale: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
-    }
-  };
+  // الـ Compiler سيتعامل مع هذا المتغير كـ memoized تلقائياً
+  const previewCourses = initialCourses?.slice(0, 3) || [];
 
   return (
-    <section className="relative py-24 md:py-40 px-6 overflow-hidden ">
-      
-      {/* 🌌 تأثيرات الإضاءة بمعايير Tailwind v4 Canonical */}
-      <div className="absolute top-[-10%] right-[-5%] w-125 h-125 bg-gold/5 blur-[120px] rounded-full pointer-events-none mix-blend-screen animate-pulse" />
-      <div className="absolute bottom-[-10%] left-[-5%] w-100 h-100 bg-blue-500/5 blur-[100px] rounded-full pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto relative z-10">
-        
-        {/* Header Section */}
-        <div className="flex flex-col lg:flex-row items-center lg:items-end justify-between mb-20 md:mb-32 gap-12">
-          <div className="text-center lg:text-left space-y-6">
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/3 border border-white/5 backdrop-blur-xl"
-            >
-              <Sparkles size={14} className="text-gold/60" />
-              <span className="text-white/40 font-bold tracking-[0.4em] text-[9px] uppercase">
-                Future Intelligence Intake
-              </span>
-            </motion.div>
-            
-            <h2 className="text-6xl md:text-[100px] font-black text-white tracking-tighter uppercase leading-[0.8] transition-all">
-              OUR 
- <br />
-              <span className="text-transparent bg-clip-text bg-linear-to-b from-white via-white/80 to-gold/30 italic">SERVICES</span>
-            </h2>
-          </div>
-
-          <Link href="/courses" className="hidden lg:block group">
-            <motion.div 
-              whileHover={{ y: -5 }}
-              className="relative px-12 py-6 bg-white/2 border border-white/10 rounded-4xl overflow-hidden transition-all group-hover:border-gold/20 shadow-2xl"
-            >
-              <div className="relative z-10 flex items-center gap-4 text-white font-black text-[11px] uppercase tracking-widest">
-                Explore Modules <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform duration-500" />
-              </div>
-              <div className="absolute inset-0 bg-gold/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-            </motion.div>
-          </Link>
+    <div className="w-full overflow-hidden bg-[#fcfcfd]"> 
+      <section 
+        ref={sectionRef}
+        className="relative py-24 md:py-36 px-6 overflow-hidden"
+        style={{ backgroundColor: COLORS.navy }} // العودة للون البحرية الأساسي
+      >
+        {/* 🌌 نفس طبقات الخلفية المتدرجة المحببة إليك */}
+        <div className="absolute inset-0 z-0 pointer-events-none select-none">
+          {/* التوهج الدائري الجانبي */}
+          <div 
+            className="absolute inset-0 z-10 opacity-30" 
+            style={{ background: `radial-gradient(circle at 15% 50%, ${COLORS.mediumBlue}, transparent 60%)` }} 
+          />
+          {/* التدرج الخطي لدمج الألوان */}
+          <div 
+            className="absolute inset-0 z-10" 
+            style={{ background: `linear-gradient(to right, ${COLORS.navy}, transparent)` }} 
+          />
+          {/* خط علوي جمالي خفيف */}
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
         </div>
 
-        {/* Content Container */}
-        <div className="relative min-h-100">
-          <AnimatePresence mode="wait">
-            {!isMounted ? (
-              <CourseListSkeleton key="skeleton" />
-            ) : (
-              <motion.div
-                key="content"
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
+        <div className="max-w-7xl mx-auto relative z-20">
+      <header className="flex flex-col lg:flex-row items-center lg:items-end justify-between mb-16 md:mb-24 gap-8 md:gap-12 text-center lg:text-left">
+  
+  <div className="flex flex-col items-center lg:items-start space-y-4 md:space-y-6">
+    {/* 🏷️ Badge - Testimonials */}
+    <motion.div 
+      initial={{ opacity: 0, x: -15 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      className="inline-flex items-center gap-2.5 rounded-full border border-black/5 bg-white/80 px-4 py-1.5 backdrop-blur-md shadow-sm"
+    >
+      <span className="h-1.5 w-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+      <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] text-[#1B2A41]/70">
+        PROGRAMS
+      </span>
+    </motion.div>
+    
+    {/* ✍️ Main Title */}
+    <div className="space-y-1 md:space-y-2">
+      <h2 className="text-4xl md:text-7xl lg:text-8xl font-black italic uppercase tracking-tighter text-background leading-[0.9]">
+        OUR TRAINING
+      </h2>
+      <h2 className="text-4xl md:text-7xl lg:text-8xl font-black italic uppercase tracking-tighter leading-[0.9] text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-[#D4AF37] to-[#D4AF37]/50">
+        PROGRAMS
+      </h2>
+    </div>
+  </div>
+
+  {/* 🚀 Desktop View All Button */}
+  <div className="hidden lg:block pb-2">
+    <Link href="/courses" className="group">
+      <motion.button 
+        whileHover={{ scale: 1.05, y: -2 }}
+        whileTap={{ scale: 0.98 }}
+        className="px-12 py-6 bg-[#D4AF37] text-[#0A0F1E] font-black uppercase tracking-[0.2em] text-[11px] rounded-full shadow-[0_20px_40px_rgba(212,175,55,0.25)] transition-all flex items-center gap-4 border border-white/10"
+      >
+        Explore All 
+        <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform duration-300" />
+      </motion.button>
+    </Link>
+  </div>
+</header>
+          <div className="relative min-h-[400px]">
+            <AnimatePresence mode="wait">
+              {!isMounted ? (
+                <CourseListSkeleton key="skeleton" />
+              ) : (
+                <motion.div 
+                  initial={{ opacity: 0, y: 40 }} 
+                  whileInView={{ opacity: 1, y: 0 }} 
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} // نعومة قصوى في الحركة
+                >
+                  <CourseList initialData={previewCourses} /> 
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Mobile Button - بلمسة عصرية وتدرج متناسق */}
+          <div className="mt-16 lg:hidden flex justify-center px-2">
+            <Link href="/courses" className="w-full max-w-sm">
+              <motion.button 
+                whileTap={{ scale: 0.96 }}
+                className="w-full py-5 bg-[#D4AF37] text-black font-black text-[11px] uppercase tracking-[0.2em] rounded-2xl shadow-xl flex items-center justify-center gap-3 border border-white/10"
               >
-                <CourseList initialData={previewCourses} /> 
-              </motion.div>
-            )}
-          </AnimatePresence>
-          
-          {/* لمسة الموبايل للملاحة السريعة */}
-          <div className="mt-16 lg:hidden flex justify-center">
-            <Link href="/courses" className="w-full">
-              <button className="w-full py-5 bg-gold text-[#020617] font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl active:scale-95 transition-transform">
-                View All Courses
-              </button>
+                View All Programs <ArrowRight size={14} />
+              </motion.button>
             </Link>
           </div>
         </div>
-      </div>
-
-      {/* Grid Pattern Pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,oklch(var(--color-gold)/0.03)_1px,transparent_1px)] [background-size:60px_60px] pointer-events-none" />
-    </section>
+      </section>
+    </div>
   );
 }
 
 const CourseListSkeleton = () => (
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
     {[1, 2, 3].map((i) => (
-      <div key={i} className="aspect-4/5 bg-white/2 border border-white/5 rounded-4xl animate-pulse flex flex-col p-10 space-y-6">
-        <div className="w-full h-1/2 bg-white/5 rounded-3xl" />
-        <div className="w-3/4 h-8 bg-white/5 rounded-full" />
-        <div className="mt-auto w-1/2 h-12 bg-white/5 rounded-2xl" />
-      </div>
+      <div key={i} className="aspect-[3/4] bg-white/[0.03] border border-white/10 rounded-[2.5rem] animate-pulse" />
     ))}
   </div>
 );

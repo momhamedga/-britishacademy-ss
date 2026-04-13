@@ -1,29 +1,32 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // تفعيل مترجم React 19 لزيادة الأداء
   reactCompiler: true,
 
-  // 1. تجاوز أخطاء الـ TypeScript فقط (ده اللي بنحتاجه فعلياً للـ Build)
   typescript: {
+    // تجاهل أخطاء النوع أثناء الـ Build فقط لضمان استمرار العمل
     ignoreBuildErrors: true,
   },
 
-  // ملاحظة: تم حذف eslint و turbo من هنا لأن Next.js 16 بيتعامل معاهم أوتوماتيكياً
-  // أو من خلال ملفات config مستقلة (مثل eslint.config.mjs)
-
   images: {
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // إعدادات الصور السينمائية عالية الجودة
+    qualities: [75, 90],
     formats: ['image/avif', 'image/webp'],
-    
-    minimumCacheTTL: 60,
+    minimumCacheTTL: 3600,
     dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
   experimental: {
-    optimizePackageImports: ['lucide-react', 'framer-motion'],
+    // تحسين استيراد المكتبات الكبيرة مثل Lucide و Framer Motion
+    optimizePackageImports: ['lucide-react', 'framer-motion', 'three'],
+    
+    // تفعيل خاصية استعادة مكان التمرير (التي ظهرت مفعلة في الـ Log عندك)
+    scrollRestoration: true,
   },
+
+  // إخفاء الـ Header لأسباب أمنية
+  poweredByHeader: false,
 };
 
 export default nextConfig;

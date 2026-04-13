@@ -1,15 +1,12 @@
 import { 
-  Users, 
+ Building2, Smartphone, Lock,
   GraduationCap, 
-  Shield, 
-  Landmark, 
-  Award, 
-  LayoutDashboard,
+
   LucideIcon, 
-  Trophy,
-  Star
+
+
 } from "lucide-react";
-import React from "react";
+
 
 // تعريف الـ Interface لضمان الـ Type Safety (TypeScript Standards)
 export interface HubItem {
@@ -24,27 +21,35 @@ export interface HubItem {
 
 export const ACADEMY_HUB_ITEMS: HubItem[] = [
   { 
-    id: 'best-price',
-    title: 'Best Price', 
-    href: '/pricing', 
-    icon: Shield, 
-    description: 'Premier accredited training with our exclusive price-match guarantee.',
+    id: 'accredited-programs',
+    title: 'Accredited Programs', 
+    href: '/programs', 
+    icon: GraduationCap, // أيقونة قبعة التخرج كما في الصورة
+    description: 'Internationally recognized certificates',
     accentColor: 'from-gold/20 to-transparent'
   },
   { 
-    id: 'industry-experience',
-    title: '15 Years Experience', 
-    href: '/about', 
-    icon: Trophy, 
-    description: 'Over 15 years of world-class security training and strategic leadership.',
+    id: 'corporate-training',
+    title: 'Corporate Training', 
+    href: '/corporate', 
+    icon: Building2, // أيقونة المباني للشركات
+    description: 'Integrated enterprise solutions',
     accentColor: 'from-gold/10 to-transparent'
   },
   { 
-    id: 'reputation',
-    title: 'Enviable Reputation', 
-    href: '/reviews', 
-    icon: Star, 
-    description: 'A prestigious track record of excellence recognized across the UK.',
+    id: 'learn-anywhere',
+    title: 'Learn Anywhere', 
+    href: '/platform', 
+    icon: Smartphone, // أيقونة الموبايل
+    description: 'Responsive platform compatible with all devices',
     accentColor: 'from-gold/30 to-transparent'
+  },
+  { 
+    id: 'security-experts',
+    title: 'Security Experts', 
+    href: '/experts', 
+    icon: Lock, // أيقونة القفل للخبراء الأمنيين
+    description: 'Certified trainers with extensive experience',
+    accentColor: 'from-gold/25 to-transparent'
   },
 ];

@@ -1,121 +1,108 @@
 @import "tailwindcss";
 
-/* 1. تعريف الـ Variables الأساسية (The Core) */
+/* 1. تعريف المتغيرات بنظام OKLCH المطور 2026 */
 :root {
-  --background: #000B21;
-  --foreground: #FFFFFF;
-  --academy-navy: #00153D;
-  --academy-gold: #D4AF37;
-  --academy-gold-light: #F4DF4E;
+  /* الخلفية الأساسية: أبيض لؤلؤي بارد (كما طلبته تماماً) */
+  --background: oklch(98% 0.01 260); 
+  /* النص الأساسي: Navy عميق جداً للوضوح العالي */
+  --foreground: oklch(20% 0.06 260); 
   
+  /* ألوان الهوية من الـ Style Guide */
+  --academy-navy: oklch(25% 0.08 260);      /* #1B3156 المترجم لـ OKLCH */
+  --academy-gold: oklch(75% 0.15 85);       /* #D4A843 الذهبي الملكي */
+  --academy-gold-light: oklch(88% 0.12 95); /* ذهبي فاتح جداً للـ Hover */
+  --academy-gold-dark: oklch(55% 0.15 75);  /* ذهبي نحاسي للحدود */
+
+  /* ألوان الحالات (Status Colors) */
+  --success: oklch(65% 0.22 150); /* الأخضر النجاح */
+  --error: oklch(55% 0.20 25);    /* الأحمر التنبيه */
+  --warning: oklch(75% 0.18 70);  /* البرتقالي التحذير */
+
+  /* الخطوط */
   --font-display: var(--font-syne), "Syne", sans-serif;
   --font-sans: var(--font-inter), "Inter", sans-serif;
 }
 
-/* 2. إعدادات الـ Theme لـ Tailwind v4 */
-@theme inline {
+/* 2. إعدادات الـ Theme بنظام Tailwind v4 */
+@theme {
   --color-navy: var(--academy-navy);
   --color-gold: var(--academy-gold);
   --color-gold-light: var(--academy-gold-light);
+  --color-gold-dark: var(--academy-gold-dark);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   
+  --color-success: var(--success);
+  --color-error: var(--error);
+  --color-warning: var(--warning);
+
   --font-display: var(--font-display);
   --font-sans: var(--font-sans);
 
-  --animate-shine: shine 3s infinite;
-  --animate-float: float 6s ease-in-out infinite;
-  --animate-scan: scan 3s linear infinite;
+  /* أنيميشن فائق النعومة */
+  --animate-float: float 5s ease-in-out infinite;
+  --animate-gold-glow: gold-glow 3s ease-in-out infinite;
+  --animate-reveal: reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 
-  @keyframes shine {
-    from { transform: translateX(-100%); }
-    to { transform: translateX(100%); }
-  }
   @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-8px); }
   }
-  @keyframes scan {
-    0% { transform: translateY(-100%); opacity: 0; }
-    50% { opacity: 1; }
-    100% { transform: translateY(300%); opacity: 0; }
+  @keyframes gold-glow {
+    0%, 100% { filter: drop-shadow(0 0 2px var(--academy-gold)); }
+    50% { filter: drop-shadow(0 0 12px var(--academy-gold)); }
+  }
+  @keyframes reveal {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 }
 
-/* 3. الإعدادات الأساسية (Base Styles) */
+/* 3. الطبقة الأساسية (Base) */
 @layer base {
-  * {
-    box-sizing: border-box;
-  }
-
   body {
-    @apply bg-background text-foreground font-sans antialiased overflow-x-hidden;
-    line-height: 1.6;
-    text-rendering: optimizeLegibility;
+    @apply bg-background text-foreground font-sans antialiased;
+    /* تحسين القراءة في المود الفاتح */
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-black tracking-tighter leading-[0.85] italic uppercase;
-    margin: 0;
+  /* العناوين بناءً على الـ Style Guide (Cairo Bold -> Syne Black) */
+  h1, h2, h3 {
+    @apply font-display font-black tracking-tight text-navy italic uppercase;
   }
-
-  h1 { font-size: clamp(2.5rem, 12vw, 8rem); }
-  h2 { font-size: clamp(2rem, 8vw, 4.5rem); }
-  h3 { font-size: clamp(1.5rem, 5vw, 2.5rem); }
-
-  ::selection {
-    @apply bg-gold/30 text-white;
-  }
+  
+  h1 { @apply text-6xl md:text-8xl leading-[0.85]; }
+  h2 { @apply text-4xl md:text-6xl leading-[0.9]; }
 }
 
-/* 4. الإضافات المخصصة (Custom Utilities) */
 @layer utilities {
-  .glass {
-    @apply backdrop-blur-[25px] border border-white/5;
-    background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.03), transparent);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  /* نسيج الزجاج المضيء (للخلفيات البيضاء) */
+  .glass-light {
+    @apply backdrop-blur-xl border border-white/40;
+    background: linear-gradient(
+      135deg, 
+      oklch(100% 0 0 / 70%), 
+      oklch(100% 0 0 / 30%)
+    );
+    box-shadow: 0 8px 32px 0 oklch(20% 0.06 260 / 5%);
   }
 
-  .text-gradient-gold {
-    @apply bg-clip-text text-transparent bg-gradient-to-b from-gold-light via-gold to-gold/50;
+  /* تدرج الذهب المطور */
+  .text-gold-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-b from-gold-light via-gold to-gold-dark;
   }
 
-  .img-cinematic {
-    @apply transition-all duration-1000 ease-in-out;
-    filter: grayscale(1) contrast(1.2) brightness(0.6);
+  /* الكروت بناءً على الـ Course Card في الصورة */
+  .card-academy {
+    @apply bg-white border border-black/5 rounded-[2rem] p-6 
+           transition-all duration-500 hover:border-gold/30 
+           hover:shadow-[0_20px_60px_rgba(0,0,0,0.03)];
   }
 
-  .group:hover .img-cinematic {
-    filter: grayscale(0) contrast(1) brightness(0.9);
-    scale: 1.05;
+  /* شبكة تقنية خفيفة جداً للخلفية */
+  .bg-tech-grid {
+    background-image: radial-gradient(oklch(20% 0.06 260 / 0.05) 1px, transparent 0.1px);
+    background-size: 30px 30px;
   }
-
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: var(--background); }
-  ::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, transparent, var(--academy-gold), transparent);
-    border-radius: 20px;
-  }
-
-  /* تم إصلاح الخطأ هنا: حذف الأقواس المربعة واستخدام CSS صريح */
-  .bg-grid-gold {
-    background-image: 
-      linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
-    background-size: 50px 50px;
-    mask-image: radial-gradient(ellipse at center, black, transparent 80%);
-    -webkit-mask-image: radial-gradient(ellipse at center, black, transparent 80%);
-  }
-
-  .mask-vignette {
-    mask-image: radial-gradient(circle, black 40%, transparent 100%);
-    -webkit-mask-image: radial-gradient(circle, black 40%, transparent 100%);
-  }
-
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .no-scrollbar::-webkit-scrollbar { display: none; }
 }

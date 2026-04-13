@@ -8,12 +8,11 @@ import { CERTIFICATE_OVERVIEW } from "./membership/certificate-data";
  * تصميم كلاسيكي بلمسة عصرية
  */
 export const NAV_LINKS: NavLink[] = [
-  { name: 'Home', href: '/' },
-  { name: 'Courses', href: '/courses' },
-  { name: 'Membership', href: '/Membership' },
-  { name: 'Instructors', href: '/Instructors' },
+{ name: 'Home', href: '/' },
+  { name: 'Training Programs', href: '/courses' },
+  { name: 'Certifications', href: '/certifications' },
+  { name: 'Memberships', href: '/Membership' },
   { name: 'About Us', href: '/about' },
-  { name: 'Contact Us', href: '/contact' },
 ];
 
 /** * 2. Hero Section 2026 

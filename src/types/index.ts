@@ -46,3 +46,18 @@ export interface HubCard {
   href: string;
   image: string;
 }
+
+export interface StatItem {
+  id: string;
+  value: number;
+  suffix: string;
+  label: {
+    en: string;
+    ar: string;
+  };
+  icon?: React.ReactNode;
+}
+
+export interface StatsBarProps {
+  locale?: 'ar' | 'en';
+}

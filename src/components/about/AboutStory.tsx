@@ -40,6 +40,7 @@ export default function AboutStory() {
               src="/about-1.webp" 
               alt="British Academy Strategic Intelligence" 
               fill 
+              priority
               className="object-cover contrast-[1.1] brightness-75 scale-110 group-hover:scale-100 transition-transform duration-[2s]" 
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
@@ -58,6 +59,7 @@ export default function AboutStory() {
               src="/about-2.webp" 
               alt="Global Operations IAHS" 
               fill 
+              priority
               className="object-cover saturate-[1.2] brightness-90" 
             />
             {/* Tactical Label on Floating Image */}
