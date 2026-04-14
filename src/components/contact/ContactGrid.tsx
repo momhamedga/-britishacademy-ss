@@ -1,81 +1,108 @@
-"use client"
+"use client";
 import { motion } from 'framer-motion';
-import { CONTACT_INFO_CARDS } from '@/lib/constants';
-import { ChevronRight, Zap, Target } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { CONTACT_INFO_CARDS, CONTACT_CONFIG } from '@/lib/constants';
+import { ChevronRight, Target, MapPin, Navigation, Share2, Twitter, Instagram, Linkedin, Github } from 'lucide-react';
 
 export default function ContactGrid() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) return <div className="space-y-4 min-h-[600px] animate-pulse bg-[oklch(98%_0.01_260)] rounded-[2rem]" />;
+
   return (
-    // شبكة مرنة جداً تبدأ بـ 1 وتصل لـ 2 في الشاشات المتوسطة وترجع لـ 1 في الـ Large
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 md:gap-6 relative px-2 md:px-0">
-      
-      {/* 🌌 خط ديكوري خلفي يظهر فقط في الموبايل لربط العناصر بصرياً */}
-      <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-gold/10 to-transparent md:hidden pointer-events-none" />
-
-      {CONTACT_INFO_CARDS.map((item, i) => (
-        <motion.div
-          key={item.id}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ delay: i * 0.1, duration: 0.6 }}
-          
-          // 🖐️ سحر اللمس للموبايل (Haptic Feel)
-          whileTap={{ scale: 0.96, shadow: "0px 0px 20px rgba(212,175,55,0.2)" }}
-          
-          // التعديل هنا: أضفنا فئات Hover الخاصة بالديسك توب
-          className="group relative p-5 md:p-6 rounded-[2rem] bg-gradient-to-br from-white/[0.03] to-transparent border border-white/5 active:border-gold/40 transition-all duration-300 overflow-hidden backdrop-blur-md cursor-pointer
-                     lg:hover:border-gold/40 lg:hover:bg-white/[0.05] lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_40px_rgba(0,0,0,0.5)]"
-        >
-          {/* تأثير نبض خلفي (يظهر في الموبايل عند الضغط وفي الديسكتوب عند الـ Hover) */}
-          <div className="absolute -right-4 -top-4 w-24 h-24 bg-gold/5 blur-3xl rounded-full group-active:bg-gold/10 group-hover:bg-gold/10 transition-colors" />
-
-          <div className="flex flex-row items-center gap-4 md:gap-6 relative z-10">
-            
-            {/* 💠 أيقونة بستايل "الحاوية الأمنية" */}
-            <div className="relative shrink-0">
-              {/* التعديل هنا: تأثيرات الـ Hover والـ Active للأيقونة */}
-              <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-navy/80 border border-white/10 flex items-center justify-center text-gold shadow-2xl transition-all duration-300
-                             group-active:bg-gold group-active:text-navy group-active:scale-105
-                             group-hover:scale-110 group-hover:bg-gold/10 group-hover:border-gold/30">
-                 <item.icon size={24} strokeWidth={1.5} className="md:w-7 md:h-7 transition-transform group-hover:-translate-y-1" />
+    <div className="flex flex-col gap-6 @container">
+      {/* 1. قائمة الكروت الأساسية - Container Queries Optimization */}
+      <div className="grid grid-cols-1 gap-3">
+        {CONTACT_INFO_CARDS.map((item, i) => (
+          <motion.div
+            key={item.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05 }}
+            whileHover={{ x: 5 }}
+            className="group relative p-4 rounded-2xl bg-white border border-[oklch(25%_0.08_260)]/5 hover:border-[#D4AF37]/40 hover:shadow-[0_10px_30px_-15px_oklch(45%_0.12_255_/_0.2)] transition-all cursor-pointer"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-[oklch(25%_0.08_260)] flex items-center justify-center text-[#D4AF37] ring-4 ring-[oklch(25%_0.08_260)]/5">
+                <item.icon size={18} />
               </div>
-              {/* نقطة حالة نابضة */}
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-gold rounded-full border-2 border-navy animate-pulse z-10" />
-            </div>
-
-            {/* 📝 النصوص بـ Hierarchy واضح */}
-            <div className="flex-1 min-w-0 space-y-1">
-              <div className="flex items-center gap-2">
-                <Target size={10} className="text-gold animate-spin-slow group-hover:text-gold transition-colors" />
-                <span className="text-[9px] md:text-[10px] font-black text-gold/40 uppercase tracking-[0.3em] group-hover:text-gold transition-colors">
+              <div className="flex-1">
+                <span className="text-[8px] font-black text-[oklch(45%_0.12_255)] uppercase tracking-[0.2em] block mb-0.5">
                   {item.label}
                 </span>
+                <h3 className="text-[oklch(25%_0.08_260)] font-bold text-xs @[20rem]:text-sm">{item.value}</h3>
               </div>
-              
-              <h3 className="text-white font-black text-sm md:text-lg tracking-wide truncate group-active:text-gold group-hover:text-gold transition-colors group-hover:translate-x-1 transition-transform">
-                {item.value}
-              </h3>
-              
-              <p className="text-slate-500 text-[10px] md:text-xs font-medium leading-tight line-clamp-2 md:line-clamp-none group-hover:text-slate-300 transition-colors">
-                {item.detail}
-              </p>
+              <ChevronRight size={14} className="opacity-20 group-hover:opacity-100 group-hover:text-[#D4AF37] transition-all" />
             </div>
+          </motion.div>
+        ))}
+      </div>
 
-            {/* ➡️ سهم مؤشر مضيء ومتحرك */}
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white/5 text-gold border border-white/10 group-active:bg-gold group-active:text-navy group-hover:bg-gold group-hover:text-navy group-hover:translate-x-1 transition-all">
-              <ChevronRight size={16} />
-            </div>
-          </div>
+      {/* 2. الخريطة التكتيكية - PPR Ready UI */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="relative rounded-[2.5rem] bg-white border border-[oklch(25%_0.08_260)]/5 shadow-2xl overflow-hidden group/map"
+      >
+        <div className="absolute top-4 left-4 z-20 px-3 py-1.5 bg-white/90 backdrop-blur-md rounded-full border border-[oklch(25%_0.08_260)]/5 flex items-center gap-2">
+          <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+          <span className="text-[8px] font-black text-[oklch(25%_0.08_260)] uppercase tracking-widest">Live_HQ_Feed</span>
+        </div>
 
-          {/* خط المسح الضوئي (Scanline) يشتغل عند اللمس (whileTap) في الموبايل */}
-          <motion.div 
-            initial={{ x: '-100%' }}
-            whileTap={{ x: '100%' }}
-            transition={{ duration: 0.5 }}
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-gold/10 to-transparent pointer-events-none md:hidden"
+        <div className="h-[250px] @[30rem]:h-[320px] w-full relative">
+          <iframe
+            src="http://googleusercontent.com/maps.google.com/4"
+            width="100%" height="100%"
+            className="grayscale contrast-125 brightness-100 transition-all duration-1000 group-hover/map:grayscale-0"
+            style={{ border: 0 }} loading="lazy"
           />
-        </motion.div>
-      ))}
+          <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent z-10 pointer-events-none" />
+          
+          <motion.a
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            href="#"
+            className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 w-[80%] py-3 bg-[oklch(25%_0.08_260)] text-[#D4AF37] rounded-xl flex items-center justify-center gap-2 shadow-2xl transition-all font-black text-[10px] uppercase tracking-[0.2em]"
+          >
+            <Navigation size={14} /> GPS Navigation
+          </motion.a>
+        </div>
+      </motion.div>
+
+      {/* 3. Social Media Tactical HUD - الإضافة الجديدة */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-3 px-2">
+          <Share2 size={12} className="text-[#D4AF37]" />
+          <span className="text-[9px] font-black text-[oklch(25%_0.08_260)] uppercase tracking-[0.3em]">Digital_Presence</span>
+          <div className="h-px flex-1 bg-[oklch(25%_0.08_260)]/5" />
+        </div>
+
+        <div className="grid grid-cols-4 gap-2">
+          {[
+            { icon: Twitter, link: "#", color: "hover:bg-sky-50" },
+            { icon: Instagram, link: "#", color: "hover:bg-pink-50" },
+            { icon: Linkedin, link: "#", color: "hover:bg-blue-50" },
+            { icon: Github, link: "#", color: "hover:bg-slate-100" }
+          ].map((soc, idx) => (
+            <motion.a
+              key={idx}
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.9 }}
+              href={soc.link}
+              className={`aspect-square rounded-2xl bg-white border border-[oklch(25%_0.08_260)]/5 flex items-center justify-center text-[oklch(25%_0.08_260)]/40 hover:text-[oklch(25%_0.08_260)] transition-all ${soc.color}`}
+            >
+              <soc.icon size={18} strokeWidth={1.5} />
+            </motion.a>
+          ))}
+        </div>
+      </div>
+
+      {/* 4. Footer Coordinates */}
+      <div className="px-2 flex justify-between items-center opacity-30">
+         <span className="text-[7px] font-mono font-bold uppercase tracking-tight text-[oklch(25%_0.08_260)]">Lat: 51.5049° N</span>
+         <span className="text-[7px] font-mono font-bold uppercase tracking-tight text-[oklch(25%_0.08_260)]">Lon: 0.0194° W</span>
+      </div>
     </div>
   );
 }

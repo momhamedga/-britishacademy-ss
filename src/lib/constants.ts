@@ -8,12 +8,13 @@ import { CERTIFICATE_OVERVIEW } from "./membership/certificate-data";
  * تصميم كلاسيكي بلمسة عصرية
  */
 export const NAV_LINKS: NavLink[] = [
-{ name: 'Home', href: '/' },
-  { name: 'Training Programs', href: '/courses' },
+  { name: 'Home', href: '/' },
+  { name: 'Training Programs', href: '/programs' },
   { name: 'Certifications', href: '/certifications' },
   { name: 'Memberships', href: '/Membership' },
   { name: 'About Us', href: '/about' },
-];
+    { name: 'Contact Us', href: '/contact' },
+]
 
 /** * 2. Hero Section 2026 
  * نصوص قوية ومختصرة لخدمة الـ Typography الضخم
@@ -245,4 +246,49 @@ export const FEATURE_POINTS = [
     title: "Increase Earning Potential",
     description: "Higher qualifications often lead to higher salaries.",
   },
+];
+
+import { TeamMember, Accreditation } from "@/types";
+
+export const LEADERSHIP_TEAM: TeamMember[] = [
+  {
+    id: "ahmad",
+    initials: "A.S.",
+    name: "Ahmad Al-Sayed",
+    role: "CEO",
+    description: "20 years of experience in security",
+    linkedin: "#",
+  },
+  {
+    id: "mohammad",
+    initials: "M.Z.",
+    name: "Mohammad Al-Zahrani",
+    role: "Academic Director",
+    description: "PhD in Security Management",
+    linkedin: "#",
+  },
+  {
+    id: "sarah",
+    initials: "S.A.",
+    name: "Sarah Al-Otaibi",
+    role: "CTO",
+    description: "EdTech Expert",
+    linkedin: "#",
+  },
+  {
+    id: "khalid",
+    initials: "K.S.",
+    name: "Khalid Al-Shammari",
+    role: "Partnerships Manager",
+    description: "International Relations",
+    linkedin: "#",
+  },
+];
+
+export const ACCREDITATIONS: Accreditation[] = [
+  { id: "asis", name: "ASIS", logo: "/logos/asis.png" },
+  { id: "isoa", name: "ISOA", logo: "/logos/isoa.png" },
+  { id: "ifpo", name: "IFPO", logo: "/logos/ifpo.png" },
+  { id: "cpp", name: "CPP", logo: "/logos/cpp.png" },
+  { id: "psp", name: "PSP", logo: "/logos/psp.png" },
 ];

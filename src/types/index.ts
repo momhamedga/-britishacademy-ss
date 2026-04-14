@@ -61,3 +61,19 @@ export interface StatItem {
 export interface StatsBarProps {
   locale?: 'ar' | 'en';
 }
+
+export interface TeamMember {
+  id: string;
+  name: string;
+  initials: string;
+  role: string;
+  description: string;
+  linkedin: string;
+  image?: string;
+}
+
+export interface Accreditation {
+  id: string;
+  name: string;
+  logo: string; // Path to SVG or Image
+}

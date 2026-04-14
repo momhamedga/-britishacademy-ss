@@ -122,7 +122,8 @@ function HeroContent() {
       <Image 
         src={active.image}
         alt={active.title}
-        fill
+                  fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"  
         className="object-cover saturate-[1.2] contrast-[1.1] group-hover:scale-110 transition-transform duration-[5000ms] ease-out"
         priority
       />

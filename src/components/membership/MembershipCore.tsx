@@ -1,200 +1,148 @@
 "use client";
-import { useState, useRef } from 'react';
-import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import Image from 'next/image';
-import { ChevronRight, ChevronLeft, ShieldCheck, Sparkles, Fingerprint, Maximize2 } from 'lucide-react';
-import { ACCREDITED_ADVANTAGES, CERTIFICATE_IMAGES } from '@/lib/membership/certificate-data';
-import { MEMBERSHIP_ADVANTAGES } from '@/lib/membership/membership-data';
-import { TABS_MEMBERSHIP } from '@/lib/constants';
 
-export default function MembershipCore() {
-  const [activeTab, setActiveTab] = useState('membership');
-  const [currentImg, setCurrentImg] = useState(0);
-  const [isZoomed, setIsZoomed] = useState(false);
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { Check, ShieldCheck, Zap, Globe, Users, Target } from 'lucide-react';
 
-  const nextImg = () => setCurrentImg((prev) => (prev + 1) % CERTIFICATE_IMAGES.length);
-  const prevImg = () => setCurrentImg((prev) => (prev - 1 + CERTIFICATE_IMAGES.length) % CERTIFICATE_IMAGES.length);
+// 📊 البيانات بناءً على الصور المرفقة
+const PRICING_DATA = {
+  Individual: [
+    { name: "Basic", price: "99", features: ["3 courses per month", "Digital certificates", "Email support"], popular: false },
+    { name: "Pro", price: "199", features: ["Unlimited courses", "Accredited certificates", "24/7 support", "Virtual labs access"], popular: true },
+  ],
+  Corporate: [
+    { name: "Enterprise", price: "499", features: ["Unlimited employees", "Corporate dashboard", "Performance reports", "Dedicated trainer"], popular: false },
+  ]
+};
 
-  const currentAdvantages = activeTab === 'certificate' ? ACCREDITED_ADVANTAGES : MEMBERSHIP_ADVANTAGES;
+export default function PricingSection({ activeType }: { activeType: 'Corporate' | 'Individual' }) {
+  const [mounted, setMounted] = useState(false);
+
+  // حل مشكلة الـ Hydration Error
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
 
   return (
-    <section className="py-16 md:py-32 px-4 relative overflow-hidden ">
-      {/* Dynamic Background */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.03)_0%,transparent_70%)] pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto relative z-10">
+    <div className="py-20 bg-[#F8FAFC] relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6">
         
-        {/* 1. Mobile-Optimized Tabs (Sticky-friendly Segmented Control) */}
-        <div className="flex justify-center mb-16 md:mb-24">
-          <div className="flex w-full max-w-[400px] p-1.5 bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[2rem] relative">
-            {TABS_MEMBERSHIP.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => {
-                   setActiveTab(tab.id);
-                   setCurrentImg(0);
-                }}
-                className={`relative flex-1 flex items-center justify-center gap-2 py-4 rounded-[1.6rem] text-[10px] md:text-xs font-black uppercase tracking-widest transition-all duration-500 z-10 ${
-                  activeTab === tab.id ? 'text-black' : 'text-white/40'
-                }`}
-              >
-                <tab.icon size={14} />
-                <span className="hidden xs:block">{tab.label}</span>
-                {activeTab === tab.id && (
-                  <motion.div 
-                    layoutId="activeTabGlow" 
-                    className="absolute inset-0 bg-gold rounded-[1.6rem] -z-10 shadow-[0_0_20px_rgba(212,175,55,0.3)]" 
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
-              </button>
+        {/* Grid الحزم */}
+        <div className={`grid gap-8 justify-center ${activeType === 'Individual' ? 'md:grid-cols-2 lg:max-w-4xl mx-auto' : 'max-w-md mx-auto'}`}>
+          <AnimatePresence mode="wait">
+            {PRICING_DATA[activeType].map((plan, index) => (
+              <PricingCard key={plan.name} plan={plan} index={index} />
             ))}
-          </div>
+          </AnimatePresence>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-10 lg:gap-20 items-start">
-          
-          {/* 🖼️ الجانب الأيسر: Visual Showcase (With Touch Drag) */}
-          <div className="lg:col-span-6 w-full">
-            <AnimatePresence mode="wait">
-              {activeTab === 'certificate' ? (
-                <motion.div 
-                  key="cert-slider"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className="relative"
-                >
-                  {/* Certificate Frame with Drag Support for Mobile */}
-                  <motion.div 
-                    drag="x"
-                    dragConstraints={{ left: 0, right: 0 }}
-                    onDragEnd={(e, info) => {
-                      if (info.offset.x > 50) prevImg();
-                      else if (info.offset.x < -50) nextImg();
-                    }}
-                    className="relative aspect-[4/3] w-full rounded-[2rem] md:rounded-[3rem] overflow-hidden border border-white/10 bg-navy-light/20 backdrop-blur-3xl p-2 md:p-6 shadow-2xl group touch-pan-y"
-                  >
-                    <div className="absolute top-4 right-4 z-30 md:hidden">
-                        <div className="bg-black/50 backdrop-blur-md p-2 rounded-full border border-white/10">
-                            <Fingerprint size={16} className="text-gold animate-pulse" />
-                        </div>
-                    </div>
+{/* 🛡️ Strategic Partners Section - Clean White Version */}
+<motion.div 
+  initial={{ opacity: 0, y: 40 }} 
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  className="mt-32 border-t border-slate-100 pt-20  relative"
+>
+{/* 🎖️ Strategic Header Section */}
+<div className="text-center mb-16 space-y-4">
+  
+  {/* 🎖️ Badge: Tactical Glassmorphism (Navy & Gold) */}
+  <motion.div 
+    initial={{ opacity: 0, y: 15 }} 
+    animate={{ opacity: 1, y: 0 }} 
+    className="mb-8 inline-flex items-center gap-3 rounded-full border border-slate-200 bg-slate-50/50 px-6 py-2 backdrop-blur-md shadow-sm"
+  >
+    {/* لون الجولد التكتيكي من الهوية */}
+    <Check size={14} className="text-[oklch(75%_0.15_85)]" />
+    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[oklch(25%_0.08_260)]">
+      trusted 
+    </span>
+  </motion.div>
+  
+ <h1 className="text-[clamp(2.5rem,8vw,5rem)] font-black italic uppercase tracking-tighter leading-[0.9] mb-8 text-center">
+  {/* 🔵 Trusted By: Navy Color with Fluid Size */}
+  <span className="text-[oklch(25%_0.08_260)] block md:inline">
+    trusted by{" "}
+  </span>
+  
+  {/* 🟡 +500 Companies: Gold Gradient with Responsive Wrap */}
+  <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#D4AF37] via-[#D4AF37]/80 to-[#1B2A41]/20    block md:inline-block">
+    +500 companies
+  </span>
+</h1>
 
-                    <motion.div
-                      key={currentImg}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      className="relative w-full h-full flex items-center justify-center"
-                    >
-                      <Image 
-                        src={CERTIFICATE_IMAGES[currentImg]} 
-                        alt="Elite Certificate" 
-                        fill
-                        unoptimized
-                        className="object-contain p-2 transition-transform duration-700"
-                      />
-                    </motion.div>
-
-                    {/* Desktop Hover Controls */}
-                    <div className="hidden md:flex absolute inset-x-6 top-1/2 -translate-y-1/2 justify-between z-30 opacity-0 group-hover:opacity-100 transition-all">
-                        <button onClick={prevImg} className="p-4 bg-black/60 backdrop-blur-xl border border-white/10 rounded-full text-gold hover:bg-gold hover:text-black transition-all"><ChevronLeft size={24}/></button>
-                        <button onClick={nextImg} className="p-4 bg-black/60 backdrop-blur-xl border border-white/10 rounded-full text-gold hover:bg-gold hover:text-black transition-all"><ChevronRight size={24}/></button>
-                    </div>
-                  </motion.div>
-
-                  {/* Mobile Hint & Pagination */}
-                  <div className="flex flex-col items-center gap-4 mt-8">
-                    <p className="md:hidden text-[8px] font-black uppercase tracking-[0.3em] text-white/20">Swipe to flip credentials</p>
-                    <div className="flex gap-2">
-                        {CERTIFICATE_IMAGES.map((_, i) => (
-                        <div key={i} className={`h-1 rounded-full transition-all duration-500 ${currentImg === i ? 'w-8 bg-gold' : 'w-2 bg-white/10'}`} />
-                        ))}
-                    </div>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.div 
-                  key="identity-visual"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="relative aspect-square w-full max-w-[450px] mx-auto rounded-[3rem] border border-gold/10 bg-gradient-to-b from-gold/5 to-transparent flex items-center justify-center p-8 overflow-hidden group"
-                >
-                  <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-                  <motion.div 
-                    animate={{ rotate: 360 }} 
-                    transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-4 border border-dashed border-gold/20 rounded-full" 
-                  />
-                  
-                  <div className="relative z-10 text-center">
-                    <motion.div 
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      className="w-20 h-20 md:w-28 md:h-28 bg-navy border border-gold/30 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-[0_0_40px_rgba(212,175,55,0.2)]"
-                    >
-                        <ShieldCheck size={40} className="text-gold md:w-14 md:h-14" strokeWidth={1} />
-                    </motion.div>
-                    <h3 className="text-2xl md:text-4xl font-black text-white uppercase italic leading-none tracking-tighter">
-                      Verified <br/><span className="text-gold">Operator</span>
-                    </h3>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* ✍️ الجانب الأيمن: المحتوى النصي (Interactive List) */}
-          <div className="lg:col-span-6 space-y-10 md:space-y-14">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-10"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-[1px] bg-gold" />
-                    <span className="text-gold text-[9px] font-black uppercase tracking-[0.3em]">IAHS Protocol</span>
-                  </div>
-                  <h2 className="text-4xl md:text-6xl font-black text-white italic uppercase leading-[0.9] tracking-tighter">
-                    {activeTab === 'membership' ? 'Strategic ' : 'Accredited '} 
-                    <span className="text-gold">{activeTab === 'membership' ? 'Identity' : 'Certificates'}</span>
-                  </h2>
-                </div>
-
-            {/* Benefits List - Styled as Interactive Mobile Tiles */}
-<div className="grid gap-3">
-  {currentAdvantages.map((adv, idx) => (
-    <motion.div 
-      key={idx}
-      whileTap={{ scale: 0.98 }}
-      className="group flex items-center gap-4 p-4 md:p-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-gold/30 hover:bg-white/[0.04] transition-all duration-300"
-    >
-      {/* Icon Box */}
-      <div className="w-10 h-10 md:w-12 md:h-12 flex-shrink-0 rounded-xl  border border-white/10 flex items-center justify-center text-gold group-hover:bg-gold group-hover:text-black transition-all">
-        {/* تم حذف md:size لأنها غير مدعومة برمجياً في المكون وتسبب Error */}
-        <adv.icon size={22} strokeWidth={1.5} />
-      </div>
-
-      <div className="flex flex-col">
-        <span className="text-white/90 text-[13px] md:text-base font-bold italic uppercase tracking-tight group-hover:text-white">
-          {adv.text}
-        </span>
-        <span className="text-[8px] text-white/20 uppercase tracking-widest font-black mt-0.5 group-hover:text-gold/40">
-          Authorized Perk
-        </span>
-      </div>
-    </motion.div>
-  ))}
 </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
 
-        </div>
+  {/* 🧩 Grid الشركات - تصميم نظيف بهوية Gold/Navy */}
+  <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto px-6">
+    {[1, 2, 3, 4, 5, 6].map((i) => (
+      <motion.div
+        key={i}
+        whileHover={{ y: -5 }}
+        className="px-8 py-5 border border-slate-100 bg-[#F8FAFC] rounded-2xl transition-all hover:border-[oklch(75%_0.15_85)] hover:shadow-lg hover:shadow-gold/5 group"
+      >
+        <span className="font-mono text-[10px] uppercase tracking-tighter text-slate-400 group-hover:text-[oklch(25%_0.08_260)] font-bold transition-colors">
+          PARTNER_REF_{i}
+        </span>
+      </motion.div>
+    ))}
+  </div>
+
+
+</motion.div>
       </div>
-    </section>
+    </div>
+  );
+}
+
+function PricingCard({ plan, index }: any) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ delay: index * 0.1 }}
+      className={`relative group p-8 rounded-[2.5rem] border transition-all duration-500 bg-white ${
+        plan.popular ? 'border-[oklch(75%_0.15_85)] shadow-2xl z-10' : 'border-slate-100 shadow-sm'
+      }`}
+    >
+      {plan.popular && (
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[oklch(75%_0.15_85)] text-black px-6 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">
+          Most Popular
+        </div>
+      )}
+
+      <div className="mb-8">
+        <h3 className="text-slate-900 text-2xl font-black italic uppercase mb-1">{plan.name}</h3>
+        <p className="text-slate-400 text-xs font-bold uppercase tracking-tighter">{plan.name} Plan Access</p>
+      </div>
+
+      <div className="flex items-baseline gap-1 mb-8">
+        <span className="text-slate-400 font-bold text-sm">SAR</span>
+        <span className="text-slate-900 text-5xl font-black tracking-tighter">{plan.price}</span>
+        <span className="text-slate-400 font-medium">/month</span>
+      </div>
+
+      <div className="space-y-4 mb-10">
+        {plan.features.map((feat: string) => (
+          <div key={feat} className="flex items-center gap-3">
+            <div className={`w-5 h-5 rounded-full flex items-center justify-center ${plan.popular ? 'bg-[oklch(75%_0.15_85)]/20' : 'bg-slate-100'}`}>
+              <Check size={12} className={plan.popular ? 'text-[oklch(75%_0.15_85)]' : 'text-slate-400'} strokeWidth={4} />
+            </div>
+            <span className="text-slate-600 text-sm font-medium italic">{feat}</span>
+          </div>
+        ))}
+      </div>
+
+      <motion.button 
+        whileTap={{ scale: 0.97 }}
+        className={`w-full py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all ${
+          plan.popular 
+          ? 'bg-[oklch(75%_0.15_85)] text-black shadow-lg shadow-gold/20' 
+          : 'bg-slate-50 text-slate-400 border border-slate-100 hover:bg-slate-100'
+        }`}
+      >
+        {plan.name === 'Enterprise' ? 'Contact Us' : 'Get Started'}
+      </motion.button>
+    </motion.div>
   );
 }

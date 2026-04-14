@@ -7,14 +7,9 @@ import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
 import { Menu, X, User, ShieldCheck } from 'lucide-react'
 import ProfileDropdown from '../portal/ProfileDropdown'
+import { NAV_LINKS } from '@/lib/constants'
 
-const NAV_LINKS = [
-  { name: 'Home', href: '/' },
-  { name: 'Training Programs', href: '/programs' },
-  { name: 'Certifications', href: '/certifications' },
-  { name: 'Memberships', href: '/memberships' },
-  { name: 'About Us', href: '/about' },
-]
+
 
 interface NavbarProps {
   user?: {
@@ -47,7 +42,7 @@ const Navbar = ({ user, isGuest }: NavbarProps) => {
             {/* 1. Logo Section */}
             <Link href="/" className="flex items-center gap-3 shrink-0 ml-2 md:ml-4">
               <div className="relative w-9 h-9 md:w-10 md:h-10">
-                <Image src="/logo.webp" alt="SecuTrain" fill className="object-contain" priority />
+                <Image src="/logo.webp" priority alt="SecuTrain" fill className="object-contain"  sizes="(max-width: 768px) 80px, (max-width: 1200px) 100px, 110px" />
               </div>
               <div className="flex flex-col">
                 <span className="text-white font-black text-lg md:text-xl leading-none uppercase tracking-tighter">

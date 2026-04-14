@@ -2,9 +2,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ACADEMY_ABOUT_TABS } from '@/lib/constants'; 
-import AccreditationTab from './AccreditationTab';
+
 import OverviewTab from './OverviewTab';
-import ExperienceTab from './ExperienceTab';
+
 
 export default function AcademyAbout() {
   const [activeTab, setActiveTab] = useState('accreditation');

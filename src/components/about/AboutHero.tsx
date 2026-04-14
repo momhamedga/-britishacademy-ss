@@ -1,89 +1,103 @@
 "use client";
-import { ACADEMY_DATA } from '@/lib/membership/about';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Target, ShieldCheck } from 'lucide-react';
-import { useRef } from 'react';
+import { ABOUT_CONTENT } from '@/lib/membership/about';
+import { motion } from 'framer-motion';
+import { useRef, useEffect, useState } from 'react';
 
-export default function AboutHero() {
-  const containerRef = useRef<HTMLElement>(null);
-  const { scrollY } = useScroll();
+// 🎨 درجات الألوان المطلوبة بدقة OKLCH
+const COLORS = {
+  navy: "oklch(25% 0.08 260)",      // Academy Navy
+  mediumBlue: "oklch(45% 0.12 255)", // Medium Blue
+  bgLight: "oklch(98% 0.01 260)",   // Light Base
+  gold: "#D4AF37",                  // Gold Accent
+};
+
+
+export default function TacticalAbout() {
+  const [isClient, setIsClient] = useState(false);
   
-  const yImage = useTransform(scrollY, [0, 500], [0, 80]);
-  const opacityText = useTransform(scrollY, [0, 400], [1, 0]);
+  useEffect(() => setIsClient(true), []);
+
+  if (!isClient) return <section className="min-h-[80svh]" style={{ backgroundColor: COLORS.navy }} />;
 
   return (
-    <section ref={containerRef} className="relative h-svh min-h-[650px] flex items-center justify-center overflow-hidden ">
-      
-    
-
-      {/* 2. Content Core */}
-      <motion.div 
-        style={{ opacity: opacityText }}
-        className="relative z-20 text-center px-4 md:px-6 w-full max-w-5xl mx-auto"
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-        >
-          {/* Badge: Refined & Small */}
-          <div className="flex items-center justify-center gap-3 mb-6 md:mb-8">
-            <div className="h-[1px] w-6 md:w-10 bg-gold/20" />
-            <div className="flex items-center gap-2">
-              <ShieldCheck size={12} className="text-gold/80" />
-              <span className="text-gold/80 text-[8px] md:text-[10px] font-bold uppercase tracking-[0.4em]">
-                {ACADEMY_DATA.location} Strategic Hub
-              </span>
-            </div>
-            <div className="h-[1px] w-6 md:w-10 bg-gold/20" />
-          </div>
-
-          {/* Title: Eye-Friendly Size */}
-          <h1 className="font-display text-[clamp(2rem,10vw,4.5rem)] font-black text-white uppercase tracking-tight leading-[0.95] mb-8 md:mb-10">
-            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 block mb-1">
-              Professional
-            </span>
-            <span className="italic text-gold drop-shadow-[0_0_20px_rgba(212,175,55,0.2)]">
-               Development Partner
-            </span>
-          </h1>
-          
-          {/* Description Card: Mobile Creative Touch */}
-          <div className="relative max-w-2xl mx-auto px-2">
-            <motion.div
-              whileTap={{ scale: 0.98 }} // Mobile Haptic feel
-              className="relative backdrop-blur-xl bg-white/[0.03] border border-white/10 rounded-[2rem] p-6 md:p-10 overflow-hidden group shadow-2xl"
-            >
-              {/* Corner Accents */}
-              <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-gold/30 rounded-tl-xl" />
-              <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-gold/30 rounded-br-xl" />
-
-              <p className="text-slate-300 text-sm md:text-lg font-medium leading-relaxed md:leading-loose text-center">
-                {ACADEMY_DATA.description}
-              </p>
-
-              {/* Scanning Glow Effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-            </motion.div>
-
-            {/* Micro-Data Labels */}
-            <div className="mt-6 flex justify-center items-center gap-4 md:gap-8 opacity-20">
-               <span className="text-[7px] md:text-[9px] text-white font-mono uppercase tracking-widest">Wembley_Station.v4</span>
-               <div className="w-1 h-1 rounded-full bg-gold" />
-               <span className="text-[7px] md:text-[9px] text-white font-mono uppercase tracking-widest">Encr_Auth_2026</span>
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      {/* 3. Minimal Scroll Beacon */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20">
-        <div className="w-[1px] h-12 bg-gradient-to-b from-gold/0 via-gold/50 to-gold/0" />
-        <span className="text-[7px] text-white/20 uppercase tracking-[0.6em] font-black">Scroll</span>
+    <section 
+      className="relative py-20 md:py-32 px-6 overflow-hidden"
+      style={{ backgroundColor: COLORS.navy }} // الأساس هو الـ Navy العميق
+    >
+      {/* 🌌 High-Performance Mesh Gradient - تداخل الألوان المطلوبة */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* توهج Medium Blue في الزاوية */}
+        <div 
+          className="absolute -top-[10%] -right-[10%] w-[70%] h-[70%] rounded-full opacity-30 blur-[120px]"
+          style={{ backgroundColor: COLORS.mediumBlue }} 
+        />
+        {/* لمسة من الـ Gold الخفيف جداً في الخلفية للعمق */}
+        <div 
+          className="absolute bottom-[-10%] left-[5%] w-[40%] h-[40%] rounded-full opacity-5 blur-[100px]"
+          style={{ backgroundColor: COLORS.gold }} 
+        />
       </div>
 
-      {/* Overlays */}
-      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] pointer-events-none z-40" />
+      <div className="max-w-7xl mx-auto relative z-10">
+        
+        {/* 🏆 Title System - Unified & Dark Mode Optimized */}
+        <div className="mb-16 md:mb-24 flex flex-col items-center text-center lg:items-start lg:text-left">
+          <motion.div 
+            initial={{ opacity: 0, x: -15 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur-md"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+            <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] text-white/70">
+              {ABOUT_CONTENT.badge}
+            </span>
+          </motion.div>
+          
+          <h2 className="text-4xl font-black italic uppercase tracking-tighter text-white md:text-7xl lg:text-8xl leading-[0.9]">
+            {ABOUT_CONTENT.headline.split('—')[0]} 
+            <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#D4AF37] to-[#D4AF37]/60">
+              {ABOUT_CONTENT.headline.split('—')[1] || "Training Leaders"}
+            </span>
+          </h2>
+        </div>
+
+    
+        {/* 📱 Bento Cards - Tactical Dark Theme */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 max-w-6xl">
+          {ABOUT_CONTENT.cards.map((card, index) => (
+            <motion.div
+              key={index}
+              whileTap={{ scale: 0.98 }}
+              className="relative group p-8 md:p-14 bg-white/[0.03] backdrop-blur-sm rounded-[2.5rem] border border-white/5 hover:border-white/10 hover:bg-white/[0.05] transition-all duration-500 overflow-hidden"
+            >
+              {/* الضوء اللي بيتحرك عند الهوفر */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              
+              <div className="relative z-10 flex flex-col items-center md:items-start text-center md:text-left space-y-8">
+                {/* Icon Container */}
+                <div className="p-5 rounded-2xl bg-gradient-to-br from-white/5 to-[#D4AF37]/10 border border-white/10 shadow-xl group-hover:border-[#D4AF37]/30 transition-colors">
+                  <card.icon size={28} className="text-[#D4AF37]" strokeWidth={1.5} />
+                </div>
+                
+                <div className="space-y-4">
+                  <h4 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight italic">
+                    {card.title}
+                  </h4>
+                  <p className="text-sm md:text-lg text-white/60 font-medium leading-relaxed group-hover:text-white/80 transition-colors">
+                    {card.desc}
+                  </p>
+                </div>
+              </div>
+
+              {/* Tactical Corners */}
+              <div className="absolute bottom-6 right-6 w-4 h-4 border-b border-r border-white/10 rounded-br-md" />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* Noise Texture for High-End feel */}
+      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.04] pointer-events-none z-40" />
     </section>
   );
 }

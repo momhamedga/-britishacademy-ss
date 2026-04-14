@@ -1,7 +1,6 @@
 import AboutHero from "@/components/about/AboutHero";
 import AboutStats from "@/components/about/AboutStats";
 import AboutStory from "@/components/about/AboutStory";
-import AboutValues from "@/components/about/AboutValues";
 
 
 export const metadata = {
@@ -20,7 +19,6 @@ export default function AboutPage() {
         <AboutHero />
         <AboutStats />
         <AboutStory />
-        <AboutValues />
       </div>
     </main>
   );

@@ -1,41 +1,27 @@
-import { Users, BookOpen, Briefcase, GraduationCap } from 'lucide-react';
+// @/lib/membership/about.ts
+import { Target, Eye } from 'lucide-react'; // استيراد الأيقونات المناسبة للصورة
 
-interface AcademyDataType {
-  headline: string;
-  description: string;
-  location: string; 
+interface CardType {
+  title: string;
+  desc: string;
+  icon: React.ElementType;
 }
 
-
-export const ACADEMY_DATA:AcademyDataType = {
-
-  headline: "YOUR TRUSTED PROFESSIONAL DEVELOPMENT COURSES PARTNER IN WEMBLEY",
-  location: "Wembley",
-  description: `Located in Wembley, Integra Training Academy is a leader in professional development courses and skills training. We're dedicated to providing excellent training that helps you advance in your career. Our goal at Integra Training Academy is simple: to equip you with the skills and knowledge you need to succeed in your career. We offer a variety of courses taught by some of the UK’s leading trainers, each with over 15 years of experience. They know how to connect classroom lessons to real-world situations. Get in touch with us for more information.`
+export const ABOUT_CONTENT = {
+  badge: "About Us",
+  headline: "WE ARE SECUTRAIN — GLOBAL SECURITY TRAINING LEADERS",
+  description: "A specialized security training platform serving private security companies and individuals since 2018.",
   
-
+  cards: [
+    {
+      title: "Our Mission",
+      desc: "Providing internationally accredited professional security training that enables individuals and companies to elevate security and safety standards.",
+      icon: Target // أيقونة الهدف للمهمة
+    },
+    {
+      title: "Our Vision",
+      desc: "To be the leading security training platform in the Middle East and Africa by 2030.",
+      icon: Eye // أيقونة العين للرؤية
+    }
+  ]
 };
-
-
-export const VALUES = [
-  {
-    title: "Expert Trainers",
-    desc: "Our team boasts over 15 years of experience. They're instructors and passionate leaders with a proven track record of success.",
-    icon: Users
-  },
-  {
-    title: "Industry-Leading Courses",
-    desc: "Our curriculum is constantly reviewed and updated to reflect the latest industry standards and best practices.",
-    icon: BookOpen
-  },
-  {
-    title: "Real-World Focus",
-    desc: "We go beyond theory. Our courses are designed to equip you with practical skills you can apply immediately in your workplace.",
-    icon: Briefcase
-  },
-  {
-    title: "Supportive Environment",
-    desc: "We foster an interactive space where you feel comfortable asking questions and gaining insights from your peers.",
-    icon: GraduationCap
-  }
-];

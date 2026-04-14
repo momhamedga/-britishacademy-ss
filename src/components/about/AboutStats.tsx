@@ -1,74 +1,60 @@
 "use client";
-import { STATS } from '@/lib/constants';
 import Counter from '@/components/ui/counter';
+import { STATS_DATA } from '@/lib/constants/constants';
 import { motion } from 'framer-motion';
-import { Activity, ShieldCheck, Globe, Users } from 'lucide-react';
+import { Users, BookOpen, Award, Building2 } from 'lucide-react';
+
+const COLORS = {
+  bgLight: "oklch(98% 0.01 260)",
+  gold: "#D4AF37",
+};
 
 export default function AboutStats() {
   return (
-    <section className="py-24 relative z-10 overflow-hidden ">
-      
-      {/* 🌌 Decorative Background Elements */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[url('/grid.svg')] bg-center" />
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6">
-        {/* Grid Layout: 2 columns on mobile, 4 on desktop */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-12 gap-x-4 md:gap-12 relative">
+    <section 
+      className="py-16 md:py-24 relative overflow-hidden"
+      style={{ backgroundColor: COLORS.bgLight }}
+    >
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
           
-          {/* Vertical Divider for Desktop only */}
-          <div className="hidden lg:block absolute inset-y-0 left-1/4 w-[1px] bg-white/5" />
-          <div className="hidden lg:block absolute inset-y-0 left-2/4 w-[1px] bg-white/5" />
-          <div className="hidden lg:block absolute inset-y-0 left-3/4 w-[1px] bg-white/5" />
-
-          {STATS.map((stat, i) => (
+          {STATS_DATA.map((stat, i) => (
             <motion.div 
-              key={i}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
+              key={stat.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
               className="relative group"
             >
-              {/* Tactical Container for each Stat */}
-              <div className="relative z-10 flex flex-col items-center text-center p-6 rounded-[2rem] border border-white/5 bg-white/[0.01] backdrop-blur-sm hover:bg-white/[0.03] transition-all duration-500">
+              <div className="flex flex-col items-center text-center p-6 md:p-10 rounded-[1.5rem] bg-white border border-black/[0.05] shadow-sm hover:shadow-md transition-all duration-500">
                 
-                {/* 🎯 Floating Icon (Subtle) */}
-                <div className="mb-4 opacity-20 group-hover:opacity-100 group-hover:text-gold transition-all duration-700">
-                   {i === 0 && <Users size={16} />}
-                   {i === 1 && <Globe size={16} />}
-                   {i === 2 && <ShieldCheck size={16} />}
-                   {i === 3 && <Activity size={16} />}
+                {/* 1. الأيقونة (نفس ترتيب الصورة 213916) */}
+                <div className="mb-6 text-slate-400 group-hover:text-[#D4AF37] transition-colors">
+                   {i === 0 && <Award size={32} strokeWidth={1.5} />}
+                   {i === 1 && <Building2 size={32} strokeWidth={1.5} />}
+                   {i === 2 && <BookOpen size={32} strokeWidth={1.5} />}
+                   {i === 3 && <Users size={32} strokeWidth={1.5} />}
                 </div>
 
-                <div className="relative inline-block mb-2">
-                  <h3 className={`text-[clamp(2rem,10vw,4.5rem)] font-black italic tracking-tighter leading-none flex items-center justify-center ${stat.color === 'gold' ? 'text-gold drop-shadow-[0_0_20px_rgba(212,175,55,0.3)]' : 'text-white'}`}>
-                    <Counter value={stat.value} />
-                    {stat.value.includes('+') && (
-                      <span className="text-[0.5em] ml-1 mt-1 opacity-50">+</span>
-                    )}
+                {/* 2. الرقم (مع حل مشكلة الـ TypeError) */}
+                <div className="mb-2">
+                  <h3 className="text-3xl md:text-5xl font-black text-[#1B2A41] tracking-tight flex items-baseline justify-center">
+                    {/* تحويل القيمة لنص هنا بيحل الخطأ تماماً */}
+                    <Counter value={stat.value.toString()} />
+                    <span className="text-[0.7em] ml-0.5 text-[#1B2A41] font-bold">{stat.suffix}</span>
                   </h3>
-                  
-                  {/* Underline Pulse Effect */}
-                  <motion.div 
-                    initial={{ width: 0 }}
-                    whileInView={{ width: '60%' }}
-                    transition={{ duration: 1, delay: 0.5 }}
-                    className={`h-[2px] mx-auto mt-2 rounded-full ${stat.color === 'gold' ? 'bg-gold' : 'bg-white/40'}`} 
-                  />
                 </div>
 
-                <p className="text-[9px] md:text-xs font-black uppercase tracking-[0.25em] text-slate-500 max-w-[120px] leading-tight mt-4 group-hover:text-white transition-colors">
-                  {stat.label}
-                </p>
-
-                {/* Background Decorative Ring */}
-                <div className="absolute inset-0 border border-white/5 rounded-[2rem] scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-700" />
+                {/* 3. النصوص (مطابقة للصورة 213916) */}
+                <div className="space-y-1">
+                  <p className="text-[11px] md:text-sm font-bold text-slate-600 uppercase tracking-wide">
+                    {stat.label.en}
+                  </p>
+                  <p className="text-[10px] font-medium text-slate-400">
+                    {stat.label.ar}
+                  </p>
+                </div>
               </div>
-
-              {/* Mobile Separator Line (Horizontal) */}
-              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-12 h-[1px] bg-white/10 md:hidden" />
             </motion.div>
           ))}
         </div>
