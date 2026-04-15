@@ -19,14 +19,14 @@ export default function CourseSidebar({ course, stats, userId }: any) {
   return (
     <>
       {/* --- Desktop Sidebar (Visible on Large Screens) --- */}
-      <div className="hidden lg:block sticky top-32 group">
+      <div className="hidden lg:block  sticky top-32 group">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-8 rounded-[2.5rem] border border-white/10 bg-navy/40 backdrop-blur-3xl relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-500 group-hover:border-gold/20"
+          className="p-8 rounded-[2.5rem] border  border-white/10 bg-navy backdrop-blur-3xl relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-500 group-hover:border-gold/20"
         >
           {/* Tactical Header */}
-          <div className="flex justify-between items-start mb-10 relative z-10">
+          <div className="flex  justify-between items-start mb-10 relative z-10">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-1.5 h-1.5 rounded-full bg-gold animate-ping" />
@@ -65,9 +65,7 @@ export default function CourseSidebar({ course, stats, userId }: any) {
           {/* Action Button */}
           <div className="relative z-10 space-y-4">
             <EnrollButton courseId={course.id} userId={userId} />
-            <p className="text-center text-[8px] text-white/20 uppercase font-black tracking-widest italic">
-              * Immediate deployment upon verification
-            </p>
+         
           </div>
 
           {/* Background Aesthetics */}

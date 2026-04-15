@@ -31,7 +31,7 @@ export default async function CourseDetailsPage({ params }: { params: any }) {
 
   return (
     // أضفنا خلفية سوداء عميقة لتناسب صور "Access Denied" التي أرفقتها
-    <main className="min-h-screen pt-32 md:pt-44 pb-20 px-4 md:px-6  text-white relative overflow-hidden">
+    <main className="min-h-screen  pb-20 px-4 md:px-6  text-white relative overflow-hidden">
       
       {/* 🌌 تحسين الإضاءة التكتيكية */}
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gold/[0.03] blur-[150px] rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none animate-pulse" />

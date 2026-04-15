@@ -13,7 +13,7 @@ export default function CourseTabs({ course, fullContent }: any) {
   ];
 
   return (
-    <div className="space-y-6 md:space-y-10">
+    <div className="space-y-6 bg-navy md:space-y-10">
       {/* 📱 Mobile-Friendly Tab Navigation */}
       <div className="relative overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 border-b border-white/5">
         <div className="flex gap-2 md:gap-8 min-w-max">
@@ -70,7 +70,7 @@ export default function CourseTabs({ course, fullContent }: any) {
 
                 {fullContent?.overview && (
                   <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 italic text-slate-300 text-sm leading-relaxed">
-                    "{fullContent.overview}"
+                    {fullContent.overview}
                   </div>
                 )}
                 

@@ -106,3 +106,37 @@ export async function enrollInCourse(courseId: string) {
     return { error: "TERMINAL ERROR: ENROLLMENT SEQUENCE FAILED" };
   }
 }
+
+export async function verifyCertificateAction(code: string) {
+  try {
+    const { sql } = await import("@/lib/db");
+    
+    // عدلنا s.full_name لـ s.name (تأكد من الاسم في جدول students عندك)
+    const data = await sql`
+      SELECT 
+        cert.certificate_code,
+        cert.issued_at,
+        cert.certificate_url,
+        c.title as course_title,
+        s.name as student_name -- جربت s.name بدلاً من full_name بناءً على الخطأ
+      FROM public.certificates cert
+      INNER JOIN public.students s ON cert.student_id::uuid = s.id::uuid
+      INNER JOIN public.courses c ON cert.course_id::uuid = c.id::uuid
+      WHERE cert.certificate_code = ${code.trim()}
+      LIMIT 1
+    `;
+
+    if (data.length === 0) return { success: false, message: "Invalid Code" };
+
+    return { 
+      success: true, 
+      certificate: {
+        ...data[0],
+        issued_at: data[0].issued_at instanceof Date ? data[0].issued_at.toISOString() : data[0].issued_at
+      } 
+    };
+  } catch (error: any) {
+    console.error("Verification Error:", error.message);
+    return { success: false, message: "System Error" };
+  }
+}

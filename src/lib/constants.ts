@@ -9,7 +9,7 @@ import { CERTIFICATE_OVERVIEW } from "./membership/certificate-data";
  */
 export const NAV_LINKS: NavLink[] = [
   { name: 'Home', href: '/' },
-  { name: 'Training Programs', href: '/programs' },
+  { name: 'Programs', href: '/courses' },
   { name: 'Certifications', href: '/certifications' },
   { name: 'Memberships', href: '/Membership' },
   { name: 'About Us', href: '/about' },

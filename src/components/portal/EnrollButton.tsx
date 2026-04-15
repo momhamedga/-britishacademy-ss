@@ -57,7 +57,7 @@ export default function EnrollButton({ courseId, userId }: { courseId: string, u
       {!userId ? (
         <> 
           <Lock size={14} className="opacity-70" /> 
-          Authorize Access 
+         register now 
           <ArrowRight size={12} className="ml-1 opacity-40" />
         </>
       ) : isPending ? (

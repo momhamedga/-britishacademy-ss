@@ -77,3 +77,11 @@ export interface Accreditation {
   name: string;
   logo: string; // Path to SVG or Image
 }
+
+// أضف هذا النوع لبيانات الشهادة المدمجة
+export interface StudentCertificate {
+  title: string;        // من جدول الكورسات
+  category: string;     // من جدول الكورسات
+  certificate_code: string; // من جدول الشهادات
+  issued_at: Date;      // من جدول الشهادات
+}

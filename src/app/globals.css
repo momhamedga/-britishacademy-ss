@@ -3,7 +3,7 @@
 /* 1. تعريف المتغيرات بنظام OKLCH المطور 2026 */
 :root {
   /* الخلفية الأساسية: أبيض لؤلؤي بارد (كما طلبته تماماً) */
-  --background: oklch(98% 0.01 260); 
+  --background:  oklch(98% 0.01 260);
   /* النص الأساسي: Navy عميق جداً للوضوح العالي */
   --foreground: oklch(20% 0.06 260); 
   
@@ -105,4 +105,7 @@
     background-image: radial-gradient(oklch(20% 0.06 260 / 0.05) 1px, transparent 0.1px);
     background-size: 30px 30px;
   }
+  .bg-pearl { background-color: oklch(98% 0.01 260); }
+  .text-navy { color: oklch(25% 0.08 260); }
+  .border-gold-dark { border-color: oklch(55% 0.15 75); }
 }
