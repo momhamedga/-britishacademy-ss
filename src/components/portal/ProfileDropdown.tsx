@@ -19,7 +19,7 @@ const ProfileDropdown = ({ user, close }: ProfileDropdownProps) => {
       initial={{ opacity: 0, y: 15, scale: 0.95, filter: 'blur(10px)' }}
       animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
       exit={{ opacity: 0, y: 15, scale: 0.95, filter: 'blur(10px)' }}
-      className="absolute top-16 right-0 w-72 glass border border-white/10 rounded-[2rem] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 backdrop-blur-3xl bg-black/80"
+      className="absolute top-16 right-0 w-72 glass border border-white/10 rounded-[2rem] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 backdrop-blur-3xl bg-navy"
     >
       {!user ? (
         /* 🛑 حالة الـ Guest (Unauthenticated) */

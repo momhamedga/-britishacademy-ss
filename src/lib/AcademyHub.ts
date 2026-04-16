@@ -23,7 +23,7 @@ export const ACADEMY_HUB_ITEMS: HubItem[] = [
   { 
     id: 'accredited-programs',
     title: 'Accredited Programs', 
-    href: '/programs', 
+    href: '#', 
     icon: GraduationCap, // أيقونة قبعة التخرج كما في الصورة
     description: 'Internationally recognized certificates',
     accentColor: 'from-gold/20 to-transparent'
@@ -31,7 +31,7 @@ export const ACADEMY_HUB_ITEMS: HubItem[] = [
   { 
     id: 'corporate-training',
     title: 'Corporate Training', 
-    href: '/corporate', 
+    href: '#', 
     icon: Building2, // أيقونة المباني للشركات
     description: 'Integrated enterprise solutions',
     accentColor: 'from-gold/10 to-transparent'
@@ -39,7 +39,7 @@ export const ACADEMY_HUB_ITEMS: HubItem[] = [
   { 
     id: 'learn-anywhere',
     title: 'Learn Anywhere', 
-    href: '/platform', 
+    href: '#', 
     icon: Smartphone, // أيقونة الموبايل
     description: 'Responsive platform compatible with all devices',
     accentColor: 'from-gold/30 to-transparent'
@@ -47,7 +47,7 @@ export const ACADEMY_HUB_ITEMS: HubItem[] = [
   { 
     id: 'security-experts',
     title: 'Security Experts', 
-    href: '/experts', 
+    href: '#', 
     icon: Lock, // أيقونة القفل للخبراء الأمنيين
     description: 'Certified trainers with extensive experience',
     accentColor: 'from-gold/25 to-transparent'

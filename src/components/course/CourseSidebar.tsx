@@ -19,7 +19,7 @@ export default function CourseSidebar({ course, stats, userId }: any) {
   return (
     <>
       {/* --- Desktop Sidebar (Visible on Large Screens) --- */}
-      <div className="hidden lg:block  sticky top-32 group">
+      <div className="hidden lg:block  sticky top-32 group z-20">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

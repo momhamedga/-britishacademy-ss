@@ -1,7 +1,7 @@
-"use client"
+"use client";
 import { useActionState, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, User, ShieldCheck, Loader2, UserPlus, Fingerprint } from 'lucide-react';
+import { Lock, User, ShieldCheck, Loader2, UserPlus, Fingerprint, Cpu } from 'lucide-react';
 import { loginToPortal } from '@/actions/portal-auth';
 import Link from 'next/link';
 
@@ -10,77 +10,90 @@ export default function PortalLoginPage() {
   const [isDetected, setIsDetected] = useState(false);
 
   const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // تفعيل وضع "الهوية المكتشفة" عند البدء بكتابة الكود الخاص بالأكاديمية
     setIsDetected(e.target.value.toUpperCase().startsWith('BA-'));
   };
 
   return (
     <main className="min-h-screen w-full flex items-center justify-center relative overflow-hidden  px-4 py-8">
       
-      {/* 🌌 Background Elements - Optimized for Mobile Performance */}
-      <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:30px_30px] md:bg-[size:40px_40px] z-0" />
-      
-      {/* Dynamic Background Aura */}
-      <motion.div 
-        animate={{ 
-          opacity: isDetected ? [0.1, 0.3, 0.1] : 0.1,
-          scale: isDetected ? [1, 1.2, 1] : 1 
-        }}
-        transition={{ duration: 4, repeat: Infinity }}
-        className={`absolute inset-0 z-0 transition-colors duration-1000 ${isDetected ? 'bg-gold/10' : 'bg-transparent'}`}
-      />
+      {/* 🌌 Ultra-Modern Background Structure */}
+      <div className="absolute inset-0 z-0 " >
+        <div className="absolute  inset-0 bg-grid-gold/[0.02] bg-[size:30px_30px] [mask-image:radial-gradient(white,transparent_85%)]" />
+        {/* Dynamic Aura */}
+        <div className={` absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[120px] transition-colors duration-1000 ${isDetected ? 'bg-gold/10' : 'bg-gold/5'}`} />
+      </div>
 
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="relative z-10 w-full max-w-[420px]"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="relative z-10 w-full max-w-[440px] "
       >
-        <div className="glass p-6 md:p-12 rounded-[2.5rem] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-3xl overflow-hidden">
+        {/* Main Tactical Card */}
+        <div className="relative bg-navy glass-card p-8 md:p-12 rounded-[2.5rem] border border-white/5  backdrop-blur-[40px] shadow-2xl overflow-hidden group">
           
-          {/* Animated Decorative Corner */}
-          <div className={`absolute -top-12 -right-12 w-32 h-32 blur-[60px] rounded-full transition-all duration-1000 ${isDetected ? 'bg-gold/40' : 'bg-gold/5'}`} />
+          {/* Scanning Line Effect (When Detected) */}
+          <AnimatePresence>
+            {isDetected && (
+              <motion.div 
+                initial={{ top: "-10%" }}
+                animate={{ top: "110%" }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                className="absolute  left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-gold/40 to-transparent z-20 pointer-events-none"
+              />
+            )}
+          </AnimatePresence>
 
           {/* Header Section */}
-          <div className="text-center mb-8 md:mb-10">
+          <div className="text-center mb-10 relative ">
             <motion.div 
-              animate={isDetected ? { 
-                boxShadow: ["0 0 0px rgba(212,175,55,0)", "0 0 20px rgba(212,175,55,0.4)", "0 0 0px rgba(212,175,55,0)"] 
-              } : {}}
-              transition={{ repeat: Infinity, duration: 2 }}
-              className="w-14 h-14 md:w-16 md:h-16 bg-white/[0.03] border border-white/10 rounded-2xl flex items-center justify-center mx-auto mb-5"
+              animate={isDetected ? { scale: [1, 1.05, 1], rotateY: [0, 10, 0] } : {}}
+              transition={{ repeat: Infinity, duration: 3 }}
+              className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-white/[0.05] to-transparent border border-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6 relative overflow-hidden shadow-2xl"
             >
-              <ShieldCheck className={isDetected ? "text-gold" : "text-white/20"} size={28} strokeWidth={1.5} />
+              <div className={`absolute inset-0 transition-opacity duration-500 ${isDetected ? 'opacity-100' : 'opacity-0'} bg-gold/10`} />
+              <ShieldCheck className={isDetected ? "text-gold drop-shadow-[0_0_10px_rgba(212,175,55,0.8)]" : "text-white"} size={32} />
             </motion.div>
-            <h2 className="text-[9px] font-black text-gold uppercase tracking-[0.6em] mb-1 opacity-70">Security Terminal</h2>
-            <h1 className="text-xl md:text-2xl font-black text-white tracking-tight uppercase italic">Access Decryption</h1>
+            
+            <div className="space-y-1">
+
+              <h1 className="text-2xl md:text-3xl font-black text-white tracking-tighter uppercase italic drop-shadow-lg">Login <span className="text-gold">now</span></h1>
+            </div>
           </div>
 
-          <form action={formAction} className="space-y-5 md:space-y-6">
-            {/* Identity Vector Input */}
-            <div className="space-y-2">
-              <label className="text-[8px] font-black text-slate-500 uppercase tracking-widest ml-1">Identity Vector</label>
+          <form action={formAction} className="space-y-6">
+            
+            {/* ID Input */}
+            <div className="space-y-3">
+              <div className="flex justify-between items-center px-1">
+                <label className="text-[9px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                  <Cpu size={10} /> Identity 
+                </label>
+                {isDetected && <span className="text-[8px] font-black text-gold animate-pulse">VERIFIED FORMAT</span>}
+              </div>
+              
               <div className="relative group/input">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within/input:text-gold transition-colors" size={14} />
+                <User className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-500 ${isDetected ? 'text-gold' : 'text-white'}`} size={16} />
                 <input 
                   required
                   name="studentId"
                   onChange={handleIdChange}
-                  className="w-full bg-white/[0.03] border border-white/10 rounded-xl md:rounded-2xl pl-12 pr-6 py-4 text-white text-sm focus:border-gold/40 focus:bg-white/[0.06] transition-all placeholder:text-slate-800 uppercase font-bold"
+                  autoComplete="off"
+                  className="w-full bg-white/[0.02] border border-white/10 rounded-2xl pl-12 pr-6 py-5 text-white text-sm focus:border-gold/50 focus:bg-white/[0.05] focus:ring-4 focus:ring-gold/5 transition-all outline-none placeholder:text-slate-600 uppercase font-black tracking-widest"
                   placeholder="BA-XXXX-XXX"
                 />
               </div>
             </div>
 
-            {/* Access Cipher Input */}
-            <div className="space-y-2">
-              <label className="text-[8px] font-black text-slate-500 uppercase tracking-widest ml-1">Access Cipher</label>
+            {/* Password Input */}
+            <div className="space-y-3">
+              <label className="text-[9px] font-black text-white uppercase tracking-widest px-1">Access Key</label>
               <div className="relative group/input">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within/input:text-gold transition-colors" size={14} />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white group-focus-within/input:text-gold transition-colors" size={16} />
                 <input 
                   required
                   name="accessCode" 
                   type="password"
-                  className="w-full bg-white/[0.03] border border-white/10 rounded-xl md:rounded-2xl pl-12 pr-6 py-4 text-white text-sm focus:border-gold/40 focus:bg-white/[0.06] transition-all placeholder:text-slate-800"
+                  className="w-full bg-white/[0.02] border border-white/10 rounded-2xl pl-12 pr-6 py-5 text-white text-sm focus:border-gold/50 focus:bg-white/[0.05] transition-all outline-none placeholder:text-slate-600"
                   placeholder="••••••••••••"
                 />
               </div>
@@ -90,13 +103,14 @@ export default function PortalLoginPage() {
             <AnimatePresence>
               {state?.error && (
                 <motion.div 
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className="bg-red-500/10 border border-red-500/20 py-3 rounded-xl px-4"
+                  className="bg-red-500/5 border border-red-500/20 py-4 rounded-2xl px-4 flex items-center gap-3"
                 >
-                  <p className="text-red-400 text-[9px] font-black uppercase text-center tracking-widest leading-relaxed">
-                    ⚠ Unauthorized Access: {state.error}
+                  <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                  <p className="text-red-400 text-[10px] font-black uppercase tracking-widest">
+                    Unauthorized: {state.error}
                   </p>
                 </motion.div>
               )}
@@ -104,51 +118,46 @@ export default function PortalLoginPage() {
 
             {/* Login Button */}
             <motion.button
-              whileTap={{ scale: 0.96 }}
+              whileHover={{ scale: 1.02, translateY: -2 }}
+              whileTap={{ scale: 0.98 }}
               disabled={isPending}
-              className="w-full py-4 md:py-5 bg-gold text-[#020617] font-black uppercase tracking-[0.3em] text-[10px] rounded-xl md:rounded-2xl shadow-[0_10px_30px_rgba(212,175,55,0.15)] flex items-center justify-center gap-3 disabled:opacity-50"
+              className="group relative w-full py-5 bg-gold text-white font-black uppercase tracking-[0.4em] text-[11px] rounded-2xl shadow-[0_20px_40px_rgba(212,175,55,0.2)] overflow-hidden flex items-center justify-center gap-3 disabled:opacity-50"
             >
+              <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 skew-x-[45deg]" />
               {isPending ? (
-                <Loader2 className="animate-spin" size={18} />
+                <Loader2 className="animate-spin" size={20} />
               ) : (
                 <>
-                  <Fingerprint size={16} />
-                    <span>Initiate Login</span>
-                    
+                  <Fingerprint size={18} />
+                  <span>Execute Auth</span>
                 </>
               )}
             </motion.button>
-            {/* يوضع في صفحة الـ Login */}
-<Link 
-  href="/forgot-access" 
-  className="text-[9px] text-slate-500 hover:text-gold transition-colors uppercase tracking-widest block text-center mt-4"
->
-  Lost your Identity Vector (ID/Password)?
-</Link>
           </form>
 
-          {/* 🆕 Optimized "New Recruit" Button Area */}
-          <div className="mt-8 pt-8 border-t border-white/5 space-y-4">
-            <div className="flex flex-col items-center gap-3">
-              <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest">New Deployment?</span>
-              
-              <Link href="/register" className="w-full">
-                <motion.button
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full py-4 bg-white/5 border border-white/10 rounded-xl md:rounded-2xl flex items-center justify-center gap-3 group/reg transition-all hover:bg-white/10"
-                >
-                  <UserPlus size={14} className="text-gold group-hover/reg:scale-110 transition-transform" />
-                  <span className="text-[9px] font-black text-white uppercase tracking-[0.2em]">
-                    Initialize Identity Vector
-                  </span>
-                </motion.button>
-              </Link>
-            </div>
+          {/* Footer Actions */}
+          <div className="mt-10 pt-8 border-t border-white/5 space-y-6">
+            <Link 
+              href="/forgot-access" 
+              className="text-[9px] text-white hover:text-gold transition-colors uppercase font-black tracking-[0.3em] block text-center"
+            >
+              forget your Identity ?
+            </Link>
+
+            <Link href="/register" className="block">
+              <motion.button
+                whileHover={{ bg: "rgba(255,255,255,0.05)" }}
+                className="w-full py-4 border border-white/5 rounded-2xl flex items-center justify-center gap-3 group/reg transition-all"
+              >
+                <UserPlus size={14} className="text-gold/40 group-hover/reg:text-gold transition-colors" />
+                <span className="text-[10px] font-black text-white group-hover/reg:text-white uppercase tracking-[0.2em]">
+                   New Identity
+                </span>
+              </motion.button>
+            </Link>
           </div>
 
-          <p className="mt-8 text-center text-[7px] text-slate-700 font-bold tracking-[0.4em] uppercase opacity-40">
-            Academy OS v.2.6 // Abu Dhabi Terminal
-          </p>
+
         </div>
       </motion.div>
     </main>

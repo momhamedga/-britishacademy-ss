@@ -29,31 +29,32 @@ export default async function CourseDetailsPage({ params }: { params: any }) {
     hasClassRecord: true
   };
 
-  return (
-    // أضفنا خلفية سوداء عميقة لتناسب صور "Access Denied" التي أرفقتها
-    <main className="min-h-screen  pb-20 px-4 md:px-6  text-white relative overflow-hidden">
-      
-      {/* 🌌 تحسين الإضاءة التكتيكية */}
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gold/[0.03] blur-[150px] rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none animate-pulse" />
+return (
+    <main className="min-h-scree">
+      {/* 1. الـ Hero هنا هيكون حر، هياخد العرض كامل طبيعي بدون hacks */}
+      <CourseHero course={course} />
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <CourseHero course={course} />
-
-        <div className="grid lg:grid-cols-12 gap-12 mt-16">
-          <div className="lg:col-span-8">
-            <CourseTabs course={course} fullContent={fullContent} />
+      {/* 2. باقي المحتوى هو اللي يتحط جوه الـ Container */}
+    <div className="max-w-7xl mx-auto px-4 py-12">
+<div className="flex flex-col lg:flex-row gap-8 relative">          
+        <div className="flex-1 min-w-0">
+          <CourseTabs course={course} fullContent={fullContent} />
           </div>
 
-          <div className="lg:col-span-4">
-            <CourseSidebar 
+  <aside className="w-full lg:w-[400px]">
+        {/* الـ Sidebar هنا لازم يكون relative أو sticky فقط، ممنوع absolute */}
+        <div className="lg:sticky lg:top-24">
+          <CourseSidebar 
               course={course} 
-              fullContent={fullContent} 
               stats={liveStats}
-              userId={userId} // ⬅️ تمرير المعرف هنا ضروري جداً
+              userId={userId}
             />
-          </div>
+    </div>
+      </aside>
+          
         </div>
       </div>
     </main>
   );
+
 }

@@ -27,37 +27,28 @@ export default async function PortalLayout({ children }: { children: React.React
 
   const showUI = !isAuthPage && !!userId && !!student;
 
-  return (
-    <div className="min-h-screen flex overflow-hidden selection:bg-gold/30 selection:text-white ">
-      {/* Cinematic Backgrounds */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] right-[-10%] size-[600px] bg-gold/[0.03] blur-[120px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[-10%] left-[-10%] size-[500px] bg-blue-600/[0.02] blur-[150px] rounded-full" />
-      </div>
+return (
+  /* تأكد من وجود items-stretch هنا */
+  <div className="min-h-screen flex items-stretch overflow-x-hidden selection:bg-gold/30" style={{ backgroundColor: '#f8fafc' }}>
+    
+    {showUI && (
+      <aside 
+        className="hidden lg:flex w-80 h-screen sticky top-0 z-30 flex-col border-r border-white/5 shadow-[20px_0_50px_rgba(0,0,0,0.2)]"
+        style={{ backgroundColor: 'oklch(25% 0.08 260)' }} /* استخدمنا اللون بتاعك هنا مباشرة */
+      >
+        <Sidebar studentData={student} />
+      </aside>
+    )}
 
-      {showUI && (
-        <aside className="hidden lg:flex w-80 border-r border-white/5 backdrop-blur-4xl relative z-30 flex-col">
-          <Sidebar studentData={student} />
-        </aside>
-      )}
-
-      {/* 📱 نداء الـ Mobile Nav الجديد */}
+    <div className="flex-1 flex flex-col min-h-screen relative">
       {showUI && <MobileNav pathname={pathname} />}
 
-      <main className={`flex-1 relative h-screen overflow-y-auto custom-scrollbar z-10 ${showUI ? 'pb-28 lg:pb-0' : ''}`}>
-        <div className={`${!showUI ? 'w-full h-full flex items-center justify-center' : 'max-w-[1600px] mx-auto p-4 md:p-10 lg:p-16'}`}>
+      <main className={`flex-1 relative z-10 flex flex-col ${showUI ? 'pt-[160px] lg:pt-24 pb-28' : ''}`}>
+        <div className="w-full max-w-[1400px] mx-auto px-4 md:px-10 flex-1 flex items-start justify-center">
           {children}
         </div>
-        
-        {/* Terminal Footer */}
-        {showUI && student && (
-          <div className="hidden md:block absolute bottom-4 right-8 pointer-events-none opacity-20">
-            <p className="text-[7px] font-mono text-gold tracking-[0.5em] uppercase">
-              Uplink Active // Verified Identity: {student.student_id}
-            </p>
-          </div>
-        )}
       </main>
     </div>
-  );
+  </div>
+);
 }
