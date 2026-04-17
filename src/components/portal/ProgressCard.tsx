@@ -10,51 +10,43 @@ interface ProgressProps {
 export default function ProgressCard({ progress }: ProgressProps) {
   return (
     <motion.div 
-      initial={{ opacity: 0, scale: 0.98 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }}
-      className="relative p-8 rounded-[2rem] bg-white/[0.02] backdrop-blur-3xl border border-white/5 overflow-hidden group"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="relative p-6 bg-navy md:p-10 rounded-[2.5rem] border border-white/5 overflow-hidden group shadow-2xl"
+
     >
-      {/* 🌌 تأثير الإضاءة الخلفية (Glow) */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-gold/5 blur-[80px] -z-10 group-hover:bg-gold/10 transition-colors duration-1000" />
+      {/* Glow ذهبي خفيف في الزاوية */}
+      <div className="absolute -top-24 -right-24 size-64 bg-gold/5 blur-[100px] pointer-events-none group-hover:bg-gold/10 transition-colors duration-1000" />
       
-      <div className="flex justify-between items-end mb-8 relative z-10">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8 relative z-10">
         <div>
-          <h3 className="text-white text-xl font-bold italic mb-1 tracking-tight">Mission Progress</h3>
-          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] opacity-70">
-            Current Objective Completion
+          <h3 className="text-white text-2xl md:text-3xl font-black italic mb-2 tracking-tighter uppercase">Mission Progress</h3>
+          <p className="text-gold/40 text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em]">
+            Current Objective Completion Status
           </p>
         </div>
-        <div className="text-right">
-          <motion.span 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-gold font-black text-5xl tracking-tighter tabular-nums drop-shadow-[0_0_15px_rgba(212,175,55,0.3)]"
-          >
+        <div className="text-left md:text-right w-full md:w-auto">
+          <span className="text-gold font-black text-5xl md:text-7xl tracking-tighter tabular-nums drop-shadow-[0_0_20px_rgba(212,175,55,0.4)]">
             {progress}%
-          </motion.span>
+          </span>
         </div>
       </div>
 
-      {/* ⚡ الـ Progress Bar السينمائي */}
-      <div className="relative h-4 w-full bg-white/5 rounded-full border border-white/10 p-[2px] overflow-hidden">
+      <div className="relative h-4 md:h-5 w-full bg-black/40 rounded-full border border-white/5 p-[2px] overflow-hidden shadow-inner">
         <motion.div 
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
-          transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
-          className="h-full rounded-full bg-gradient-to-r from-gold/40 via-gold to-gold/40 shadow-[0_0_25px_rgba(212,175,55,0.4)] relative"
+          transition={{ duration: 2.5, ease: "circOut" }}
+          className="h-full rounded-full bg-gradient-to-r from-gold/40 via-gold to-gold/40 shadow-[0_0_30px_rgba(212,175,55,0.5)] relative"
         >
-          {/* تأثير الـ Shine اللي بيمسح البار باستمرار */}
+          {/* تأثير المسح الضوئي */}
           <motion.div 
-            animate={{ x: ['-100%', '300%'] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-1/3 skew-x-12"
+            animate={{ x: ['-100%', '400%'] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent w-20 skew-x-12"
           />
         </motion.div>
       </div>
-
-      {/* تفصيلة صغيرة: خطوط ديكورية في الخلفية */}
-      <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-gold/10 to-transparent" />
     </motion.div>
   );
 }

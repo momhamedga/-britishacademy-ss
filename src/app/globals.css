@@ -2,25 +2,28 @@
 
 /* 1. تعريف المتغيرات بنظام OKLCH المطور 2026 */
 :root {
-  /* الخلفية الأساسية: أبيض لؤلؤي بارد (كما طلبته تماماً) */
-  --background:  oklch(98% 0.01 260);
-  /* النص الأساسي: Navy عميق جداً للوضوح العالي */
+  /* الخلفية الأساسية للموقع (Light Mode Default) */
+  --background: oklch(98% 0.01 260);
   --foreground: oklch(20% 0.06 260); 
   
-  /* ألوان الهوية من الـ Style Guide */
-  --academy-navy: oklch(25% 0.08 260);      /* #1B3156 المترجم لـ OKLCH */
-  --academy-gold: oklch(75% 0.15 85);       /* #D4A843 الذهبي الملكي */
-  --academy-gold-light: oklch(88% 0.12 95); /* ذهبي فاتح جداً للـ Hover */
-  --academy-gold-dark: oklch(55% 0.15 75);  /* ذهبي نحاسي للحدود */
+  --academy-navy: oklch(25% 0.08 260);
+  --academy-gold: oklch(75% 0.15 85);
+  --academy-gold-light: oklch(88% 0.12 95);
+  --academy-gold-dark: oklch(55% 0.15 75);
 
-  /* ألوان الحالات (Status Colors) */
-  --success: oklch(65% 0.22 150); /* الأخضر النجاح */
-  --error: oklch(55% 0.20 25);    /* الأحمر التنبيه */
-  --warning: oklch(75% 0.18 70);  /* البرتقالي التحذير */
+  --success: oklch(65% 0.22 150);
+  --error: oklch(55% 0.20 25);
+  --warning: oklch(75% 0.18 70);
 
-  /* الخطوط */
   --font-display: var(--font-syne), "Syne", sans-serif;
   --font-sans: var(--font-inter), "Inter", sans-serif;
+}
+
+/* 🛡️ القضاء على الفراغ الأبيض: إجبار الـ Portal على تغيير الهوية */
+.portal-theme {
+  --background: oklch(15% 0.04 260) !important; /* Navy العميق */
+  --foreground: oklch(100% 0 0) !important;      /* نص أبيض */
+  --academy-navy: oklch(20% 0.06 260);           /* تغميق الـ Navy للأسايد */
 }
 
 /* 2. إعدادات الـ Theme بنظام Tailwind v4 */
@@ -39,7 +42,7 @@
   --font-display: var(--font-display);
   --font-sans: var(--font-sans);
 
-  /* أنيميشن فائق النعومة */
+  /* أنيميشن */
   --animate-float: float 5s ease-in-out infinite;
   --animate-gold-glow: gold-glow 3s ease-in-out infinite;
   --animate-reveal: reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1);
@@ -61,51 +64,39 @@
 /* 3. الطبقة الأساسية (Base) */
 @layer base {
   body {
+    /* 🚨 السحر هنا: الـ bg-background سيتغير لونه بناءً على الـ Variable */
     @apply bg-background text-foreground font-sans antialiased;
-    /* تحسين القراءة في المود الفاتح */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.5s ease, color 0.5s ease;
   }
 
-  /* العناوين بناءً على الـ Style Guide (Cairo Bold -> Syne Black) */
   h1, h2, h3 {
-    @apply font-display font-black tracking-tight text-navy italic uppercase;
+    @apply font-display font-black tracking-tight italic uppercase;
   }
   
-  h1 { @apply text-6xl md:text-8xl leading-[0.85]; }
-  h2 { @apply text-4xl md:text-6xl leading-[0.9]; }
+  /* في الـ Portal نخلي العناوين بيضاء تلقائياً */
+  .portal-theme h1, .portal-theme h2, .portal-theme h3 {
+    @apply text-white;
+  }
 }
 
 @layer utilities {
-  /* نسيج الزجاج المضيء (للخلفيات البيضاء) */
-  .glass-light {
-    @apply backdrop-blur-xl border border-white/40;
+  /* نسيج الزجاج المظلم (Dark Glassmorphism) للـ Portal */
+  .glass-dark {
+    @apply backdrop-blur-2xl border border-white/5;
     background: linear-gradient(
       135deg, 
-      oklch(100% 0 0 / 70%), 
-      oklch(100% 0 0 / 30%)
+      oklch(20% 0.06 260 / 40%), 
+      oklch(15% 0.04 260 / 20%)
     );
-    box-shadow: 0 8px 32px 0 oklch(20% 0.06 260 / 5%);
   }
 
-  /* تدرج الذهب المطور */
   .text-gold-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-b from-gold-light via-gold to-gold-dark;
   }
 
-  /* الكروت بناءً على الـ Course Card في الصورة */
-  .card-academy {
-    @apply bg-white border border-black/5 rounded-[2rem] p-6 
-           transition-all duration-500 hover:border-gold/30 
-           hover:shadow-[0_20px_60px_rgba(0,0,0,0.03)];
+  /* تحديث الكروت لتناسب الـ Navy في الـ Portal */
+  .portal-theme .card-academy {
+    @apply bg-white/5 border-white/10 text-white hover:border-gold/50;
+    backdrop-filter: blur(10px);
   }
-
-  /* شبكة تقنية خفيفة جداً للخلفية */
-  .bg-tech-grid {
-    background-image: radial-gradient(oklch(20% 0.06 260 / 0.05) 1px, transparent 0.1px);
-    background-size: 30px 30px;
-  }
-  .bg-pearl { background-color: oklch(98% 0.01 260); }
-  .text-navy { color: oklch(25% 0.08 260); }
-  .border-gold-dark { border-color: oklch(55% 0.15 75); }
 }

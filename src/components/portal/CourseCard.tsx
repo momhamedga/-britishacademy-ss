@@ -1,7 +1,7 @@
 "use client"
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Clock, ShieldCheck, Target, ChevronRight } from 'lucide-react';
+import { Clock, Target, ChevronRight, Activity, Zap } from 'lucide-react'; // ضيف Zap هنا
 import Link from 'next/link';
 
 interface CourseCardProps {
@@ -21,81 +21,103 @@ export default function CourseCard({ title, category, progress, thumbnail, level
     'text-emerald-400 bg-emerald-400/10 border-emerald-400/20';
 
   return (
-    <Link href={`/courses/${slug}`} className="block group w-full">
+    <Link href={`/courses/${slug}`} className="block group w-full max-w-[500px] mx-auto lg:max-w-none">
       <motion.div 
-        whileHover={{ y: -10 }}
-        whileTap={{ scale: 0.97 }}
-        className="relative border border-white/10 rounded-[2.5rem] p-4 md:p-5 transition-all duration-500 hover:border-[#D4AF37]/40 backdrop-blur-3xl bg-[#0F172A]/40 shadow-2xl overflow-hidden group/card"
+        whileHover={{ y: -8, scale: 1.01 }}
+        whileTap={{ scale: 0.98 }}
+        className="relative border bg-navy border-white/5 rounded-[3rem] p-5 md:p-6 transition-all duration-500 hover:border-[#D4AF37]/30 shadow-[0_30px_60px_rgba(0,0,0,0.6)] overflow-hidden group/card"
       >
-        {/* 🛡️ Visual Area - Glass Container */}
-        <div className="relative h-48 md:h-56 w-full rounded-[2rem] overflow-hidden flex items-center justify-center bg-black/20 border border-white/5">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/10 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-700" />
-          
-          {/* Animated Background Glow */}
-          <div className="absolute w-40 h-40 bg-[#D4AF37]/5 blur-[50px] rounded-full group-hover/card:bg-[#D4AF37]/15 transition-all duration-700" />
+        {/* Backdrop Blur Layer */}
+        <div className="absolute inset-0 backdrop-blur-3xl pointer-events-none" />
 
-          {/* 🏛️ Course Image */}
-          <div className="relative w-32 h-32 md:w-36 md:h-36 transition-all duration-700 group-hover/card:scale-110 group-hover/card:rotate-2 z-10">
+        {/* Glow خلفي - Tactical Glow */}
+        <div className="absolute inset-0 bg-[#D4AF37]/5 blur-[120px] rounded-full opacity-0 group-hover/card:opacity-100 transition-opacity duration-1500 pointer-events-none" />
+
+        {/* 🛡️ Visual Area - Updated for full frame image */}
+        <div className="relative h-48 sm:h-52 md:h-60 w-full rounded-[2.5rem] overflow-hidden flex items-center justify-center border border-white/5 shadow-inner">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#D4AF37]/10 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-700 z-10" />
+          
+          <div className="absolute w-32 h-32 md:w-48 md:h-48 bg-[#D4AF37]/10 blur-[70px] rounded-full group-hover/card:bg-[#D4AF37]/20 transition-all duration-1000 z-10" />
+
+          {/* 🏛️ Course Image - 🚨 التعديل هنا لملء الإطار */}
+          <div className="absolute inset-0 w-full h-full transition-all duration-1000 group-hover/card:scale-105 group-hover/card:rotate-1 z-0">
             <Image 
               src={thumbnail || "/logo.webp"} 
               alt={title}
               fill 
-              className="object-contain p-4 drop-shadow-[0_0_20px_rgba(212,175,55,0.2)]" 
+              /* 🚨 استخدام object-cover هنا مهم جداً لملء الإطار */
+              className="object-cover p-2 group-hover/card:p-0 transition-all duration-700 drop-shadow-[0_0_20px_rgba(212,175,55,0.2)]" 
               priority 
             />
           </div>
           
-          <div className={`absolute top-5 right-5 px-4 py-1.5 rounded-full border text-[9px] font-black uppercase tracking-[0.2em] backdrop-blur-xl z-20 shadow-xl ${levelStyles}`}>
-            {level}
+          {/* Level Badge */}
+          <div className={`absolute top-4 sm:top-5 right-4 sm:right-5 px-3.5 sm:px-4 py-1.5 rounded-full border text-[8px] sm:text-[9px] font-black uppercase tracking-[0.2em] backdrop-blur-xl z-20 shadow-xl ${levelStyles}`}>
+            <span className="animate-pulse mr-1">●</span>{level}
           </div>
         </div>
 
         {/* 📝 Content Area */}
-        <div className="mt-8 px-2">
-          <div className="flex items-center gap-2 mb-4">
-             <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
-             <span className="text-white/40 font-black text-[10px] uppercase tracking-[0.3em]">{category}</span>
+        <div className="mt-8 px-1 sm:px-2 space-y-6 relative z-10">
+          <div className="flex items-center gap-2">
+             <div className="size-1.5 bg-[#D4AF37] rounded-full animate-pulse shadow-[0_0_10px_rgba(212,175,55,0.8)]" />
+             <span className="text-white/40 font-black text-[9px] sm:text-[10px] uppercase tracking-[0.3em] italic">{category}</span>
           </div>
           
-          <h3 className="text-white font-black text-2xl md:text-3xl mb-6 italic uppercase tracking-tighter leading-tight line-clamp-2 transition-all duration-300 group-hover/card:text-[#D4AF37]">
+          <h3 className="text-white font-black text-xl sm:text-2xl md:text-3xl italic uppercase tracking-tighter leading-[0.9] line-clamp-2 transition-all duration-500 group-hover/card:text-[#D4AF37]">
             {title}
           </h3>
           
+          <div className="flex flex-wrap gap-2 items-center"> {/* 🚨 تجاوب المسافات */}
+              <div className="flex items-center gap-3 text-emerald-400 bg-emerald-950/40 border border-emerald-900/40 rounded-full px-4 py-1.5 text-[8px] sm:text-[9px] font-bold uppercase tracking-widest italic w-fit">
+                <Activity size={12} className="animate-pulse" />
+                Active Deployment
+              </div>
+              <div className="flex items-center gap-2 text-[#D4AF37] bg-white/[0.03] border border-white/5 rounded-full px-3 py-1.5 text-[8px] font-bold uppercase tracking-widest italic w-fit">
+                <Zap size={10} className="text-[#D4AF37]/60" />
+                Verified Mission
+              </div>
+          </div>
+
           {/* Info Grid */}
-          <div className="grid grid-cols-2 gap-4 mb-6 border-y border-white/5 py-6">
-             <div className="flex items-center gap-3">
-                <Clock size={16} className="text-[#D4AF37]/60" />
-                <span className="text-white/60 text-[10px] font-black uppercase tracking-widest">{duration}</span>
+          <div className="grid grid-cols-2 gap-4 border-y border-white/5 py-5 relative">
+            <div className="absolute inset-y-0 left-1/2 w-px bg-white/5 -translate-x-1/2" />
+             <div className="flex items-center gap-2 justify-center">
+                <Clock size={15} className="text-[#D4AF37]/50" />
+                <span className="text-white/60 text-[9px] sm:text-[10px] font-black uppercase tracking-widest font-mono italic">{duration}</span>
              </div>
-             <div className="flex items-center gap-3">
-                <Target size={16} className="text-[#D4AF37]/60" />
-                <span className="text-white/60 text-[10px] font-black uppercase tracking-widest italic">Verified</span>
+             <div className="flex items-center gap-2 justify-center">
+                <Target size={15} className="text-[#D4AF37]/50" />
+                <span className="text-white/60 text-[9px] sm:text-[10px] font-black uppercase tracking-widest italic truncate">British Standards</span> {/* 🚨 التعديل ليكون أكثر إثارة */}
              </div>
           </div>
 
           {/* Progress Bar */}
-          <div className="space-y-4">
-            <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em]">
-              <span className="text-white/20 italic">Mission Progress</span>
-              <span className="text-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.3)]">{progress}%</span>
+          <div className="space-y-4 pt-2"> {/* 🚨 مسافة تكتيكية */}
+            <div className="flex justify-between items-center text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] relative">
+              <span className="text-white/30 italic">Mission Progress</span>
+              <span className="text-[#D4AF37] drop-shadow-[0_0_8px_rgba(212,175,55,0.6)] font-mono">{progress}%</span>
+              <div className="absolute bottom-[-10px] left-0 w-full h-[1px] bg-white/5 rounded-full" /> {/* Tactical line */}
             </div>
-            <div className="h-2.5 w-full bg-black/40 rounded-full overflow-hidden border border-white/5 p-[1px]">
+            <div className="h-3 md:h-3.5 w-full bg-black/60 rounded-full overflow-hidden border border-white/5 relative shadow-inner">
+               {/* Background pattern inside progress bar */}
+              <div className="absolute inset-0 w-full h-full" style={{ background: 'repeating-linear-gradient(-45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 6px)'}} />
               <motion.div 
                 initial={{ width: 0 }}
                 whileInView={{ width: `${progress}%` }}
-                transition={{ duration: 1, delay: 0.5 }}
-                className="h-full bg-gradient-to-r from-[#D4AF37]/40 via-[#D4AF37] to-[#F3D179] rounded-full shadow-[0_0_10px_rgba(212,175,55,0.4)]"
+                transition={{ duration: 1.2, ease: "circOut", delay: 0.3 }}
+                className="h-full bg-gradient-to-r from-[#D4AF37]/50 via-[#F3D179] to-[#D4AF37] rounded-full shadow-[0_0_15px_rgba(212,175,55,0.6)] relative z-10"
               />
             </div>
           </div>
 
           {/* Action Footer */}
-          <div className="mt-8 flex justify-between items-center group/btn">
-              <span className="text-[9px] text-white/30 font-bold uppercase tracking-widest">EST. 2026 Standards</span>
+          <div className="mt-8 flex justify-between items-center pt-6 border-t border-white/5 group/btn">
+              <span className="text-[8px] sm:text-[9px] text-white/10 font-bold uppercase tracking-widest font-mono">EST. 2026 STANDARDS</span> {/* 🚨 التعديل ليكون أكثر سرية */}
               <div className="flex items-center gap-3">
-                  <span className="text-[10px] font-black text-[#D4AF37] uppercase tracking-widest opacity-0 group-hover/card:opacity-100 -translate-x-4 group-hover/card:translate-x-0 transition-all duration-500 italic">Access Mission</span>
-                  <div className="p-2.5 rounded-full bg-[#D4AF37] text-black shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-transform group-hover/card:rotate-[-45deg]">
-                    <ChevronRight size={14} strokeWidth={3} />
+                  <span className="text-[10px] font-black text-[#D4AF37] uppercase tracking-widest opacity-0 group-hover/card:opacity-100 -translate-x-3 group-hover/card:translate-x-0 transition-all duration-500 italic">start Course</span>
+                  <div className="size-9 rounded-full bg-[#D4AF37] text-black transition-all duration-300 group-hover/card:rotate-[-45deg] flex items-center justify-center group-hover/card:bg-white group-hover/card:text-[#050A14]">
+                    <ChevronRight size={16} strokeWidth={4} />
                   </div>
               </div>
           </div>

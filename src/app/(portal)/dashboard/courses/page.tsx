@@ -33,22 +33,10 @@ const courses = userId ? await sql`
     <div className="max-w-7xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-1000 px-4 md:px-0">
       
       {/* Header Section */}
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-8">
-        <div className="flex items-center gap-5">
-          <div className="p-4 bg-gold/10 border border-gold/20 rounded-[1.5rem] text-gold shadow-[0_0_30px_rgba(212,175,55,0.1)]">
-            <Layers size={32} />
-          </div>
-          <div>
-            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter italic uppercase">Deployed Ops</h1>
-            <p className="text-gold/60 text-[10px] font-black uppercase tracking-[0.5em] mt-1">Sector 7 Active Missions</p>
-          </div>
-        </div>
-        <div className="hidden md:block text-right">
-           <span className="text-[9px] font-mono text-slate-600 uppercase tracking-widest">
-             Signal Status: {courses.length > 0 ? 'Optimal' : 'Scanning...'}
-           </span>
-        </div>
-      </header>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-8">
+   
+   
+      </div>
 
       {/* Grid */}
       {courses.length > 0 ? (

@@ -43,8 +43,7 @@ const cookieStore = await cookies();
             <UserCog size={30} />
           </div>
           <div>
-            <h1 className="text-4xl font-bold text-white tracking-tighter italic">Personnel Settings</h1>
-            <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em]">Identity & Security Protocols</p>
+            <h1 className="text-4xl font-bold text-navy tracking-tighter italic">Personnel Settings</h1>
           </div>
         </div>
 
@@ -52,9 +51,9 @@ const cookieStore = await cookies();
         <div className="flex flex-col items-start md:items-end gap-2 group">
           <div className="flex items-center gap-2">
             <Target size={10} className="text-gold animate-pulse" />
-            <span className="text-[8px] font-black text-slate-600 uppercase tracking-[0.3em]">Operational Vector ID</span>
+            <span className="text-[8px] font-black text-slate-600 uppercase tracking-[0.3em]">student Vector ID</span>
           </div>
-          <div className="px-5 py-2 bg-white/[0.03] border border-white/10 rounded-xl backdrop-blur-md flex items-center gap-3 group-hover:border-gold/30 transition-all duration-500">
+          <div className="px-5 py-2 bg-navy border border-white/10 rounded-xl backdrop-blur-md flex items-center gap-3 group-hover:border-gold/30 transition-all duration-500">
             <div className="size-1.5 bg-gold rounded-full shadow-[0_0_8px_#D4AF37]" />
             <code className="text-gold font-black text-sm tracking-[0.25em] font-mono">
               {student.student_id} 
@@ -72,7 +71,7 @@ const cookieStore = await cookies();
 
         {/* 🛡️ Status Cards */}
         <div className="space-y-6">
-          <div className="glass border border-gold/20 rounded-[2rem] p-6 relative overflow-hidden bg-gold/[0.02]">
+          <div className="glass border border-gold/20 rounded-[2rem] p-6 relative overflow-hidden bg-navy">
              <div className="relative z-10">
                 <div className="flex items-center gap-2 text-gold mb-4">
                    <ShieldCheck size={16} />
@@ -86,19 +85,7 @@ const cookieStore = await cookies();
              <Fingerprint className="absolute -right-4 -bottom-4 size-24 text-gold/5" />
           </div>
 
-          <div className="glass border border-white/5 rounded-[2rem] p-6">
-             <h4 className="text-white font-bold text-xs uppercase tracking-widest mb-4">System Access</h4>
-             <ul className="space-y-3">
-                <li className="flex items-center justify-between text-[10px] font-bold">
-                   <span className="text-slate-500 uppercase">2FA Auth</span>
-                   <span className="text-emerald-500 uppercase">Active</span>
-                </li>
-                <li className="flex items-center justify-between text-[10px] font-bold">
-                   <span className="text-slate-500 uppercase">Session Log</span>
-                   <span className="text-gold uppercase">Secure</span>
-                </li>
-             </ul>
-          </div>
+
         </div>
       </div>
     </div>

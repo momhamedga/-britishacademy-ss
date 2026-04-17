@@ -5,7 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import NextTopLoader from 'nextjs-toploader';
 import { sql } from "@/lib/db";
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers'; // ✅ ضفنا headers
 import AnimatedFavicon from "@/components/ui/AnimatedFavicon";
 import { Suspense } from "react";
 
@@ -23,43 +23,48 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const userId = cookieStore.get('auth_token')?.value;
+  
+  // 🛰️ كشف المسار الحالي: هل إحنا جوه الـ Portal؟
+  const headerList = await headers();
+  const pathname = headerList.get("x-pathname") || ""; 
+  const isPortal = pathname.includes('/dashboard') || pathname.includes('/portal');
 
   return (
     <html lang="en" dir="ltr" className="scroll-smooth select-none">
-      <body className={`${syne.variable} ${inter.variable} antialiased bg-background text-foreground relative font-sans overflow-x-hidden`}>
+      <body 
+        className={`${syne.variable} ${inter.variable} antialiased text-foreground relative overflow-x-hidden min-h-screen`}
+        // 🚨 تصحيح الخلفية: لو في الـ Portal نثبت الـ Navy، لو بره نستخدم الـ Default
+        style={{ backgroundColor: isPortal ? 'oklch(15% 0.04 260)' : 'var(--background)' }}
+      >
         <NextTopLoader color="#D4AF37" showSpinner={false} />
 
-        {/* تم إصلاح الـ Fallback لتمرير isGuest={true} */}
-        <Suspense fallback={<Navbar isGuest={true} />}>
-          <NavbarWrapper userId={userId} />
-        </Suspense>
+        {/* 🛡️ إخفاء الـ Navbar تماماً لو إحنا جوه الـ Portal عشان ميعملش فراغ أبيض */}
+        {!isPortal && (
+          <Suspense fallback={<Navbar isGuest={true} />}>
+            <NavbarWrapper userId={userId} />
+          </Suspense>
+        )}
         
-        {/* المحتوى يبدأ بدون Padding إضافي للسماح للـ Navbar بالالتصاق */}
-        <main className="relative z-10 min-h-screen">
+        <main className={`relative z-10 min-h-screen ${isPortal ? 'w-full' : ''}`}>
           <AnimatedFavicon />
           {children}
         </main>
 
-        <Footer />
+        {/* 🛡️ إخفاء الفوتر لو إحنا في الـ Portal */}
+        {!isPortal && <Footer />}
       </body>
     </html>
   );
 }
 
+// ... NavbarWrapper تظل كما هي ...
 async function NavbarWrapper({ userId }: { userId?: string }) {
-  // حالة الضيف: لا يوجد Token
   if (!userId) return <Navbar isGuest={true} />;
-
   try {
     const [student] = await sql`SELECT name, rank FROM students WHERE id = ${userId} LIMIT 1`;
-    
-    // لو الـ Token موجود بس الطالب مش في الـ DB
     if (!student) return <Navbar isGuest={true} />;
-
-    // حالة المستخدم المسجل
     return <Navbar user={{ name: student.name, rank: student.rank }} isGuest={false} />;
   } catch (error) {
-    // في حالة خطأ الـ Database ارجع لحالة الضيف
     return <Navbar isGuest={true} />;
   }
 }

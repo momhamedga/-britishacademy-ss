@@ -31,56 +31,62 @@ const cookieStore = await cookies();
   const activeCourses = parseInt(coursesCountRes[0].total || "0");
   const overallProgress = Math.round(Number(avgProgressRes[0].average) || 0);
 
-  return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+return (
+    <div className="min-h-screen space-y-8 md:space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-10">
       
-      {/* 1️⃣ هيدر البوابة - الآن سيعرض الاسم الصحيح لليوزر المسجل */}
+      {/* 1️⃣ هيدر البوابة */}
       <PortalHeader 
         studentName={student?.name || "Initializing..."} 
         studentRank={student?.rank || "SECURE"} 
       />
 
-      {/* باقي الكود يظل كما هو... */}
+      {/* 2️⃣ Progress Card - مع تأثير توهج خلفي */}
       <div className="relative group">
-        <div className="absolute -inset-1 bg-gradient-to-r from-gold/20 to-transparent rounded-[2.5rem] blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+        <div className="absolute -inset-1 bg-gradient-to-r from-gold/10 to-transparent rounded-[2.5rem] blur-2xl opacity-20 group-hover:opacity-40 transition duration-1000"></div>
         <ProgressCard progress={overallProgress} />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* 3️⃣ Stats Grid - التجاوب 1 موبايل، 2 تابلت، 3 ديسك توب */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         <StatsGrid 
           label="Active Operations" 
           value={activeCourses.toString().padStart(2, '0')} 
           icon={<BookOpen size={20} className="text-gold" />} 
-          description="Enrolled in British Academy programs"
+          description="Enrolled Programs"
         />
         <StatsGrid 
           label="Security Rank" 
           value={student?.rank || "PRODIGY"} 
           icon={<ShieldCheck size={20} className="text-gold" />} 
-          description="Current access level verified"
+          description="Verified Access Level"
         />
         <StatsGrid 
           label="System Status" 
           value="Online" 
           icon={<Activity size={20} className="text-emerald-500" />} 
-          description="Connection to Neon DB: Stable"
+          description="Neon DB: Stable"
         />
       </div>
 
-      <div className="glass border border-white/5 rounded-[2.5rem] p-8 relative overflow-hidden bg-white/[0.01]">
+      {/* 4️⃣ Intelligence Feed - تحويلها لـ Navy بالكامل */}
+      <div className="border bg-navy border-white/5 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 relative overflow-hidden shadow-2xl"
+        >
+        <div className="absolute inset-0 bg-gradient-to-br from-gold/[0.02] to-transparent pointer-events-none" />
+        
         <div className="relative z-10">
-          <h3 className="text-white font-black text-xs uppercase tracking-[0.4em] mb-6 flex items-center gap-2">
-            <div className="size-1.5 bg-emerald-500 rounded-full animate-ping" />
+          <h3 className="text-white/80 font-black text-[9px] md:text-xs uppercase tracking-[0.4em] mb-6 flex items-center gap-3">
+            <div className="size-2 bg-emerald-500 rounded-full animate-ping shadow-[0_0_10px_#10b981]" />
             Live Intelligence Feed
           </h3>
-          <div className="space-y-4 font-mono text-[10px]">
-            <p className="text-white/40 flex gap-4">
-              <span className="text-gold">[10:42:01]</span>
-              <span>Identity verified: {student?.name} recognized as {student?.rank} member.</span>
+          
+          <div className="space-y-4 font-mono text-[9px] md:text-[11px] leading-relaxed">
+            <p className="text-white/40 flex gap-3 md:gap-4 border-l border-gold/20 pl-4">
+              <span className="text-gold/60">[10:42:01]</span>
+              <span>Identity verified: <span className="text-white/80">{student?.name}</span> recognized.</span>
             </p>
-            <p className="text-white/40 flex gap-4">
-              <span className="text-gold">[10:42:05]</span>
-              <span>Retrieving course progress... {overallProgress}% fetched.</span>
+            <p className="text-white/40 flex gap-3 md:gap-4 border-l border-gold/20 pl-4">
+              <span className="text-gold/60">[10:42:05]</span>
+              <span>Retrieving mission progress... <span className="text-gold">{overallProgress}%</span> fetched.</span>
             </p>
           </div>
         </div>
