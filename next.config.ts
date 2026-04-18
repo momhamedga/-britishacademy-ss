@@ -15,6 +15,14 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 3600,
     dangerouslyAllowSVG: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'vobxfk6obpccdv1q.public.blob.vercel-storage.com', // الهوست نيم بتاعك
+        port: '',
+        pathname: '/**', // السماح لكل الصور في كل الفولدرات
+      },
+    ],
   },
 
   experimental: {

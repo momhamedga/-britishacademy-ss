@@ -17,6 +17,7 @@ export async function getLatestCourses() {
         duration, 
         level, 
         price, 
+        instructor_name,
         enrollment_count, 
         image_url, 
         is_sia_accredited, 
