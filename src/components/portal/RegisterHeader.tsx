@@ -11,8 +11,7 @@ export default function RegisterHeader() {
       >
         <UserPlus className="text-gold" size={28} />
       </motion.div>
-      <h1 className="text-2xl md:text-3xl font-black text-white tracking-tighter uppercase italic">Cadet Enrollment</h1>
-      <p className="text-[9px] text-slate-500 font-black uppercase tracking-[0.4em] mt-2">Protocol: Identity Initialization</p>
+      <h1 className="text-2xl md:text-3xl font-black text-white tracking-tighter uppercase italic">new student</h1>
     </div>
   );
 }

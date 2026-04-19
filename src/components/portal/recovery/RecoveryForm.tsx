@@ -15,9 +15,7 @@ export const RecoveryForm = ({ formAction, isPending, state }: RecoveryFormProps
         <h1 className="text-3xl md:text-4xl font-black text-white italic tracking-tighter uppercase leading-none">
           Identity <span className="text-gold">Recovery</span>
         </h1>
-        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.3em]">
-          Initiate deep-scan to retrieve <span className="text-gold">System ID</span> & <span className="text-gold text-[11px]">Access Cipher</span>
-        </p>
+   
       </div>
 
       <form action={formAction} className="space-y-6">

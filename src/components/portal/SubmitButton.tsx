@@ -19,7 +19,7 @@ export default function SubmitButton({ isPending }: { isPending: boolean }) {
           ) : (
             <>
               <Fingerprint size={16} />
-              <span>Initiate Enrollment</span>
+              <span>new Enrollment</span>
             </>
           )}
         </div>
@@ -38,7 +38,7 @@ export default function SubmitButton({ isPending }: { isPending: boolean }) {
           >
             <span>Already have an identity?</span>
             <span className="text-gold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-              Access Terminal <ArrowRight size={10} />
+              back login <ArrowRight size={10} />
             </span>
           </Link>
         </motion.div>

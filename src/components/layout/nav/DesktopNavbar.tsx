@@ -143,7 +143,7 @@ const DesktopNavbar = ({ user, isGuest }: NavbarProps) => {
         href="/login"
         className="hidden md:flex items-center gap-3 px-6 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all group"
       >
-        <span className="opacity-60 group-hover:opacity-100 transition-opacity">Agent Access</span>
+        <span className="opacity-60 group-hover:opacity-100 transition-opacity">student Access</span>
         <div className="w-1.5 h-1.5 rounded-full bg-[#D4A843] shadow-[0_0_8px_#D4A843]" />
       </Link>
 

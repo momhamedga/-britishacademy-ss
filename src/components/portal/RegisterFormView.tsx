@@ -11,7 +11,7 @@ export default function RegisterFormView({ formAction, isPending, state, callbac
 
       <div className="space-y-2 group">
         <label className="text-[8px] font-black text-gold/60 uppercase tracking-widest ml-2 flex items-center gap-2 italic">
-          <User size={10} /> Legal Designation
+          <User size={10} /> Legal 
         </label>
         <input 
           name="name" required placeholder="Full Personnel Name" 
@@ -21,7 +21,7 @@ export default function RegisterFormView({ formAction, isPending, state, callbac
 
       <div className="space-y-2 group">
         <label className="text-[8px] font-black text-gold/60 uppercase tracking-widest ml-2 flex items-center gap-2 italic">
-          <Mail size={10} /> Secure Uplink
+          <Mail size={10} /> Email
         </label>
         <input 
           name="email" type="email" required placeholder="pilot@british-academy.ae" 

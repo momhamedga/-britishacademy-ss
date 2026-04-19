@@ -129,7 +129,7 @@ export default function PortalLoginPage() {
               ) : (
                 <>
                   <Fingerprint size={18} />
-                  <span>Execute Auth</span>
+                  <span>login in</span>
                 </>
               )}
             </motion.button>
@@ -141,7 +141,7 @@ export default function PortalLoginPage() {
               href="/forgot-access" 
               className="text-[9px] text-white hover:text-gold transition-colors uppercase font-black tracking-[0.3em] block text-center"
             >
-              forget your Identity ?
+              forget your password ?
             </Link>
 
             <Link href="/register" className="block">
@@ -151,7 +151,7 @@ export default function PortalLoginPage() {
               >
                 <UserPlus size={14} className="text-gold/40 group-hover/reg:text-gold transition-colors" />
                 <span className="text-[10px] font-black text-white group-hover/reg:text-white uppercase tracking-[0.2em]">
-                   New Identity
+                   New Student
                 </span>
               </motion.button>
             </Link>
