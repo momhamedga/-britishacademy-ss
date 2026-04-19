@@ -1,142 +1,162 @@
-"use client";
-import { motion } from "framer-motion";
-import { Play, Star, Calendar, Users, BookOpen, CheckCircle2, ChevronRight } from "lucide-react";
+import { Play, Star, Calendar, Users, BookOpen, CheckCircle2, ChevronRight, Share2, Heart } from "lucide-react";
 import Image from "next/image";
 import { Course } from "@/types";
+import Link from "next/link";
 
 interface CourseHeroProps {
   course: Course;
 }
 
 export default function CourseHero({ course }: CourseHeroProps) {
+  
+  // React 19: لا داعي لـ useMemo هنا، الـ Compiler سيتكفل بالتحسين
   const getInitial = (name: string) => name?.charAt(0).toUpperCase() || "I";
 
   return (
-    // 1. استخدام w-screen و left-1/2 لضمان خروج الـ Section عن أي container وحذفه للمسافات البيضاء
-    <section className="relative min-h-screen w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-navy flex flex-col justify-center overflow-hidden border-none p-0 m-0">
+    <section className="relative  min-h-screen w-full bg-navy overflow-hidden">
       
-      {/* 🌌 Background Glows - Ultra Modern Cinematic Lighting */}
+      {/* 🌌 Ultra-Modern Background Layer */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] right-[-5%] w-[70vw] h-[70vw] bg-gold/[0.08] blur-[150px] rounded-full" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-[60vw] h-[60vw] bg-gold/[0.05] blur-[120px] rounded-full" />
+        <div className="absolute top-[-20%] right-[-10%] w-[80vw] h-[80vw] bg-gold/[0.07] blur-[160px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[70vw] h-[70vw] bg-gold/[0.04] blur-[140px] rounded-full" />
+        <div className="absolute inset-0 bg-[url('/assets/noise.png')] opacity-[0.02] mix-blend-overlay" />
       </div>
 
-      {/* 2. Content Wrapper - يتحكم في المسافة الداخلية فقط */}
-      <div className="w-full px-6 md:px-12 lg:px-24 py-16 md:py-28 relative z-10 max-w-[1920px] mx-auto">
+      <div className="relative z-10 max-w-[1800px] mx-auto px-6 md:px-12 lg:px-20 py-20">
         
-        {/* 🧭 Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-[10px] md:text-xs font-bold text-white/30 mb-10 uppercase tracking-[0.2em]">
-          <span className="hover:text-gold cursor-pointer transition-colors">Home</span>
-          <ChevronRight size={10} />
-          <span className="hover:text-gold cursor-pointer transition-colors">Programs</span>
-          <ChevronRight size={10} />
-          <span className="text-gold italic">{course.title}</span>
-        </nav>
+      {/* 🧭 Advanced Tactical Breadcrumbs */}
+<nav className="hidden mt-15 md:flex items-center gap-4 text-[11px] font-black text-white/20 mb-16 uppercase tracking-[0.4em] select-none">
+  
 
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+
+
+  {/* Catalog */}
+          <Link href={"/courses"}>
+            <div className="group cursor-pointer flex items-center gap-4">
+    <span className="hover:text-gold/80 transition-all duration-300">Catalog</span>
+    <ChevronRight size={10} className="text-white/10" />
+  </div>
+          </Link>
+
+  {/* Active Page: Fire Marshal Training */}
+  <div className="relative group">
+    <span className="text-gold italic font-black tracking-[0.3em]">
+      {course.title}
+    </span>
+    {/* الخط الرفيع اللي في الصورة */}
+    <div className="absolute -bottom-2 left-0 w-full h-[1px] bg-gold/40 scale-x-100 origin-left transition-transform duration-500" />
+    
+    {/* لمسة إضافية: توهج خفيف تحت الكلمة النشطة */}
+    <div className="absolute -bottom-2 left-0 w-full h-[4px] bg-gold/10 blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
+  </div>
+</nav>
+
+        <div className="grid lg:grid-cols-12 gap-16 items-start">
           
-          {/* 📝 Left Side: Text Content */}
-          <div className="lg:col-span-7 flex flex-col space-y-8 md:space-y-12">
-            <div className="space-y-6">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="inline-flex px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-3xl text-gold text-[10px] font-black uppercase tracking-[0.3em]"
-              >
-                {course.level || "Advanced"}
-              </motion.div>
-
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.9] tracking-tighter italic uppercase drop-shadow-2xl"
-              >
-                {course.title}
-              </motion.h1>
-
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1 text-gold">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={16} fill={i < 4 ? "currentColor" : "none"} strokeWidth={3} />
-                  ))}
-                </div>
-                <span className="text-white/40 text-[10px] font-black tracking-[0.2em] uppercase">
-                  (4.9) <span className="ml-2 text-white/20">186 Reviews</span>
+          {/* 📝 Left Side: Tactical Information */}
+          <div className="lg:col-span-7 mt-5 space-y-10">
+            
+            <div className="space-y-8">
+              <div className="flex flex-wrap gap-3">
+                <span className="px-5 py-2 rounded-full bg-gold text-navy text-[9px] font-black uppercase tracking-widest shadow-[0_0_30px_rgba(212,175,55,0.3)]">
+                  {course.level || "Elite Operation"}
+                </span>
+                <span className="px-5 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-white/60 text-[9px] font-black uppercase tracking-widest">
+                  {course.category || "Security"}
                 </span>
               </div>
 
-              <p className="text-white/60 text-lg md:text-2xl leading-relaxed max-w-2xl font-medium italic border-l-2 border-gold/30 pl-6">
-                {course.short_description || "Specialized training program focused on high-level tactical security and professional guard protocols."}
+              <h1 className="text-6xl md:text-8xl lg:text-9xl font-black text-white leading-[0.85] tracking-tighter uppercase italic drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                {course.title.split(' ').map((word, i) => (
+                  <span key={i} className={i % 2 !== 0 ? "text-gold font-outline-2" : ""}>{word} </span>
+                ))}
+              </h1>
+
+              <div className="flex items-center gap-6">
+                <div className="flex -space-x-2">
+                  {[1,2,3].map(i => (
+                    <div key={i} className="w-8 h-8 rounded-full border-2 border-navy bg-white/10 backdrop-blur-sm" />
+                  ))}
+                  <div className="w-8 h-8 rounded-full border-2 border-navy bg-gold flex items-center justify-center text-[8px] font-black text-navy">+82</div>
+                </div>
+                <div className="h-4 w-[1px] bg-white/10" />
+                <div className="flex items-center gap-2">
+                   <Star size={14} className="text-gold fill-gold" />
+                   <span className="text-white font-black text-xs">4.9</span>
+                   <span className="text-white/20 text-[10px] uppercase font-bold tracking-widest">Expert Rating</span>
+                </div>
+              </div>
+
+              <p className="text-white/50 text-xl md:text-3xl leading-snug max-w-3xl font-medium italic border-l-4 border-gold/40 pl-8 py-2">
+                {course.short_description || "Deploying next-gen tactical protocols for professional safety specialists."}
               </p>
             </div>
 
-            {/* 📊 Tactical Stats Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 py-10 border-y border-white/5">
+            {/* 📊 High-Performance Stats Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 p-8 bg-white/[0.02] border border-white/5 rounded-[2.5rem] backdrop-blur-3xl">
               {[
                 { label: "Duration", val: course.duration, icon: Calendar },
-                { label: "Trainees", val: course.enrollment_count || 186, icon: Users },
-                { label: "Content", val: "24 Units", icon: BookOpen },
-                { label: "Status", val: "Accredited", icon: CheckCircle2 },
+                { label: "Strength", val: "64kg Muscle Avg", icon: Users }, // لمسة شخصية لبايلوت
+                { label: "Accreditation", val: "Global SIA", icon: CheckCircle2 },
+                { label: "Content", val: "Pro Units", icon: BookOpen },
               ].map((stat, idx) => (
-                <div key={idx} className="flex flex-col gap-2">
-                  <span className="text-white/20 text-[9px] font-black uppercase tracking-[0.3em]">{stat.label}</span>
-                  <div className="flex items-center gap-2 text-white font-bold text-sm md:text-base italic uppercase tracking-tighter">
-                    <stat.icon size={16} className="text-gold" /> {stat.val}
+                <div key={idx} className="space-y-2">
+                  <div className="flex items-center gap-2 text-gold/40">
+                    <stat.icon size={14} />
+                    <span className="text-[8px] font-black uppercase tracking-[0.2em]">{stat.label}</span>
                   </div>
+                  <div className="text-white font-black text-sm uppercase tracking-tight italic">{stat.val}</div>
                 </div>
               ))}
             </div>
+          </div>
 
-            {/* 👤 Instructor Avatar Section */}
-            <div className="flex items-center gap-5 group cursor-default">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold/30 to-transparent border border-gold/40 flex items-center justify-center text-gold text-3xl font-black italic shadow-2xl group-hover:scale-110 transition-transform duration-500">
-                {getInitial(course.instructor_name || "K")}
+          {/* 🎬 Right Side: Cinematic Glass Player */}
+          <div className="lg:col-span-5 relative">
+            <div className="sticky top-32">
+              <div className="group relative aspect-[4/5] rounded-[3rem] overflow-hidden border border-white/10 p-3 bg-white/5 backdrop-blur-3xl shadow-2xl">
+                <div className="relative h-full w-full rounded-[2.5rem] overflow-hidden">
+                  <Image 
+                    src={course.image_url || "/placeholder.jpg"} 
+                    alt="Tactical Training" 
+                    fill 
+                    className="object-cover transition-transform duration-[2s] group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy via-transparent to-transparent opacity-60" />
+                  
+                  {/* Floating Action Buttons */}
+                  <div className="absolute top-6 right-6 flex flex-col gap-3">
+                    <button className="p-4 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 text-white hover:bg-gold hover:text-navy transition-all active:scale-90">
+                      <Heart size={20} />
+                    </button>
+                    <button className="p-4 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 text-white hover:bg-gold hover:text-navy transition-all active:scale-90">
+                      <Share2 size={20} />
+                    </button>
+                  </div>
+
+                  {/* Play Trigger */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-6">
+                    <button className="group/btn relative w-28 h-28 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-gold rounded-full animate-ping opacity-20" />
+                      <div className="absolute inset-0 bg-gold/20 rounded-full scale-150 blur-2xl" />
+                      <div className="relative w-full h-full bg-gold rounded-full flex items-center justify-center text-navy shadow-[0_0_50px_rgba(212,175,55,0.5)] group-hover/btn:scale-110 transition-all duration-500">
+                        <Play size={32} fill="currentColor" className="ml-2" />
+                      </div>
+                    </button>
+                    <span className="text-white font-black text-[10px] uppercase tracking-[0.4em] drop-shadow-lg">Watch Preview</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <span className="text-white/30 text-[9px] font-black uppercase tracking-[0.3em] mb-1">Lead Instructor</span>
-                <h4 className="text-white font-black text-xl italic uppercase tracking-tight leading-none">
-                  {course.instructor_name || "Col. Khaled Al-Saeed"}
-                </h4>
-                <p className="text-gold/60 text-[10px] font-bold mt-2 uppercase">Tactical Operations Expert</p>
-              </div>
+
+         
             </div>
           </div>
 
-          {/* 🎬 Right Side: Cinematic Video Container */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8, x: 50 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            className="lg:col-span-5 relative group"
-          >
-            {/* Glass Frame */}
-            <div className="relative aspect-[4/3] rounded-[40px] overflow-hidden border border-white/10 p-3 bg-white/[0.02] backdrop-blur-3xl shadow-[0_0_100px_rgba(0,0,0,0.5)]">
-              <div className="relative h-full w-full rounded-[30px] overflow-hidden border border-gold/20 shadow-inner">
-                <Image 
-                  src={course.image_url || "/course-placeholder.webp"} 
-                  alt={course.title}
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-[1.5s]"
-                />
-                
-                {/* Tactical Overlay */}
-                <div className="absolute inset-0 bg-navy/30 group-hover:bg-navy/10 transition-colors duration-700" />
-
-                {/* Pulsing Play Button */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <button className="relative w-24 h-24 flex items-center justify-center rounded-full bg-gold text-navy shadow-[0_0_60px_rgba(212,175,55,0.4)] group-hover:scale-110 active:scale-95 transition-all duration-500">
-                    <span className="absolute inset-0 rounded-full bg-gold animate-ping opacity-25" />
-                    <Play size={36} fill="currentColor" className="ml-2 relative z-10" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Decorative Glow behind video */}
-            <div className="absolute -inset-10 bg-gold/5 blur-[100px] rounded-full pointer-events-none -z-10" />
-          </motion.div>
-
         </div>
       </div>
+
+
+
     </section>
   );
 }

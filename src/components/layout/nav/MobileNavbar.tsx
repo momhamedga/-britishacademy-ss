@@ -129,7 +129,7 @@ const MobileNavbar = ({ user }: any) => {
                {!user && (
                  <Link href="/login" onClick={() => setIsOpen(false)}>
                    <button className="w-full py-5 bg-gold text-navy font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl shadow-xl shadow-gold/10 active:scale-95 transition-all">
-                     Establish Secure Connection
+                     Login now  
                    </button>
                  </Link>
                )}

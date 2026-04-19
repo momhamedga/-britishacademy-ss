@@ -19,13 +19,18 @@
   --font-sans: var(--font-inter), "Inter", sans-serif;
 }
 
-/* 🛡️ القضاء على الفراغ الأبيض: إجبار الـ Portal على تغيير الهوية */
+/* 🛡️ توحيد الهوية: القضاء على فرق الألوان */
 .portal-theme {
-  --background: oklch(15% 0.04 260) !important; /* Navy العميق */
-  --foreground: oklch(100% 0 0) !important;      /* نص أبيض */
-  --academy-navy: oklch(20% 0.06 260);           /* تغميق الـ Navy للأسايد */
+  /* خلي الخلفية هي نفس درجة السايدبار بالظبط 25% */
+  --background: oklch(25% 0.08 260) !important; 
+  --foreground: oklch(100% 0 0) !important;      
+  --academy-navy: oklch(25% 0.08 260);          
 }
 
+/* تأكد إن الـ body في الـ portal ملوش padding بيظهر بياض */
+html[data-scroll-behavior="smooth"] {
+  scroll-behavior: smooth;
+}
 /* 2. إعدادات الـ Theme بنظام Tailwind v4 */
 @theme {
   --color-navy: var(--academy-navy);
@@ -109,3 +114,4 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
+
