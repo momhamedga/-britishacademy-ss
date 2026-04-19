@@ -2,54 +2,38 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useAcademyStore } from "@/store/useAcademyStore";
 import CourseCard from "@/components/ui/CourseCard";
-import { Course } from "@/types";
 
-export default function CourseList({ initialData }: { initialData: Course[] }) {
-  const { courses, activeCategory, activeLevel, activeDuration } = useAcademyStore();
+export default function CourseList({ initialData = [] }: { initialData: any[] }) {
+  // التعديل الجوهري: نستخدم Selectors لكل قيمة لوحدها لضمان الـ Reactivity
+  const courses = useAcademyStore((state) => state.courses);
+  const activeCategory = useAcademyStore((state) => state.activeCategory);
+  const activeLevel = useAcademyStore((state) => state.activeLevel);
+  const activeDuration = useAcademyStore((state) => state.activeDuration);
+  const viewMode = useAcademyStore((state) => state.viewMode);
+
   const dataSource = courses.length > 0 ? courses : initialData;
 
   const filtered = dataSource.filter(course => {
-    // 1. فلتر التخصص
-    const matchCategory = !activeCategory || activeCategory === 'all' 
+    const matchCategory = !activeCategory || activeCategory.toLowerCase() === 'all' 
       ? true 
       : course.category?.toLowerCase() === activeCategory.toLowerCase();
-
-    // 2. فلتر المستوى (بناءً على الـ Union Type الجديد)
-    const matchLevel = !activeLevel 
-      ? true 
-      : course.level?.toLowerCase() === activeLevel.toLowerCase();
-
-    // 3. فلتر المدة (استخدام duration بدلاً من duration_tag)
-    const matchDuration = !activeDuration 
-      ? true 
-      : course.duration?.toLowerCase().includes(activeDuration.toLowerCase());
+    
+    const matchLevel = !activeLevel ? true : course.level?.toLowerCase() === activeLevel.toLowerCase();
+    const matchDuration = !activeDuration ? true : course.duration?.toLowerCase().includes(activeDuration.toLowerCase());
 
     return matchCategory && matchLevel && matchDuration;
   });
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
+    <div className={`grid gap-8 transition-all duration-500 ${
+      viewMode === 'list' ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'
+    }`}>
       <AnimatePresence mode="popLayout">
-        {filtered.length > 0 ? (
-          filtered.map((course, i) => (
-            <motion.div
-              key={course.id}
-              layout
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ delay: i * 0.05 }}
-            >
-              <CourseCard course={course} />
-            </motion.div>
-          ))
-        ) : (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="col-span-full py-20 text-center">
-            <p className="text-navy/40 font-bold uppercase text-xs tracking-widest">
-              No courses match your selected filters.
-            </p>
+        {filtered.map((course) => (
+          <motion.div key={course.id} layout transition={{ duration: 0.3 }}>
+            <CourseCard course={course} isListView={viewMode === 'list'} />
           </motion.div>
-        )}
+        ))}
       </AnimatePresence>
     </div>
   );
