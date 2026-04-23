@@ -18,11 +18,11 @@ export default function CourseHero({ course }: CourseHeroProps) {
       {/* 🌌 Ultra-Modern Background Layer */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-[-20%] right-[-10%] w-[80vw] h-[80vw] bg-gold/[0.07] blur-[160px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[70vw] h-[70vw] bg-gold/[0.04] blur-[140px] rounded-full" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[70vw] h-[70vw] bg-gold/4 blur-[140px] rounded-full" />
         <div className="absolute inset-0 bg-[url('/assets/noise.png')] opacity-[0.02] mix-blend-overlay" />
       </div>
 
-      <div className="relative z-10 max-w-[1800px] mx-auto px-6 md:px-12 lg:px-20 py-20">
+      <div className="relative z-10 max-w-450 mx-auto px-6 md:px-12 lg:px-20 py-20">
         
       {/* 🧭 Advanced Tactical Breadcrumbs */}
 <nav className="hidden mt-15 md:flex items-center gap-4 text-[11px] font-black text-white/20 mb-16 uppercase tracking-[0.4em] select-none">

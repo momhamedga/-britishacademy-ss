@@ -21,14 +21,14 @@ export default function TacticalAbout() {
 
   return (
     <section 
-      className="relative py-20 md:py-32 px-6 overflow-hidden"
+      className="relative  py-20 md:py-32 px-6 overflow-hidden"
       style={{ backgroundColor: COLORS.navy }} // الأساس هو الـ Navy العميق
     >
       {/* 🌌 High-Performance Mesh Gradient - تداخل الألوان المطلوبة */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none ">
         {/* توهج Medium Blue في الزاوية */}
         <div 
-          className="absolute -top-[10%] -right-[10%] w-[70%] h-[70%] rounded-full opacity-30 blur-[120px]"
+          className="absolute -top-[10%] -right-[10%] w-[70%] h-[70%] rounded-full opacity-30 blur-[120px] "
           style={{ backgroundColor: COLORS.mediumBlue }} 
         />
         {/* لمسة من الـ Gold الخفيف جداً في الخلفية للعمق */}
@@ -41,7 +41,7 @@ export default function TacticalAbout() {
       <div className="max-w-7xl mx-auto relative z-10">
         
         {/* 🏆 Title System - Unified & Dark Mode Optimized */}
-        <div className="mb-16 md:mb-24 flex flex-col items-center text-center lg:items-start lg:text-left">
+        <div className="mb-16 md:mb-24 mt-20 flex flex-col items-center text-center lg:items-start lg:text-left">
           <motion.div 
             initial={{ opacity: 0, x: -15 }}
             whileInView={{ opacity: 1, x: 0 }}

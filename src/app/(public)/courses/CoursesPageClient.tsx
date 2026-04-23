@@ -16,14 +16,19 @@ export default function CoursesPage({ initialCourses }: { initialCourses: any[] 
   const setCourses = useAcademyStore((state) => state.setCourses);
   const setActiveCategory = useAcademyStore((state) => state.setActiveCategory);
   const setViewMode = useAcademyStore((state) => state.setViewMode);
+const setActiveLevel = useAcademyStore((state) => state.setActiveLevel);
+useEffect(() => {
+  if (initialCourses && initialCourses.length > 0) {
+    setCourses(initialCourses);
+  }
 
-  // 3. تحديث الستور بالبيانات الأولية (مرة واحدة فقط)
-  useEffect(() => {
-    if (initialCourses && initialCourses.length > 0) {
-      setCourses(initialCourses);
-    }
-  }, [initialCourses, setCourses]);
-
+  // 🧹 تنظيف الستور بالكامل عند مغادرة الصفحة
+  return () => {
+    setCourses([]);                // مسح الكورسات
+    setActiveCategory('all');      // إعادة التصنيف للكل
+    setActiveLevel('');            // مسح المستوى المختار
+  };
+}, [initialCourses, setCourses, setActiveCategory, setActiveLevel]);
   return (
     <main className="relative min-h-screen selection:bg-gold/30 overflow-x-hidden ">
       
@@ -88,28 +93,28 @@ export default function CoursesPage({ initialCourses }: { initialCourses: any[] 
                 </div>
              </div>
 
-             {/* 🛠️ Grid/List Controls - التصميم المطلوب */}
-             <div className="flex justify-between items-center mb-10 bg-navy/[0.02] p-4 rounded-3xl border border-navy/5">
-                <p className="text-[10px] font-black text-navy/30 uppercase tracking-[0.2em] px-2">
-                   Catalog_Display_Mode
-                </p>
-                <div className="flex gap-2 bg-white/50 p-1 rounded-2xl border border-navy/5">
-                  <button 
-                    onClick={() => setViewMode('grid')}
-                    className={`p-2.5 rounded-xl transition-all active:scale-90 ${viewMode === 'grid' ? 'bg-navy text-white shadow-lg' : 'text-navy/20 hover:text-navy/40'}`}
-                  >
-                    <LayoutGrid size={18}/>
-                  </button>
-                  <button 
-                    onClick={() => setViewMode('list')}
-                    className={`p-2.5 rounded-xl transition-all active:scale-90 ${viewMode === 'list' ? 'bg-navy text-white shadow-lg' : 'text-navy/20 hover:text-navy/40'}`}
-                  >
-                    <List size={18}/>
-                  </button>
-                </div>
-             </div>
+        {/* 🛠️ Grid/List Controls - تظهر فقط في الديسكتوب */}
+<div className="hidden md:flex justify-between items-center mb-10 bg-navy/[0.02] p-4 rounded-3xl border border-navy/5">
+    <p className="text-[10px] font-black text-navy/30 uppercase tracking-[0.2em] px-2">
+        Display Mode
+    </p>
+    <div className="flex gap-2 bg-white/50 p-1 rounded-2xl border border-navy/5">
+        <button 
+            onClick={() => setViewMode('grid')}
+            className={`p-2.5 rounded-xl transition-all active:scale-90 ${viewMode === 'grid' ? 'bg-navy text-white shadow-lg' : 'text-navy/20 hover:text-navy/40'}`}
+        >
+            <LayoutGrid size={18}/>
+        </button>
+        <button 
+            onClick={() => setViewMode('list')}
+            className={`p-2.5 rounded-xl transition-all active:scale-90 ${viewMode === 'list' ? 'bg-navy text-white shadow-lg' : 'text-navy/20 hover:text-navy/40'}`}
+        >
+            <List size={18}/>
+        </button>
+    </div>
+</div>
              
-             <CourseList initialData={initialCourses} />
+            <CourseList />
           </section>
         </div>
       </div>

@@ -26,7 +26,7 @@ export default function PlansHero({ activeType, setType }: {
         <div className="absolute bottom-[-10%] left-[-5%] w-[50%] h-[50%] rounded-full opacity-10 blur-[100px]" style={{ backgroundColor: COLORS.gold }} />
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10 flex flex-col items-center text-center">
+      <div className="max-w-7xl mt-20 mx-auto relative z-10 flex flex-col items-center text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-6 py-2 backdrop-blur-md">
           <Target size={14} className="text-[oklch(75%_0.15_85)]" />
           <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/70">Strategic Membership</span>

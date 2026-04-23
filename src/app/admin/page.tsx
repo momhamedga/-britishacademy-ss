@@ -11,7 +11,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] relative">
+    <div className="min-h-screen  text-navy relative">
       
       {/* FLOATING LOGOUT BUTTON - Top Right */}
       <div className="fixed top-6 right-6 z-[1000]">

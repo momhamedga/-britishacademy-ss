@@ -1,16 +1,10 @@
 "use client"
-import { useTransition, useCallback, useState, useEffect } from "react";
+import { useTransition, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { ArrowUpRight, ChevronRight } from "lucide-react";
+import { ArrowUpRight, ChevronRight, Shield } from "lucide-react";
 import { ACADEMY_HUB_ITEMS } from "@/lib/AcademyHub";
 import { useMediaQuery } from "@/hooks/use-media-query";
-
-const COLORS = {
-  navy: "#1B2A41",
-  gold: "#D4AF37",
-  background: "oklch(98% 0.01 260)",
-};
 
 export default function AcademyHub() {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -20,24 +14,25 @@ export default function AcademyHub() {
   if (!mounted) return null;
 
   return (
-    <section className="relative z-10 py-16 md:py-32 overflow-hidden" style={{ backgroundColor: COLORS.background }}>
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
+    <section className="relative z-10 py-20 md:py-32 overflow-hidden bg-slate-50/50">
+      <div className="mx-auto max-w-7xl px-6 md:px-12">
         
-        {/* 1. Header - ثبات التصميم كما طلبت */}
-        <div className="mb-12 md:mb-16 flex flex-col items-center text-center md:items-start md:text-left">
+        {/* 1. Tactical Header */}
+        <div className="mb-14 md:mb-20 flex flex-col items-center text-center md:items-start md:text-left">
           <motion.div 
-            initial={{ opacity: 0, x: -10 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-4 inline-flex items-center gap-2 rounded-full border border-black/5 bg-white/50 px-3 py-1 backdrop-blur-sm"
+            className="mb-5 inline-flex items-center gap-2.5 rounded-full border border-black/5 bg-white px-4 py-1.5 shadow-xs"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
-            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] text-black/60">Why britishacademy</span>
+            <Shield size={10} className="text-gold fill-gold/20" />
+            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] text-navy/40">why us</span>
           </motion.div>
           
-          <h2 className="text-3xl font-black italic uppercase tracking-tighter text-[#1B2A41] md:text-6xl leading-none">
-            why <span className="text-transparent bg-clip-text bg-gradient-to-b from-[#D4AF37] to-[#D4AF37]/60"> our academy</span>
+          <h2 className="text-3xl md:text-6xl font-black italic uppercase tracking-tighter text-navy leading-[0.9]">
+            why <span className="text-transparent bg-clip-text bg-linear-to-b from-gold to-gold/60"> our academy</span>
           </h2>
+        
         </div>
 
         {/* 2. Content Switcher */}
@@ -48,47 +43,45 @@ export default function AcademyHub() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* 🔥 MOBILE VIEW: The "App-Style" Slider                                     */
+/* 📱 MOBILE VIEW: Optimized App-Style Slider                                */
 /* -------------------------------------------------------------------------- */
 function MobileHub() {
   const router = useRouter();
   return (
-    <div className="relative -mx-4"> 
-      {/* Scroll الأيقونات بأسلوب الـ Snap */}
-      <div className="flex overflow-x-auto pb-8 pt-4 px-4 gap-4 snap-x snap-mandatory no-scrollbar">
+    <div className="relative -mx-6"> 
+      <div className="flex overflow-x-auto pb-10 pt-2 px-6 gap-5 snap-x snap-mandatory no-scrollbar">
         {ACADEMY_HUB_ITEMS.map((item, index) => {
           const Icon = item.icon;
           return (
             <motion.div 
               key={item.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="snap-center shrink-0 w-[85%] last:mr-4"
+              className="snap-center shrink-0 w-[82vw] last:mr-6"
             >
               <div 
                 onClick={() => router.push(item.href)}
-                className="relative overflow-hidden bg-white rounded-[2.5rem] p-8 border border-black/5 shadow-[0_15px_35px_rgba(0,0,0,0.05)] active:scale-[0.97] transition-transform"
+                className="relative h-full overflow-hidden bg-white rounded-[2rem] p-8 border border-black/5 shadow-xl shadow-black/5 active:scale-95 transition-transform duration-300"
               >
-                {/* الديكور الخلفي للكارت */}
-                <div className="absolute -top-10 -right-10 size-32 bg-gold/5 rounded-full blur-3xl" />
+                <div className="absolute top-0 right-0 size-32 bg-gold/5 blur-3xl -z-0" />
                 
-                <div className="relative z-10 space-y-6">
-                  <div className="size-14 bg-gold rounded-2xl flex items-center justify-center text-white shadow-lg shadow-gold/20">
+                <div className="relative z-10 flex flex-col h-full space-y-6">
+                  <div className="size-14 bg-navy rounded-2xl flex items-center justify-center text-gold shadow-lg">
                     <Icon size={24} />
                   </div>
                   
-                  <div className="space-y-2">
-                    <h3 className="text-2xl font-black uppercase tracking-tighter text-navy italic">
+                  <div className="space-y-3">
+                    <h3 className="text-2xl font-black uppercase tracking-tighter text-navy italic leading-none">
                       {item.title}
                     </h3>
-                    <p className="text-xs text-slate-500 leading-relaxed font-medium">
+                    <p className="text-[11px] text-navy/50 leading-relaxed font-medium line-clamp-3">
                       {item.description}
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2 text-gold font-black text-[10px] uppercase tracking-widest pt-2">
-                    Explore Hub <ChevronRight size={14} />
+                  <div className="pt-2 flex items-center gap-2 text-gold font-black text-[9px] uppercase tracking-widest mt-auto">
+                    Initialize Hub <ChevronRight size={14} />
                   </div>
                 </div>
               </div>
@@ -97,10 +90,12 @@ function MobileHub() {
         })}
       </div>
       
-      {/* Indicator Dots */}
-      <div className="flex justify-center gap-1.5 mt-2">
+      {/* Dynamic Indicators */}
+      <div className="flex justify-center gap-2">
         {ACADEMY_HUB_ITEMS.map((_, i) => (
-          <div key={i} className="size-1 rounded-full bg-gold/20" />
+          <div key={i} className="h-1 w-4 rounded-full bg-navy/5 overflow-hidden">
+             <div className="h-full bg-gold w-0 group-active:w-full transition-all" />
+          </div>
         ))}
       </div>
     </div>
@@ -119,37 +114,39 @@ function DesktopHub() {
       {ACADEMY_HUB_ITEMS.map((item, index) => (
         <motion.div
           key={item.id}
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: index * 0.1 }}
+          transition={{ duration: 0.5, delay: index * 0.1 }}
           viewport={{ once: true }}
-          className="group relative"
+          className="group relative h-full"
         >
           <div 
             onClick={() => startTransition(() => router.push(item.href))}
-            className={`cursor-pointer block h-full overflow-hidden rounded-[2.5rem] border border-black/5 bg-white p-8 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ${isPending ? 'opacity-50' : ''}`}
+            className={`cursor-pointer h-full relative overflow-hidden rounded-[2.5rem] border border-black/[0.03] bg-white p-9 transition-all duration-500 hover:shadow-3xl hover:shadow-black/5 hover:-translate-y-2 ${isPending ? 'opacity-50' : ''}`}
           >
-            {/* Scan Line Effect */}
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden">
-               <div className="absolute top-0 h-[1px] w-full bg-gold/40 animate-[scan_2s_linear_infinite]" />
-            </div>
+            {/* Tactical Grid Background on Hover */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-[radial-gradient(circle_at_top_right,var(--color-gold)_0%,transparent_25%)] opacity-5" />
 
-            <div className="relative z-10 flex flex-col h-full justify-between">
-              <div className="flex justify-between items-start mb-12">
-                <div className="size-16 bg-black/[0.02] border border-black/5 rounded-2xl flex items-center justify-center text-navy group-hover:bg-gold group-hover:text-white transition-all duration-500 shadow-xl group-hover:shadow-gold/30">
-                  <item.icon size={28} strokeWidth={1.5} />
+            <div className="relative z-10 flex flex-col h-full">
+              <div className="flex justify-between items-start mb-16">
+                <div className="size-16 bg-slate-50 border border-black/5 rounded-2xl flex items-center justify-center text-navy group-hover:bg-navy group-hover:text-gold transition-all duration-500 shadow-sm group-hover:shadow-navy/20">
+                  <item.icon size={28} strokeWidth={1.2} />
                 </div>
-                <ArrowUpRight className="text-gold opacity-0 group-hover:opacity-100 group-hover:translate-x-0 translate-x-4 transition-all" />
+                <div className="size-8 rounded-full border border-black/5 flex items-center justify-center text-gold opacity-0 group-hover:opacity-100 group-hover:translate-x-0 translate-x-4 transition-all duration-500">
+                  <ArrowUpRight size={14} />
+                </div>
               </div>
 
-              <div className="space-y-4">
-                <h3 className="text-2xl font-black uppercase tracking-tighter text-navy italic group-hover:text-gold transition-colors">
+              <div className="mt-auto space-y-4">
+                <h3 className="text-2xl font-black uppercase tracking-tighter text-navy italic group-hover:text-gold transition-colors duration-300">
                   {item.title}
                 </h3>
-                <p className="text-sm text-slate-500 leading-relaxed line-clamp-3">
+                <p className="text-[13px] text-navy/40 leading-relaxed font-medium">
                   {item.description}
                 </p>
-                <div className="h-0.5 w-10 bg-gold/20 group-hover:w-full transition-all duration-700" />
+                <div className="pt-2">
+                  <div className="h-[2px] w-8 bg-gold/30 group-hover:w-full transition-all duration-700 ease-in-out" />
+                </div>
               </div>
             </div>
           </div>

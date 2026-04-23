@@ -16,11 +16,11 @@ export default function HeroSection() {
 
   // بنعرض Skeleton أو Loading بسيط لحد ما الجهاز يتحدد
   if (!mounted) {
-    return <div className="h-[100dvh] w-full bg-[#000613]" />;
+    return <div className="h-dvh w-full bg-navy" />;
   }
 
   return (
-    <Suspense fallback={<div className="h-[100dvh] w-full " />}>
+    <Suspense fallback={<div className="h-dvh w-full " />}>
       {isDesktop ? <DesktopHero /> : <MobileHero />}
     </Suspense>
   );

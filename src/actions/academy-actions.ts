@@ -2,11 +2,11 @@
 import { sql } from "@/lib/db";
 import { Course } from "@/types";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers"; // ✅ هذا هو السطر الناقص الذي يسبب الخطأ
+import { cookies } from "next/headers";
 import { unstable_noStore as noStore } from 'next/cache';
-
-// src/actions/academy-actions.ts
+const FALLBACK_IMAGE = "/logo.webp";
 export async function getLatestCourses() {
+  noStore();  
   try {
     const rows = await sql`
       SELECT 
@@ -19,10 +19,11 @@ export async function getLatestCourses() {
         price, 
         instructor_name,
         enrollment_count, 
-        image_url, 
+        -- ✅ هنا السحر: لو الصورة null في الداتا بيز، يرجع اللوجو فوراً
+        COALESCE(image_url, ${FALLBACK_IMAGE}) as image_url, 
         is_sia_accredited, 
         short_description,
-        full_content -- 👈 هذا هو الحقل الذي ينقصك ليظهر المحتوى!
+        full_content
       FROM public.courses 
       ORDER BY created_at DESC
     `;
@@ -34,23 +35,18 @@ export async function getLatestCourses() {
 }
 export async function getCourseBySlug(slug: string): Promise<Course | null> {
   try {
-    const data = await sql`SELECT * FROM courses WHERE slug = ${slug} LIMIT 1`;
-    console.log("Fetched Course Data:", data[0]); // 👈 انظر للـ Terminal الخاص بـ VS Code
+    const data = await sql`
+      SELECT *, 
+      COALESCE(image_url, ${FALLBACK_IMAGE}) as image_url 
+      FROM courses WHERE slug = ${slug} LIMIT 1
+    `;
     return data.length > 0 ? (data[0] as unknown as Course) : null;
   } catch (error) {
     return null;
   }
 }
 
-/**
- * 🔍 جلب كورس واحد بالتفصيل الممل (لصفحة الـ Single Course)
- * نستخدم الـ ID أو الـ Slug لجلب البيانات كاملة بما فيها الـ full_content
- */
 
-
-/**
- * 🆔 جلب كورس بالـ ID (مفيد لعمليات الـ Enrollment)
- */
 export async function getCourseById(id: string): Promise<Course | null> {
   try {
     const data = await sql`
@@ -96,10 +92,9 @@ export async function enrollInCourse(courseId: string) {
       WHERE id = ${courseId}
     `;
 
-    // تطهير كاش المسارات لضمان التحديث الفوري
     revalidatePath('/dashboard/courses');
     revalidatePath('/dashboard');
-    revalidatePath(`/courses/${courseId}`); // تحديث صفحة الكورس نفسها
+    revalidatePath(`/courses/${courseId}`); 
 
     return { success: true };
   } catch (error) {
@@ -112,7 +107,6 @@ export async function verifyCertificateAction(code: string) {
   try {
     const { sql } = await import("@/lib/db");
     
-    // عدلنا s.full_name لـ s.name (تأكد من الاسم في جدول students عندك)
     const data = await sql`
       SELECT 
         cert.certificate_code,

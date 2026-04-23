@@ -1,137 +1,84 @@
 "use client"
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, BookOpen, Award, User, Menu, X, Shield, Contact, Users, Briefcase, Link2 } from "lucide-react";
+import { Menu, X, User, Link2, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { NAV_LINKS } from "@/lib/constants";
 import ProfileDropdown from '@/components/portal/ProfileDropdown';
 
-// لنفترض أن هذه هي الروابط الرسمية بناءً على طلبك
-const NAV_LINKS = [
-  { name: 'Home', href: '/', icon: Home },
-  { name: 'Programs', href: '/courses', icon: BookOpen },
-  { name: 'Certifications', href: '/certifications', icon: Award },
-  { name: 'Memberships', href: '/Membership', icon: Users },
-  { name: 'About Us', href: '/about', icon: Briefcase },
-  { name: 'Contact Us', href: '/contact', icon: Contact },
-];
-
-const MobileNavbar = ({ user }: any) => {
+export default function MobileNavbar({ user }: any) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  // روابط الـ Tab Bar السفلي (الأهم للوصول السريع)
-  const quickTabs = NAV_LINKS.slice(0, 4); 
-
   return (
     <>
-      {/* 1. Top Header (Minimalist & Glassy) */}
-      <nav className="fixed top-0 left-0 w-full z-[100] px-6 py-4 flex justify-between items-center bg-navy backdrop-blur-xl border-b border-white/5">
+      <nav className="fixed top-0 left-0 w-full z-100 px-5 py-4 flex justify-between items-center bg-navy/80 backdrop-blur-xl border-b border-white/5 lg:hidden">
         <Link href="/" className="flex items-center gap-2">
-          <div className="relative size-8">
-            <Image src="/logo.webp" alt="logo" fill className="object-contain" />
+          <div className="relative size-7">
+            <Image src="/logo.webp" alt="logo" fill className="object-contain" sizes="36px" />
           </div>
-          <span className="text-white font-black text-[12px] uppercase tracking-tighter">
+          <span className="text-white font-black text-[10px] uppercase tracking-tighter">
             British<span className="text-gold">Academy</span>
           </span>
         </Link>
         
-        <div className="flex items-center gap-3">
-          {/* Profile Quick Access */}
+        <div className="flex items-center gap-2">
           {user && (
-            <button 
-              onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="size-9 bg-gold rounded-xl flex items-center justify-center text-navy shadow-lg shadow-gold/20"
-            >
-              <User size={18} />
+            <button onClick={() => setIsProfileOpen(!isProfileOpen)} className="size-9 bg-gold rounded-lg flex items-center justify-center text-navy shadow-lg shadow-gold/20">
+              <User size={16} />
             </button>
           )}
-          
-          <button 
-            onClick={() => setIsOpen(true)}
-            className="size-10 bg-white/5 rounded-xl flex items-center justify-center text-gold border border-white/10 active:scale-90 transition-transform"
-          >
-            <Menu size={20} />
+          <button onClick={() => setIsOpen(true)} className="size-9 bg-white/5 rounded-lg flex items-center justify-center text-gold border border-white/10 active:scale-90 transition-transform">
+            <Menu size={18} />
           </button>
         </div>
 
-        {/* Profile Dropdown Integration */}
         <AnimatePresence>
           {isProfileOpen && user && (
-            <div className="absolute top-20 right-6 w-64 z-[110]">
+            <div className="absolute top-16 right-5 w-64 z-[110]">
                <ProfileDropdown user={user} close={() => setIsProfileOpen(false)} />
             </div>
           )}
         </AnimatePresence>
       </nav>
 
-     
-
-      {/* 3. Full Screen Strategic Menu Overlay */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div 
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-[120] bg-navy flex flex-col"
-          >
-            {/* Overlay Header */}
-            <div className="p-8 flex justify-between items-center border-b border-white/5">
-              <div className="flex items-center gap-3">
-                <Link2 className="text-gold" size={28} />
-                <span className="text-white font-black text-xl uppercase tracking-tighter">menu </span>
-              </div>
-              <button 
-                onClick={() => setIsOpen(false)} 
-                className="size-12 bg-white/5 rounded-full flex items-center justify-center text-white hover:bg-gold hover:text-navy transition-all"
-              >
-                <X size={24} />
+          <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }} className="fixed inset-0 z-[120] bg-navy flex flex-col">
+            <div className="p-6 flex justify-end items-center border-b border-white/5">
+          
+              <button onClick={() => setIsOpen(false)} className="size-10 bg-white/5 rounded-full flex items-center justify-center text-white">
+                <X size={20} />
               </button>
             </div>
             
-            {/* Navigation Links List */}
-            <div className="flex flex-col gap-4 p-8 overflow-y-auto">
+            <div className="flex-1 px-6 py-10 overflow-y-auto space-y-2">
               {NAV_LINKS.map((link, i) => (
-                <motion.div
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  key={link.name}
-                >
-                  <Link 
-                    href={link.href} 
-                    onClick={() => setIsOpen(false)}
-                    className={`group flex items-center justify-between py-4 border-b border-white/5 transition-all
-                      ${pathname === link.href ? 'text-gold' : 'text-white/30 hover:text-white'}`}
-                  >
-                    <span className="text-3xl font-black uppercase tracking-tighter italic group-hover:pl-4 transition-all duration-300">
+                <motion.div key={link.name} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}>
+                  <Link href={link.href} onClick={() => setIsOpen(false)} className={`flex items-center justify-between py-5 border-b border-white/5 transition-all ${pathname === link.href ? 'text-gold' : 'text-white/40'}`}>
+                    <span className="text-2xl font-black uppercase tracking-tighter italic">
                       {link.name}
                     </span>
-                    <link.icon size={20} className={pathname === link.href ? 'opacity-100' : 'opacity-20'} />
+                    <ChevronRight size={18} className={pathname === link.href ? 'opacity-100' : 'opacity-0'} />
                   </Link>
                 </motion.div>
               ))}
             </div>
 
-            {/* Tactical Footer Overlay */}
-            <div className="mt-auto p-8 bg-black/20 border-t border-white/5">
-               <div className="flex items-center justify-between mb-6">
-            
-                  <div className="text-right">
-                    <p className="text-white/20 text-[8px] font-bold uppercase italic">British Academy </p>
-                  </div>
-               </div>
-               
-               {!user && (
+            <div className="p-8 bg-black/20 border-t border-white/5">
+               {!user ? (
                  <Link href="/login" onClick={() => setIsOpen(false)}>
-                   <button className="w-full py-5 bg-gold text-navy font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl shadow-xl shadow-gold/10 active:scale-95 transition-all">
-                     Login now  
+                   <button className="w-full py-4 bg-gold text-navy font-black uppercase tracking-[0.2em] text-[10px] rounded-xl shadow-xl shadow-gold/10">
+                    login
                    </button>
                  </Link>
+               ) : (
+                 <div className="text-center opacity-20 text-[8px] font-black uppercase tracking-[0.5em] text-white">
+                    Personnel Verified // British Academy
+                 </div>
                )}
             </div>
           </motion.div>
@@ -139,6 +86,4 @@ const MobileNavbar = ({ user }: any) => {
       </AnimatePresence>
     </>
   );
-};
-
-export default MobileNavbar;
+}

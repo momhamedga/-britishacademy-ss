@@ -28,7 +28,7 @@ export default function PricingSection({ activeType }: { activeType: 'Corporate'
         
         {/* Grid الحزم */}
         <div className={`grid gap-8 justify-center ${activeType === 'Individual' ? 'md:grid-cols-2 lg:max-w-4xl mx-auto' : 'max-w-md mx-auto'}`}>
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="popLayout">
             {PRICING_DATA[activeType].map((plan, index) => (
               <PricingCard key={plan.name} plan={plan} index={index} />
             ))}
