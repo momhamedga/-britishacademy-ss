@@ -9,7 +9,7 @@ interface CardType {
 
 export const ABOUT_CONTENT = {
   badge: "About Us",
-  headline: "WE ARE SECUTRAIN — GLOBAL SECURITY TRAINING LEADERS",
+  headline: "WE ARE  GLOBAL SECURITY ",
   description: "A specialized security training platform serving private security companies and individuals since 2018.",
   
   cards: [

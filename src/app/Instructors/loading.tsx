@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 export default function InstructorsLoading() {
   return (
-    <main className="min-h-screen bg-[#000B21] pt-32 pb-20 px-4 md:px-6">
+    <main className="min-h-screen bg-navy pt-32 pb-20 px-4 md:px-6">
       <div className="max-w-7xl mx-auto">
         
         {/* 1. Header Skeleton - يحاكي العنوان الكبير */}

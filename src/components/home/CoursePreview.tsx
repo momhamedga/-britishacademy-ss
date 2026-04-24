@@ -1,26 +1,30 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import Link from "next/link";
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ShieldCheck } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
+// ✅ استدعاء السكيلتون بشكل أسرع
 const CourseList = dynamic(() => import("@/components/courses/CourseList"), {
   ssr: false,
   loading: () => <CourseListSkeleton />
 });
 
+// ✅ دالات الـ Sync لمنع الـ Double Render والخطوط الحمراء
+const subscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 export default function HomeCoursesPreview({ initialCourses }: { initialCourses: any[] }) {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const [mounted, setMounted] = useState(false);
+  
+  // ✅ الحل الاحترافي للـ Hydration
+  const isMounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // 🛡️ معالجة صارمة للبيانات: منع التكرار وضمان العدد 3
+  // 🛡️ معالجة صارمة للبيانات
   const previewCourses = useMemo(() => {
     if (!initialCourses || !Array.isArray(initialCourses)) return [];
     
@@ -38,9 +42,9 @@ export default function HomeCoursesPreview({ initialCourses }: { initialCourses:
     return unique;
   }, [initialCourses]);
 
-  if (!mounted) return (
+  if (!isMounted) return (
     <section className="py-24 bg-navy">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-320 mx-auto px-6">
         <CourseListSkeleton />
       </div>
     </section>
@@ -50,10 +54,12 @@ export default function HomeCoursesPreview({ initialCourses }: { initialCourses:
     <section className="relative py-24 md:py-40 overflow-hidden bg-navy">
       {/* Background Decor */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -top-[20%] -left-[10%] size-[600px] bg-gold/10 blur-[120px] rounded-full" />
+        {/* ✅ v4: size-150 تعادل 600px */}
+        <div className="absolute -top-[20%] -left-[10%] size-150 bg-gold/10 blur-[120px] rounded-full" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      {/* ✅ v4: max-w-320 تعادل 1280px */}
+      <div className="max-w-320 mx-auto px-6 relative z-10">
         <header className="flex flex-col lg:flex-row items-center justify-between mb-16 md:mb-28 gap-10">
           <div className="flex flex-col items-center lg:items-start space-y-6">
             <div className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-5 py-2 backdrop-blur-xl">
@@ -61,7 +67,7 @@ export default function HomeCoursesPreview({ initialCourses }: { initialCourses:
               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gold/80">Academy Programs</span>
             </div>
             <h2 className="font-[var(--font-display)] text-5xl md:text-7xl lg:text-8xl font-black italic uppercase tracking-tighter text-white leading-[0.85]">
-               OUR <span className="text-transparent bg-clip-text bg-gradient-to-b from-gold to-gold/60">TRAINING</span>
+                OUR <span className="text-transparent bg-clip-text bg-linear-to-b from-gold to-gold/60">TRAINING</span>
             </h2>
           </div>
 
@@ -82,11 +88,10 @@ export default function HomeCoursesPreview({ initialCourses }: { initialCourses:
           <AnimatePresence mode="wait">
             {isDesktop ? (
               <motion.div 
-                key="home-desktop-wrapper" // 🔥 Key فريد لإجبار المكون على إعادة الرسم
+                key="home-desktop-wrapper" 
                 initial={{ opacity: 0, y: 20 }} 
                 animate={{ opacity: 1, y: 0 }}
               >
-                {/* نرسل البيانات كـ props ونعتمد على التعديل اللي عملناه في CourseList */}
                 <CourseList initialData={previewCourses} />
               </motion.div>
             ) : (
@@ -95,7 +100,6 @@ export default function HomeCoursesPreview({ initialCourses }: { initialCourses:
                   {previewCourses.map((course, idx) => (
                     <div key={`home-mob-${course.id || idx}`} className="snap-center shrink-0 w-[85vw]">
                       <div className="rounded-[3rem] bg-white overflow-hidden shadow-2xl border border-white/10">
-                        {/* تمرير مصفوفة تحتوي على كورس واحد فقط لقتل أي تكرار داخلي */}
                         <CourseList initialData={[course]} />
                       </div>
                     </div>
@@ -103,7 +107,7 @@ export default function HomeCoursesPreview({ initialCourses }: { initialCourses:
                 </div>
                 <Link href="/courses" className="px-4">
                    <button className="w-full py-6 bg-white/5 border border-white/10 text-white font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl backdrop-blur-md">
-                     View All Programs
+                      View All Programs
                    </button>
                 </Link>
               </div>

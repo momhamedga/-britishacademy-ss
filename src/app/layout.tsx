@@ -40,15 +40,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${syne.variable} ${inter.variable} antialiased`}>
-        {/* شريط التحميل العلوي */}
         <NextTopLoader color="#D4AF37" showSpinner={false} />
         
-        {/* الأيقونة المتحركة */}
         <AnimatedFavicon />
         
-        {/* هنا يتم حقن الـ Layout الخاص بـ (public) أو (portal) 
-            تلقائياً بناءً على مكان الصفحة في المجلدات 
-        */}
+     
         {children}
       </body>
     </html>

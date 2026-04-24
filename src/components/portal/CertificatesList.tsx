@@ -10,7 +10,7 @@ export default async function CertificatesList() {
 
   if (!userId) {
     return (
-      <div className="bg-[#050a14] border border-white/5 rounded-[2.5rem] p-20 text-center">
+      <div className="bg-navy border border-white/5 rounded-[2.5rem] p-20 text-center">
         <ShieldCheck className="mx-auto size-16 text-white/5 mb-6" />
         <p className="text-white/20 font-black uppercase tracking-[.6em] text-[10px]">Access Denied</p>
       </div>
@@ -36,7 +36,7 @@ export default async function CertificatesList() {
 
     if (!completedCourses || completedCourses.length === 0) {
       return (
-        <div className="bg-[#050a14] border border-white/5 rounded-[2.5rem] p-20 text-center">
+        <div className="bg-navy border border-white/5 rounded-[2.5rem] p-20 text-center">
           <DatabaseZap className="mx-auto size-16 text-gold/5 mb-6" />
           <p className="text-gold/20 font-black uppercase tracking-[.6em] text-[10px]">No Certificates Found</p>
         </div>

@@ -1,26 +1,24 @@
-"use client"
-import { useState, useEffect, Suspense } from "react";
+"use client";
+
+import { useSyncExternalStore, Suspense } from "react";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import MobileHero from "./hero/MobileHero";
 import DesktopHero from "./hero/DesktopHero";
 
+const subscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 export default function HeroSection() {
+  const isMounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const [mounted, setMounted] = useState(false);
 
-  // ده بيضمن إن الكود مش هيشتغل إلا بعد ما الـ Component يحصل له Mount في المتصفح
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // بنعرض Skeleton أو Loading بسيط لحد ما الجهاز يتحدد
-  if (!mounted) {
+  if (!isMounted) {
     return <div className="h-dvh w-full bg-navy" />;
   }
 
   return (
-    <Suspense fallback={<div className="h-dvh w-full " />}>
+    <Suspense fallback={<div className="h-dvh w-full bg-navy" />}>
       {isDesktop ? <DesktopHero /> : <MobileHero />}
     </Suspense>
   );

@@ -1,8 +1,6 @@
 // src/lib/db.ts
-import { neon, neonConfig } from '@neondatabase/serverless';
+import { neon } from '@neondatabase/serverless';
 
-// 🚀 تسريع الاتصال في بيئة التطوير (Edge-compatible fetch)
-neonConfig.fetchConnectionCache = true;
 
 if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL is missing from environment variables');

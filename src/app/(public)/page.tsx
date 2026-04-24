@@ -10,7 +10,6 @@ export const metadata = {
   description: "Ultra-modern security training solutions in the UAE.",
 };
 
-// ⚡ تحسين: جعل الـ Skeleton مطابق تماماً لأبعاد الكروت الحقيقية
 function CoursesSkeleton() {
   return (
     <div className="max-w-7xl mx-auto px-6 py-24 md:py-40">
@@ -29,12 +28,12 @@ export default async function HomePage() {
   const coursesPromise = getLatestCourses();
 
   return (
-    <main className="relative min-h-screen bg-white">
+    <main className="relative min-h-screen ">
       {/* الـ Hero يظهر فوراً بدون Suspense لأنه Critical Content */}
       <HeroSection />
 
       {/* AcademyHub سكشن خفيف، يفضل أن يظهر بسرعة */}
-      <Suspense fallback={<div className="h-96 animate-pulse bg-slate-50/50" />}>
+      <Suspense fallback={<div className="h-96 animate-pulse " />}>
         <AcademyHub />
       </Suspense>
 
@@ -44,7 +43,7 @@ export default async function HomePage() {
       </Suspense>
 
       {/* 3. المراجعات: لا نريدها أن تعطل ظهور الكورسات، لذا نفصلها في Suspense مستقل */}
-      <Suspense fallback={<div className="h-96 animate-pulse bg-slate-50/50" />}>
+      <Suspense fallback={<div className="h-96 animate-pulse" />}>
         <ClientReviews />
       </Suspense>
 

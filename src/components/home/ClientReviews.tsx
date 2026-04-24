@@ -1,18 +1,20 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
-import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
-import { Star, Quote, ChevronLeft, ChevronRight, CheckCircle2, MessageSquare } from "lucide-react";
+import { useSyncExternalStore, useRef, memo,  useEffect, useState } from "react";
+import { motion, useScroll, useSpring } from "framer-motion";
+import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 import { REVIEWS } from "@/lib/constants/clientReviews";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
 export default function ClientReviews() {
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const [mounted, setMounted] = useState(false);
+  const subscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
+const isMounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);  const isDesktop = useMediaQuery("(min-width: 1024px)");
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { setMounted(true); }, []);
 
-  const handleScroll = (direction: 'left' | 'right') => {
+
+const handleScroll = (direction: 'left' | 'right') => {
     const el = scrollRef.current;
     if (el) {
       const scrollAmount = direction === 'left' ? -el.clientWidth * 0.8 : el.clientWidth * 0.8;
@@ -20,45 +22,39 @@ export default function ClientReviews() {
     }
   };
 
-  if (!mounted) return <ReviewsSkeleton />;
-
-  return (
-    <section className="relative py-20 md:py-48 overflow-hidden ">
-      {/* 🌌 الـ Background "الخرافية" - نيون خفيف وتدرجات ناعمة */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_-20%,#D4AF3715,transparent_50%)] pointer-events-none" />
-      <div className="absolute -bottom-24 -left-24 size-[500px] bg-navy/5 blur-[120px] rounded-full pointer-events-none" />
-
-      <div className="max-w-[1440px] mx-auto relative z-10 px-4 md:px-12">
- <header className="flex flex-col items-center text-center mb-16 md:mb-28">
-  <motion.div 
-    initial={{ opacity: 0, y: -10 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full border border-[var(--academy-gold)]/20 bg-[var(--academy-gold)]/5 mb-8 shadow-[0_4px_15px_-3px_rgba(var(--academy-gold),0.1)]"
-  >
-    <div className="relative flex h-2 w-2">
-      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--academy-gold)] opacity-40"></span>
-      <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--academy-gold)]"></span>
-    </div>
-    <span className="font-[var(--font-sans)] text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] text-[var(--academy-gold-dark)]">
-       Reviews
-    </span>
-  </motion.div>
   
-  <h2 className="font-[var(--font-display)] text-5xl md:text-[105px] font-black italic uppercase tracking-tighter text-[var(--academy-navy)] leading-[0.95] md:leading-[0.85]">
-    Client <span className="text-transparent bg-clip-text bg-gradient-to-b from-[var(--academy-gold)] via-[var(--academy-gold)] to-[var(--academy-gold-dark)] filter drop-shadow-sm">
-      Reviews
-    </span> 
+  if (!isMounted) return <ReviewsSkeleton />;
+  return (
+    <section className="relative py-20 md:py-48 bg-transparent">
+      <div className="max-w-360 mx-auto relative z-10 px-4 md:px-12">
+        <header className="flex flex-col items-center text-center mb-16 md:mb-28">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full border border-gold/10 bg-gold/5 mb-8"
+          >
+            <div className="relative flex h-2 w-2">
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-gold"></span>
+            </div>
+            <span className="font-sans text-[10px] font-black uppercase tracking-[0.4em] text-gold-dark">
+                Reviews
+            </span>
+          </motion.div>
+          
+          <h2 className="font-black text-5xl md:text-[105px] font-black italic uppercase tracking-tighter text-navy leading-[0.85]">
+            Client 
+            {/* ✅ v4: bg-linear-to-b هو السنتاكس الجديد للجرادينت */}
+            <span className="text-transparent bg-clip-text bg-linear-to-b from-gold to-gold-dark">
+              Reviews
+            </span> 
+          </h2>
+        </header>
 
-  </h2>
-
-
-</header>
-        {/* 🎡 Carousel Wrapper مع تحسينات الموبايل */}
         <div className="relative group/main">
           <div 
             ref={scrollRef}
-            className="flex gap-5 md:gap-10 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-16 md:pb-24 px-2 md:px-0"
+            className="flex gap-5 md:gap-10 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-16 md:pb-24 will-change-transform"
           >
             {REVIEWS.map((review) => (
               <div key={review.id} className="snap-center shrink-0">
@@ -67,18 +63,17 @@ export default function ClientReviews() {
             ))}
           </div>
 
-          {/* 🏹 Navigation - بتصميم "Glassmorphism" للديسكتوب */}
           {isDesktop && (
-            <div className="absolute top-1/2 -inset-x-20 -translate-y-1/2 flex justify-between opacity-0 group-hover/main:opacity-100 transition-all duration-500 pointer-events-none">
+            <div className="absolute top-1/2 -inset-x-20 -translate-y-1/2 flex justify-between opacity-0 group-hover/main:opacity-100 transition-opacity duration-300 pointer-events-none">
               <NavButton direction="left" onClick={() => handleScroll('left')} />
               <NavButton direction="right" onClick={() => handleScroll('right')} />
             </div>
           )}
         </div>
 
-        {/* Indicator خطي ذكي */}
         <div className="flex justify-center">
-          <div className="h-[3px] w-32 bg-navy/5 rounded-full overflow-hidden">
+          {/* ✅ v4: h-0.5 تعادل 2px */}
+          <div className="h-0.5 w-32 bg-navy/5 rounded-full overflow-hidden">
              <ScrollProgress containerRef={scrollRef} />
           </div>
         </div>
@@ -87,85 +82,60 @@ export default function ClientReviews() {
   );
 }
 
-function ReviewCard({ review, isDesktop }: { review: any, isDesktop: boolean }) {
+const ReviewCard = memo(({ review, isDesktop }: { review: any, isDesktop: boolean }) => {
   return (
     <motion.div 
-      whileHover={isDesktop ? { y: -10 } : {}}
+      whileHover={isDesktop ? { y: -5 } : {}}
       className="
         relative flex flex-col justify-between bg-white
-        border border-black/[0.03] shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)]
-        /* تصغير العرض والارتفاع قليلاً للرشاقة */
-        w-[85vw] md:w-[420px] h-[380px] md:h-[420px] 
-        p-7 md:p-10 rounded-[2.5rem] md:rounded-[3rem]
-        transition-all duration-500
+        border border-navy/5 shadow-sm
+        w-[85vw] md:w-105 h-95 md:h-105 
+        p-7 md:p-10 rounded-2xl md:rounded-3xl
       "
     >
-      {/* 🕊️ أيقونة خلفية هادئة جداً باستخدام الـ Navy الجديد بشفافية منخفضة */}
-      <Quote className="absolute top-8 right-10 size-20 md:size-28 text-[var(--academy-navy)]/[0.012] pointer-events-none z-0" />
-
-      <div className="space-y-5 md:space-y-6 relative z-10">
+      <div className="space-y-6 relative z-10">
         <div className="flex justify-between items-center">
-          {/* صندوق الأيقونة أصغر وأرق */}
-          <div className="size-10 md:size-12 rounded-xl md:rounded-2xl bg-[var(--academy-gold)]/5 flex items-center justify-center text-[var(--academy-gold)] border border-[var(--academy-gold)]/10">
-            <Quote className="size-5 md:size-6 opacity-50" strokeWidth={1.5} fill="currentColor" />
+          <div className="size-10 md:size-12 rounded-xl bg-gold/5 flex items-center justify-center text-gold">
+            <Quote className="size-5" strokeWidth={1.5} fill="currentColor" />
           </div>
           
-          <div className="flex gap-0.5 bg-[#F8FAFC] px-3 py-1.5 rounded-full border border-black/[0.02]">
+          <div className="flex gap-0.5 px-3 py-1.5 rounded-full bg-slate-50">
             {[...Array(5)].map((_, i) => (
               <Star 
                 key={i} 
-                fill={i < review.rating ? "var(--academy-gold)" : "none"} 
-                className={`size-2.5 md:size-3 ${i < review.rating ? "text-[var(--academy-gold)]" : "text-[var(--academy-navy)]/10"}`} 
+                fill={i < review.rating ? "var(--color-gold)" : "none"} 
+                className={`size-3 ${i < review.rating ? "text-gold" : "text-slate-200"}`} 
               />
             ))}
           </div>
         </div>
         
-        {/* تصغير خط المحتوى - Font Display used here */}
-        <p className="font-[var(--font-sans)] text-[14px] md:text-[17px] text-[var(--academy-navy)]/80 leading-relaxed md:leading-normal font-medium italic tracking-tight line-clamp-5">
+        <p className="font-sans text-[15px] md:text-[17px] text-navy/80 leading-relaxed font-medium italic line-clamp-5">
           &quot;{review.text}&quot;
         </p>
       </div>
 
-      {/* الفوتر - مصغر ومنظم */}
-      <div className="mt-auto pt-6 border-t border-slate-100/60 flex items-center justify-between relative z-10">
-        <div className="flex items-center gap-3 md:gap-4">
-          <div className="relative isolate">
-            {/* Avatar بـ Ring أبيض ناعم */}
-            <div className="size-11 md:size-13 rounded-full bg-[var(--academy-navy)] flex items-center justify-center text-[var(--academy-gold)] font-bold text-xs md:text-sm overflow-hidden ring-2 ring-white shadow-md">
-              {review.name.charAt(0)}
-            </div>
-            
-            {/* Verified Badge مصغر جداً وبدقة عالية */}
-            <div className="absolute -bottom-0.5 -right-0.5 z-30 flex items-center justify-center">
-                <div className="absolute size-4 md:size-5 bg-white rounded-full shadow-sm" />
-                <CheckCircle2 
-                  className="relative z-40 text-[#3B82F6] fill-[#3B82F6]/10 size-3.5 md:size-4.5" 
-                  strokeWidth={2.5}
-                />
-            </div>
+      <div className="mt-auto pt-6 border-t border-slate-50 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="size-11 md:size-13 rounded-full bg-navy flex items-center justify-center text-gold font-bold ring-2 ring-white shadow-sm">
+            {review.name.charAt(0)}
           </div>
-
           <div className="flex flex-col">
-            {/* استخدام Syne للعناوين مع تصغير الحجم */}
-            <h4 className="font-[var(--font-display)] text-[var(--academy-navy)] font-extrabold text-[11px] md:text-[13px] uppercase tracking-wider leading-none">
+            <h4 className="font-display text-navy font-black text-xs md:text-sm uppercase tracking-wider">
               {review.name}
             </h4>
-            <span className="font-[var(--font-sans)] text-[8px] md:text-[10px] text-[var(--academy-navy)]/40 uppercase font-bold tracking-[0.1em] mt-1">
+            <span className="text-[9px] text-navy/40 uppercase font-bold mt-1">
               Verified Graduate
             </span>
           </div>
         </div>
-        
-        {/* Google Icon Box - Slimmed down */}
-        <div className="size-10 md:size-12 bg-white rounded-xl md:rounded-[1.1rem] flex items-center justify-center border border-black/[0.04] shadow-sm hover:bg-slate-50 transition-colors">
-           <GoogleIcon className="size-5 md:size-6" />
-        </div>
+        <GoogleIcon className="size-5 opacity-20" />
       </div>
     </motion.div>
   );
-}
-// المكونات الفرعية (Sub-components)
+});
+
+ReviewCard.displayName = "ReviewCard";
 function ScrollProgress({ containerRef }: { containerRef: React.RefObject<HTMLDivElement | null> }) {
   const { scrollXProgress } = useScroll({ container: containerRef });
   const scaleX = useSpring(scrollXProgress, { stiffness: 100, damping: 30 });

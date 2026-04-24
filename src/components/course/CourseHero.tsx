@@ -9,7 +9,6 @@ interface CourseHeroProps {
 
 export default function CourseHero({ course }: CourseHeroProps) {
   
-  // React 19: لا داعي لـ useMemo هنا، الـ Compiler سيتكفل بالتحسين
   const getInitial = (name: string) => name?.charAt(0).toUpperCase() || "I";
 
   return (

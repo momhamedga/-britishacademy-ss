@@ -1,4 +1,3 @@
-// app/courses/page.tsx
 import { getLatestCourses } from "@/actions/academy-actions";
 import CoursesPage from "./CoursesPageClient";
 

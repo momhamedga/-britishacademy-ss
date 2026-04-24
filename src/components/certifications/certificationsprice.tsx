@@ -107,7 +107,7 @@ function ProgramCard({ program, index }: any) {
       <button className={`w-full py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] transition-all ${
         isPopular 
         ? 'bg-[oklch(75%_0.15_85)] text-black shadow-lg shadow-gold/20 hover:scale-[1.02]' 
-        : 'bg-[#0a1a2f] text-white hover:bg-[#162a45]'
+        : 'bg-navy text-white hover:bg-navy'
       }`}>
         {program.label}
       </button>
