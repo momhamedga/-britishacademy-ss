@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useSyncExternalStore } from 'react';
+import {  useSyncExternalStore } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, ShieldCheck } from 'lucide-react';
 

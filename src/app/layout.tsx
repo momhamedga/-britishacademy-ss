@@ -39,8 +39,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${syne.variable} ${inter.variable} antialiased`}>
-        <NextTopLoader color="#D4AF37" showSpinner={false} />
+      <body className={`${syne.variable} ${inter.variable} antialiased`} suppressHydrationWarning={true}>
+        <NextTopLoader color="#D4AF37" showSpinner={false}  />
         
         <AnimatedFavicon />
         

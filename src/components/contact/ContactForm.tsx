@@ -1,42 +1,72 @@
 "use client";
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Loader2, CheckCircle2, AlertCircle, Info, ShieldCheck, User, Mail, MessageSquare, Zap } from 'lucide-react';
+import { Send, Loader2, CheckCircle2, AlertCircle, ShieldCheck, User, Mail, MessageSquare, Zap } from 'lucide-react';
 import { CONTACT_SUBJECTS } from '@/lib/constants';
 import { sendContactEmail } from '@/actions/contact';
 
 export default function ContactForm() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
 
   async function handleAction(formData: FormData) {
+    // التحقق من اختيار نوع الاستفسار
     if (!selectedSubject) {
       setStatus('error');
+      setErrorMessage("Please select an inquiry type");
       return;
     }
-    formData.set('subject', selectedSubject);
+
     setStatus('loading');
-    
+    setErrorMessage("");
+
     try {
+      // إرسال البيانات إلى Server Action الخاص بـ Resend
       const result = await sendContactEmail(formData);
+      
       if (result.success) {
         setStatus('success');
         formRef.current?.reset();
         setSelectedSubject("");
       } else {
         setStatus('error');
+        setErrorMessage(result.message || "Transmission failed");
       }
     } catch (e) {
       setStatus('error');
+      setErrorMessage("System error occurred");
     } finally {
-      setTimeout(() => setStatus('idle'), 6000);
+      // إعادة الحالة للطبيعي بعد 5 ثوانٍ
+      setTimeout(() => {
+        if (status !== 'loading') {
+           setStatus('idle');
+           setErrorMessage("");
+        }
+      }, 5000);
     }
   }
 
   return (
     <div className="w-full relative">
-      {/* 🖥️ DESKTOP VERSION: Command Center Interface */}
+      {/* ⚠️ Error Tooltip */}
+      <AnimatePresence>
+        {status === 'error' && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="absolute -top-14 left-0 right-0 flex justify-center z-50 px-4"
+          >
+            <div className="bg-red-600 text-white text-[10px] font-black uppercase px-5 py-2.5 rounded-full flex items-center gap-2.5 shadow-[0_15px_30px_rgba(239,68,68,0.2)]">
+              <AlertCircle size={15} /> {errorMessage}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 🖥️ DESKTOP VERSION */}
       <div className="hidden lg:block relative p-12 rounded-[3rem] bg-white border border-navy/5 shadow-2xl overflow-hidden group">
         <div className="absolute top-0 right-0 p-8 opacity-5">
            <ShieldCheck size={120} className="text-navy" />
@@ -53,8 +83,10 @@ export default function ContactForm() {
           <div className="space-y-3">
             <label className="text-[10px] font-black text-navy/40 uppercase tracking-[0.3em] ml-1">Objective</label>
             <div className="relative">
-               <select 
+              <input type="hidden" name="subject" value={selectedSubject} />
+              <select 
                 required
+                value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
                 className="w-full h-16 bg-[oklch(99%_0.01_260)] border border-navy/10 rounded-2xl px-6 text-[13px] font-bold text-navy outline-none focus:ring-2 focus:ring-[#D4AF37]/20 transition-all appearance-none cursor-pointer"
               >
@@ -78,7 +110,7 @@ export default function ContactForm() {
         </form>
       </div>
 
-      {/* 📱 MOBILE VERSION: App-Like Native Interface */}
+      {/* 📱 MOBILE VERSION */}
       <div className="lg:hidden bg-white rounded-[2.5rem] p-8 shadow-xl border border-navy/5 relative overflow-hidden">
         <AnimatePresence mode="wait">
           {status === 'success' ? (
@@ -94,9 +126,7 @@ export default function ContactForm() {
               </div>
               <div className="space-y-2">
                 <h3 className="text-2xl font-black text-navy uppercase italic">Transmission Received</h3>
-                <p className="text-[10px] font-bold text-navy/40 uppercase tracking-widest leading-loose">
-                  Our tactical team will respond <br /> within 24 business hours.
-                </p>
+                <p className="text-[10px] font-bold text-navy/40 uppercase tracking-widest leading-loose"> Our team will respond <br /> within 24 business hours. </p>
               </div>
             </motion.div>
           ) : (
@@ -113,8 +143,10 @@ export default function ContactForm() {
                 <MobileInput label="email address" name="user_email" type="email" placeholder="EMAIL ADDRESS" />
                 
                 <div className="space-y-2">
+                   <input type="hidden" name="subject" value={selectedSubject} />
                    <select 
                     required
+                    value={selectedSubject}
                     onChange={(e) => setSelectedSubject(e.target.value)}
                     className="w-full h-14 bg-navy/[0.03] border-none rounded-2xl px-5 text-xs font-black text-navy outline-none appearance-none"
                   >
@@ -139,7 +171,7 @@ export default function ContactForm() {
   );
 }
 
-/* 💠 SUB-COMPONENTS FOR REUSABILITY */
+/* 💠 SUB-COMPONENTS */
 
 const FormHeader = ({ title }: { title: string }) => (
   <div className="flex items-center gap-4 mb-10 pb-6 border-b border-navy/5">
@@ -153,8 +185,11 @@ const InputGroup = ({ label, icon: Icon, ...props }: any) => (
     <label className="text-[10px] font-black text-navy/40 uppercase tracking-[0.3em] ml-1 transition-colors group-focus-within/input:text-[#D4AF37]">{label}</label>
     <div className="relative">
       <input 
-        {...props} required
-        className="w-full h-16 bg-[oklch(99%_0.01_260)] border border-navy/10 rounded-2xl px-14 text-[13px] font-bold text-navy outline-none focus:border-[#D4AF37] transition-all placeholder:opacity-20"
+        {...props} 
+        required
+        onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please fill out this field.")}
+        onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
+        className="w-full h-16 bg-[oklch(99%_0.01_260)] border border-navy/10 rounded-2xl px-14 text-[13px] font-bold text-navy outline-none focus:border-[#D4AF37] transition-all placeholder:text-navy/20"
       />
       <div className="absolute left-5 top-1/2 -translate-y-1/2 text-navy/20 group-focus-within/input:text-[#D4AF37] transition-colors">
         <Icon size={18} strokeWidth={1.5} />
@@ -167,18 +202,20 @@ const MobileInput = ({ label, ...props }: any) => (
   <div className="space-y-2">
     <label className="text-[9px] font-black text-navy/30 uppercase tracking-widest ml-1">{label}</label>
     <input 
-      {...props} required
-      className="w-full h-14 bg-navy/[0.03] border-none rounded-2xl px-5 text-xs font-bold text-navy outline-none placeholder:opacity-30"
+      {...props} 
+      required
+      onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please fill out this field.")}
+      onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
+      className="w-full h-14 bg-navy/[0.03] border-none rounded-2xl px-5 text-xs font-bold text-navy outline-none"
     />
   </div>
 );
-
 const SubmitButton = ({ status, isMobile = false }: { status: string, isMobile?: boolean }) => (
   <motion.button
     whileTap={{ scale: 0.97 }}
     disabled={status === 'loading'}
     className={`w-full ${isMobile ? 'h-16 rounded-[1.8rem]' : 'h-18 rounded-2xl'} flex items-center justify-center gap-4 transition-all duration-500 shadow-xl ${
-        status === 'success' ? 'bg-emerald-500' : 'bg-navy'
+        status === 'success' ? 'bg-emerald-500 shadow-emerald-500/20' : 'bg-navy shadow-navy/20'
     }`}
   >
     {status === 'loading' ? (
@@ -188,7 +225,7 @@ const SubmitButton = ({ status, isMobile = false }: { status: string, isMobile?:
     ) : (
       <>
         <span className="text-[#D4AF37] font-black uppercase tracking-[0.5em] text-[11px]">Initiate Transmission</span>
-        <Send size={16} className="text-[#D4AF37] -rotate-12 transition-transform group-hover:translate-x-1" />
+        <Send size={16} className="text-[#D4AF37] -rotate-12 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
       </>
     )}
   </motion.button>
