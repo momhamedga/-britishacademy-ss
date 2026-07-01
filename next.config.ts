@@ -29,8 +29,17 @@ const nextConfig: NextConfig = {
     // تحسين استيراد المكتبات الكبيرة مثل Lucide و Framer Motion
     optimizePackageImports: ['lucide-react', 'framer-motion', 'three'],
     
-    // تفعيل خاصية استعادة مكان التمرير (التي ظهرت مفعلة في الـ Log عندك)
+    // تفعيل خاصية استعادة مكان التمرير
     scrollRestoration: true,
+
+    // 🎯 التعديل التكتيكي: السماح للدومينات الحقيقية باستقبال وتشغيل الـ Server Actions والكوكيز بنقاء كامل
+    serverActions: {
+      allowedOrigins: [
+        'britishacademy-ss.com',
+        'www.britishacademy-ss.com',
+        'localhost:3000'
+      ]
+    }
   },
 
   // إخفاء الـ Header لأسباب أمنية
