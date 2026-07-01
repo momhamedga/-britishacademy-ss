@@ -23,13 +23,14 @@ export default function Sidebar({ studentData }: { studentData: any }) {
   const [isPending, startTransition] = useTransition();
 
   // ✅ في React 19، الـ Compiler بيعمل Memoization تلقائي للـ Arrays الـ Static دي
-  const menuItems = [
-    { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
-    { name: 'My Courses', icon: BookOpen, href: '/dashboard/courses' },
-    { name: 'Certificates', icon: GraduationCap, href: '/dashboard/certificates' },
-    { name: 'Profile', icon: User, href: '/dashboard/profile' },
-    { name: 'Settings', icon: Settings, href: '/dashboard/settings' },
-  ];
+const menuItems = [
+  { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
+  { name: 'My Courses', icon: BookOpen, href: '/dashboard/courses' },
+  { name: 'Membership Card', icon: ShieldCheck, href: '/dashboard/MembershipCard' }, // 🚀 القسم الجديد بالمسار الصح بالملي
+  { name: 'Certificates', icon: GraduationCap, href: '/dashboard/certificates' },
+  { name: 'Profile', icon: User, href: '/dashboard/profile' },
+  { name: 'Settings', icon: Settings, href: '/dashboard/settings' },
+];
 
   const handleLogout = () => {
     startTransition(async () => {

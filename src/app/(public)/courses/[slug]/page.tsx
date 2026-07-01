@@ -1,42 +1,50 @@
-import { getCourseBySlug } from "@/actions/academy-actions";
+import { getCourseBySlug, checkStudentVectorProgress } from "@/actions/academy-actions";
 import CourseHero from "@/components/course/CourseHero";
 import CourseSidebar from "@/components/course/CourseSidebar";
 import CourseTabs from "@/components/course/CourseTabs";
+import StudyDashboardClient from "@/components/StudyDashboardClient";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
 interface CoursePageProps {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ mode?: string }>; // 🛰️ تكتيك تتبع حالة الضغط
 }
 
-export default async function CourseDetailsPage({ params }: CoursePageProps) {
-  const [{ slug }, cookieStore] = await Promise.all([
+export default async function CourseDetailsPage({ params, searchParams }: CoursePageProps) {
+  const [{ slug }, { mode }, cookieStore] = await Promise.all([
     params,
+    searchParams,
     cookies()
   ]);
 
-  // البدء في جلب البيانات فوراً
   const course = await getCourseBySlug(slug);
-
   if (!course) notFound();
 
   const userId = cookieStore.get("user_id")?.value;
+  
+  // 🛰️ فحص حالة اشتراك الطالب والتقدم والدروس من السيرفر فوراً
+  const enrollmentStatus = userId ? await checkStudentVectorProgress(course.id) : { isEnrolled: false, progress: 0, lessons: [] };
 
-const fullContent = (() => {
+  // 🛡️ إذا كان الطالب مشترك وضغط على "تابع الدراسة" (سيتغير الرابط لـ ?mode=study)
+  if (enrollmentStatus.isEnrolled && mode === "study") {
+    return (
+      <StudyDashboardClient 
+      course={course} 
+  lessons={enrollmentStatus.lessons} 
+  initialProgress={enrollmentStatus.progress} 
+  initialCompletedLessons={enrollmentStatus.completedLessons || []}
+      />
+    );
+  }
+
+  const fullContent = (() => {
     const raw = course.full_content;
-
     if (typeof raw !== 'string') return raw;
-    
     const trimmedRaw = raw.trim();
-    
     if (trimmedRaw.startsWith('{') || trimmedRaw.startsWith('[')) {
-      try {
-        return JSON.parse(trimmedRaw);
-      } catch {
-        return raw;
-      }
+      try { return JSON.parse(trimmedRaw); } catch { return raw; }
     }
-    
     return raw;
   })();
 
@@ -49,20 +57,16 @@ const fullContent = (() => {
   };
 
   return (
-    <main className="min-h-screen ">
-      {/* 1. الـ Hero - SSR Optimized */}
+    <main className="min-h-screen">
       <CourseHero course={course} />
 
-      {/* 2. Container المحتوى */}
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-10 relative">          
           
-          {/* المحتوى الرئيسي - تم إضافة min-h لثبات الـ Layout */}
           <div className="flex-1 min-w-0 min-h-[600px]">
             <CourseTabs course={course} fullContent={fullContent} />
           </div>
 
-          {/* Sidebar - Sticky Optimized */}
           <aside className="w-full lg:w-[400px]">
             <div className="lg:sticky lg:top-28 transition-all duration-500">
               <CourseSidebar 

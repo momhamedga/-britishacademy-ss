@@ -5,7 +5,6 @@ import type { NextRequest } from 'next/server';
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // 1. تجهيز الهيدرز (يجب حقنها في الـ next() والـ redirect() لضمان الثبات)
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-pathname', pathname);
 
@@ -20,7 +19,7 @@ export default function proxy(request: NextRequest) {
   // --- حماية Dashboard المستخدم ---
   if (isDashboardPage && !token) {
     return NextResponse.redirect(new URL('/login', request.url), {
-      headers: requestHeaders // 🚨 حقن الهيدر حتى في الريدايركت
+      headers: requestHeaders
     });
   }
   if (isUserLoginPage && token) {
@@ -41,7 +40,6 @@ export default function proxy(request: NextRequest) {
     });
   }
 
-  // 2. تمرير الطلب العادي بالهيدرز المحقونة
   return NextResponse.next({
     request: {
       headers: requestHeaders,
@@ -49,9 +47,17 @@ export default function proxy(request: NextRequest) {
   });
 }
 
+// 🛰️ الماتشر الرسمي والمستقر لـ Next.js اللي مستحيل يكسر الـ Routes الفرعية
 export const config = {
   matcher: [
-    /* نركز الماتشر فقط على الصفحات الفعلية ونبعد عن أي ملفات ميديا أو api */
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)',
+    /*
+     * يطابق جميع مسارات الطلبات باستثناء المسارات التي تبدأ بـ:
+     * - api (مسارات واجهة برمجة التطبيقات)
+     * - _next/static (الملفات الثابتة)
+     * - _next/image (خدمات تحسين الصور)
+     * - favicon.ico (أيقونة الموقع)
+     * - وباقي الملفات الامتدادية مثل .png, .jpg, .svg
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|svg|webp|css|js|woff|woff2|ttf|eot)).*)',
   ],
 };

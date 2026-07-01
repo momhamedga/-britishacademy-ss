@@ -2,7 +2,7 @@
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Clock, Users, ArrowUpRight, Zap, ShieldCheck } from 'lucide-react';
+import { Clock, Users, ArrowUpRight, Zap, ShieldCheck, Award, Play } from 'lucide-react';
 import { Course } from '@/types';
 
 // 🎨 الهوية الملكية الموحدة
@@ -19,7 +19,7 @@ const LEVEL_CONFIG: Record<string, string> = {
   beginner: 'text-emerald-600 bg-emerald-50/80 border-emerald-100',
 };
 
-export default function CourseCard({ course }: { course: Course }) {
+export default function CourseCard({ course }: { course: Course & { progress?: number | null } }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const mouseXSpring = useSpring(x, { stiffness: 150, damping: 30 });
@@ -27,6 +27,10 @@ export default function CourseCard({ course }: { course: Course }) {
   
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["7deg", "-7deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-7deg", "7deg"]);
+
+  // 🛰️ فحص إذا كان الكارت معروض جوة لوحة التحكم وله نسبة تقدم (Progress)
+  const hasProgress = course.progress !== undefined && course.progress !== null;
+  const progressValue = hasProgress ? Number(course.progress) : 0;
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (e.pointerType === 'touch') return;
@@ -51,13 +55,12 @@ export default function CourseCard({ course }: { course: Course }) {
         className="relative h-full flex flex-col bg-white rounded-[3rem] p-3 border border-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_40px_100px_-20px_rgba(15,23,42,0.15)] transition-all duration-700 overflow-hidden"
       >
         
- {/* --- 🖼️ Media Section: Compact & Responsive Aspect Ratio --- */}
+        {/* --- 🖼️ Media Section: Compact & Responsive Aspect Ratio --- */}
         <div className="relative aspect-[16/10] w-full rounded-[2rem] overflow-hidden shadow-inner group-hover:shadow-lg transition-all duration-700">
           <Image 
             src={course.image_url || '/logo.webp'} 
             alt={course.title} 
             fill 
-            // ✅ استخدام priority للصور الأولى لتحسين الـ LCP
             priority 
             className="object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, 33vw"
@@ -66,12 +69,12 @@ export default function CourseCard({ course }: { course: Course }) {
           {/* Subtle Overlay: أخف وأرقى */}
           <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent opacity-80" />
           
-          {/* Floating Level: أصغر وأدمج */}
+          {/* Floating Level */}
           <div className={`absolute top-3 right-3 px-3 py-1 rounded-xl border text-[7px] font-black uppercase tracking-widest backdrop-blur-md z-20 shadow-sm ${getLevelStyle()}`}>
             {course.level}
           </div>
 
-          {/* Price & Badge: أخدوا مساحة أقل */}
+          {/* Price & Badge */}
           <div className="absolute bottom-3 left-4 z-20 flex items-center gap-2">
              <div className="bg-navy/80 backdrop-blur-lg px-3 py-1.5 rounded-xl shadow-xl flex items-center gap-1.5 border border-white/10 group-hover:border-gold/40 transition-colors">
                <Zap size={10} className="text-gold" fill="currentColor" />
@@ -95,14 +98,34 @@ export default function CourseCard({ course }: { course: Course }) {
               <div className="h-[1.5px] w-8 bg-gold/30 rounded-full" />
           </div>
           
-          <h3 className="text-navy font-black text-2xl @[30rem]:text-3xl mb-8 uppercase leading-[0.95] tracking-tighter italic group-hover:text-gold transition-colors duration-500 line-clamp-2">
+          <h3 className="text-navy font-black text-2xl @[30rem]:text-3xl mb-6 uppercase leading-[0.95] tracking-tighter italic group-hover:text-gold transition-colors duration-500 line-clamp-2">
             {course.title}
           </h3>
           
-          <div className="grid grid-cols-2 gap-4 mb-8">
+          <div className="grid grid-cols-2 gap-4 mb-6">
              <InfoBox icon={Clock} value={course.duration} label="Course_Time" />
-             <InfoBox icon={Users} value="Elite Access" label="Entry_Tier" />
+             <InfoBox icon={Users} value={hasProgress ? `Sync Active` : `Elite Access`} label="Entry_Tier" />
           </div>
+
+          {/* 🛰️ [شريط التقدم التكتيكي] يظهر فقط للطالب المشترك */}
+          {hasProgress && (
+            <div className="w-full bg-slate-100 p-4 rounded-2xl border border-black/[0.02] mb-6 space-y-2">
+              <div className="flex justify-between items-center text-[8px] font-black uppercase tracking-wider text-slate-400">
+                <span>Operational_Progress</span>
+                <span className={progressValue === 100 ? "text-gold animate-pulse" : "text-navy"}>
+                  {progressValue === 100 ? "Completed_100%" : `Syncing_${progressValue}%`}
+                </span>
+              </div>
+              <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressValue}%` }}
+                  transition={{ duration: 1, ease: "easeOut" }}
+                  className={`h-full rounded-full ${progressValue === 100 ? 'bg-gradient-to-r from-gold to-yellow-500' : 'bg-navy'}`}
+                />
+              </div>
+            </div>
+          )}
 
           {/* --- Bottom Nav Area --- */}
           <div className="mt-auto pt-6 border-t border-slate-50 flex items-center justify-between">
@@ -111,10 +134,22 @@ export default function CourseCard({ course }: { course: Course }) {
                 <span className="text-[11px] font-mono font-bold text-navy/40 group-hover:text-gold transition-colors">#BR-{course.slug.substring(0,4).toUpperCase()}</span>
             </div>
 
+            {/* الأيقونة الذكية المتغيرة بناءً على نسبة التقدم */}
             <motion.div 
-              className="size-16 rounded-[1.5rem] bg-navy flex items-center justify-center text-gold shadow-xl group-hover:bg-gold group-hover:text-navy transition-all duration-500 group-hover:rotate-12"
+              className={`size-16 rounded-[1.5rem] flex items-center justify-center shadow-xl transition-all duration-500 group-hover:rotate-12
+                ${progressValue === 100 
+                  ? 'bg-gradient-to-r from-gold to-yellow-500 text-navy shadow-gold/20' 
+                  : 'bg-navy text-gold group-hover:bg-gold group-hover:text-navy'}`}
             >
+              {hasProgress ? (
+                progressValue === 100 ? (
+                  <Award size={26} strokeWidth={2.5} className="animate-bounce" />
+                ) : (
+                  <Play size={22} fill="currentColor" strokeWidth={0} />
+                )
+              ) : (
                 <ArrowUpRight size={28} strokeWidth={3} />
+              )}
             </motion.div>
           </div>
         </div>

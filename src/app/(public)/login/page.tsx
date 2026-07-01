@@ -14,11 +14,12 @@ export default function PortalLoginPage() {
   };
 
   return (
-    // ⚪ خلفية بيضاء نظيفة مع التوسيط المطلق
-    <main className="min-h-[100dvh] w-full flex flex-col items-center justify-center relative overflow-hidden px-4 py-8 ">
+    // 🛰️ تكتيك الهروب والمساحة الموزونة: استبدال m-40 بـ pt-28 للموبايل وpt-40 للديسك توب
+    <main className="min-h-screen w-full flex justify-center relative overflow-hidden px-4 pt-28 pb-16 md:pt-40 bg-transparent">
       
       {/* 🌌 Background Elements - Soft Accents */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        {/* تصحيح كلاس الـ bg-size للـ Grid الهندسي */}
         <div className="absolute inset-0 bg-grid-slate-200/[0.3] bg-[size:30px_30px] [mask-image:radial-gradient(white,transparent_85%)]" />
         {/* هالة ضوئية ناعمة تتفاعل مع الإدخال */}
         <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] md:w-[500px] h-[280px] md:h-[500px] rounded-full blur-[80px] md:blur-[120px] transition-all duration-1000 ${isDetected ? 'bg-gold/20' : 'bg-slate-100'}`} />
@@ -27,8 +28,7 @@ export default function PortalLoginPage() {
       <motion.div 
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        // تصغير عرض الفورم في الموبايل ليكون ملموم أكتر
-        className="relative z-10 w-full max-w-[360px] md:max-w-[420px]"
+        className="relative z-10 w-full max-w-[360px] md:max-w-[420px] h-fit"
       >
         {/* Main Card - Navy & Gold Theme */}
         <div className="relative bg-navy p-6 md:p-10 rounded-[1.8rem] md:rounded-[2.5rem] border border-white/5 backdrop-blur-[30px] shadow-2xl overflow-hidden group transition-all duration-500">

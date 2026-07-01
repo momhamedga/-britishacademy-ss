@@ -8,14 +8,15 @@ export const dynamic = "force-dynamic";
 export default async function CertificatesPage() {
   const cookieStore = await cookies();
   const userId = cookieStore.get("user_id")?.value || "guest";
+        {console.log("SENDING_ID_TO_LIST:", userId);}
 
   return (
-    // 🛡️ الخلفية Navy والـ Padding متناسق للموبايل
-    <div className="min-h-screen space-y-12 p-5 md:p-12 animate-in fade-in slide-in-from-bottom-6 duration-1000 pb-24 lg:pb-10 ">
+    // 🛡️ تم تغيير التنسيق العلوى لـ pt-28 md:pt-36 للهروب من تداخل النيف بار وتأمين المساحة
+    <div className="min-h-screen space-y-12 px-4 pt-28 pb-20 md:px-12 md:pt-36 animate-in fade-in slide-in-from-bottom-6 duration-1000">
       
       {/* 🏛️ British Academy Header - Ultra-Modern Revision */}
-      <div className="relative group p-8 md:p-12 rounded-[2.5rem] bg-navy border border-white/5 overflow-hidden shadow-2xl">
-        {/* Glows مستوحاة من الـ CertificationsHero */}
+      <div className="max-w-7xl mx-auto relative group p-8 md:p-12 rounded-[2.5rem] bg-navy border border-white/5 overflow-hidden shadow-2xl">
+        {/* Glows */}
         <div className="absolute -left-20 -top-20 size-64 bg-gold/10 blur-[100px] rounded-full pointer-events-none group-hover:bg-gold/15 transition-all duration-1000" />
         <div className="absolute -right-20 -bottom-20 size-64 bg-gold/5 blur-[80px] rounded-full pointer-events-none" />
         
@@ -43,15 +44,15 @@ export default async function CertificatesPage() {
           </div>
 
           {/* Quick Stats or ID */}
-          <div className="bg-white/5 backdrop-blur-md border border-white/5 p-4 rounded-2xl flex flex-col items-end gap-2">
+          <div className="bg-white/5 backdrop-blur-md border border-white/5 p-4 rounded-2xl flex flex-col items-end gap-2 shrink-0">
              <p className="text-[9px] font-black text-gold/40 uppercase tracking-widest">Access Node: Abu Dhabi</p>
              <p className="text-[11px] font-mono text-white uppercase tracking-tighter">SEC-ID: {userId.slice(0,12).toUpperCase()}</p>
           </div>
         </div>
       </div>
 
-      {/* 🔄 المحرك الذي يجلب البيانات */}
-      <div className="relative">
+      {/* 🔄 المحرك التكتيكي لجلب البيانات */}
+      <div className="max-w-7xl mx-auto relative">
         {/* خط ديكوري طولي يشبه الـ Timeline */}
         <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-gold/20 via-white/5 to-transparent hidden md:block" />
 
@@ -69,8 +70,9 @@ export default async function CertificatesPage() {
             </div>
           }
         >
-          <CertificatesList />
+          <CertificatesList userId={userId} />
         </Suspense>
+        
       </div>
     </div>
   );

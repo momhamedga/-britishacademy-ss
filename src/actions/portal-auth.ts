@@ -215,3 +215,43 @@ export async function logout() {
   cookieStore.delete("user_id");
   redirect("/login");
 }
+
+export async function verifyAdminUplink(password: string) {
+  // هنا تسحب الباسورد من البيئة بأمان بدون PUBLIC
+  const secretKey = process.env.ADMIN_SECRET; 
+
+  if (!secretKey) {
+    console.error("🔴 CRITICAL: ADMIN_SECRET IS NOT SET IN ENVIRONMENT VARIABLES");
+    return { success: false, error: "SYSTEM_MISCONFIGURATION" };
+  }
+
+  if (password === secretKey) {
+    const cookieStore = await cookies();
+    // وضع الـ Cookie بشكل مشفر وآمن من السيرفر مباشرة لمدة 24 ساعة
+    cookieStore.set("admin_session", "authorized", {
+      path: "/",
+      maxAge: 86400,
+      sameSite: "strict",
+      secure: true,
+      httpOnly: true, // يمنع سرقة الـ Cookie عبر أكواد الجافا سكريبت الخبيثة
+    });
+    return { success: true };
+  }
+
+  return { success: false, error: "INVALID_ENCRYPTION_KEY" };
+}
+
+export async function logoutAdmin() {
+  const cookieStore = await cookies();
+  
+  // مسح الكوكي الـ httpOnly تماماً من جذورها
+  cookieStore.set("admin_session", "", {
+    path: "/",
+    maxAge: 0, // تنتهي فوراً
+    sameSite: "strict",
+    secure: true,
+    httpOnly: true,
+  });
+
+  return { success: true };
+}

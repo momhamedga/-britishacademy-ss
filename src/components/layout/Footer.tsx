@@ -18,7 +18,7 @@ export default function UnifiedTacticalFooter() {
 
   return (
     <footer 
-      className="relative mt-20 pt-24 pb-12 overflow-hidden border-t border-white/5"
+      className="relative  pt-40 pb-12 overflow-hidden border-t border-white/5"
       style={{ backgroundColor: COLORS.navy }}
     >
       {/* 🌌 Atmospheric Background */}
