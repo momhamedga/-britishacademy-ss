@@ -19,7 +19,7 @@ export default function TacticalContactHero() {
   if (!isMounted) return <section className="min-h-[85svh] w-full bg-navy" />;
 
   return (
-    <section className="relative min-h-[85svh] w-full flex flex-col items-center justify-center text-center px-6 overflow-hidden bg-navy">
+    <section className="relative min-h-screen w-full flex flex-col items-center justify-center text-center px-6 overflow-hidden bg-navy">
       
       {/* 🌌 Background Elements - v4 Semantic Colors */}
       <div className="absolute inset-0 pointer-events-none">

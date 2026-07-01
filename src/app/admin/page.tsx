@@ -1,16 +1,17 @@
 "use client";
-import { useTransition } from 'react'; // 🛰️ تتبع حالة المزامنة أثناء الحذف
+import { useTransition } from 'react'; 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { BookOpen, LogOut, LayoutDashboard, ChevronRight, Activity, Loader2 } from 'lucide-react';
-import { logoutAdmin } from '@/actions/portal-auth'; // ✅ استيراد أكشن الحذف الآمن
+import { BookOpen, LogOut, LayoutDashboard, ChevronRight, Activity, Loader2, Home } from 'lucide-react';
+import { logoutAdmin } from '@/actions/portal-auth'; 
+import { useRouter } from 'next/navigation';
 
 export default function AdminDashboard() {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const handleLogout = () => {
     startTransition(async () => {
-      // تنفيذ بروتوكول الحذف من السيرفر مباشرة
       const res = await logoutAdmin();
       if (res.success) {
         window.location.href = "/admin/login";
@@ -21,26 +22,40 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen text-navy relative bg-transparent">
       
-      {/* FLOATING LOGOUT BUTTON */}
-      <div className="fixed top-6 right-6 z-[1000]">
+      {/* 🎯 NAVIGATION & CONTROLS HEADER BAR */}
+      <div className="fixed top-6 right-6 z-[1000] flex items-center gap-3">
+        
+        {/* 🏠 زر العودة للرئيسية التكتيكي المضاف */}
         <motion.button 
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => router.push('/')}
+          className="flex items-center gap-2.5 px-4 py-3 md:px-5 md:py-3.5 bg-navy border border-white/5 text-slate-400 hover:text-gold hover:border-gold/20 rounded-2xl shadow-xl backdrop-blur-xl transition-all text-[9px] font-black uppercase tracking-widest"
+        >
+          <Home size={14} />
+          <span className="hidden md:block">Return_Home</span>
+        </motion.button>
+
+        {/* FLOATING LOGOUT BUTTON */}
+        <motion.button 
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.95 }}
           onClick={handleLogout}
           disabled={isPending}
-          className="flex items-center gap-3 px-4 py-3 md:px-6 md:py-4 bg-white/90 backdrop-blur-xl border border-red-100 text-gold rounded-3xl shadow-2xl shadow-red-100/30 group transition-all disabled:opacity-50"
+          className="flex items-center gap-3 px-4 py-3 md:px-5 md:py-3.5 bg-white border border-red-100/10 text-gold rounded-2xl shadow-xl transition-all disabled:opacity-50 group"
         >
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] hidden md:block">
+          <span className="text-[9px] font-black uppercase tracking-widest hidden md:block text-navy">
             {isPending ? "leaving..." : "logout"}
           </span>
-          <div className="bg-gold text-white p-2 rounded-xl group-hover:rotate-90 transition-transform duration-500 flex items-center justify-center">
+          <div className="text-gold group-hover:rotate-90 transition-transform duration-500 flex items-center justify-center shrink-0">
             {isPending ? (
-              <Loader2 size={18} className="animate-spin" />
+              <Loader2 size={14} className="animate-spin" />
             ) : (
-              <LogOut size={18} strokeWidth={3} />
+              <LogOut size={14} strokeWidth={2.5} />
             )}
           </div>
         </motion.button>
+
       </div>
 
       {/* MAIN CONTENT */}

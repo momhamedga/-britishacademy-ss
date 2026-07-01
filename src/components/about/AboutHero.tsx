@@ -13,7 +13,7 @@ export default function TacticalAbout() {
   // ✅ وداعاً للـ useEffect والـ useState الـ Manual
   const isMounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  if (!isMounted) return <section className="min-h-[80svh] bg-navy" />;
+  if (!isMounted) return <section className="min-h-screen bg-navy" />;
 
   return (
     <section className="relative py-20 md:py-32 px-6 overflow-hidden bg-navy">

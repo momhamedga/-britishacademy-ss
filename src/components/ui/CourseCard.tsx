@@ -2,38 +2,26 @@
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Clock, Users, ArrowUpRight, Zap, ShieldCheck, Award, Play } from 'lucide-react';
-import { Course } from '@/types';
-
-// 🎨 الهوية الملكية الموحدة
-const COLORS = {
-  navy: "var(--academy-navy)",
-  gold: "var(--academy-gold)",
-  background: "var(--background)",
-};
+import { Clock, Users, ArrowUpRight, Zap, ShieldCheck } from 'lucide-react';
 
 const LEVEL_CONFIG: Record<string, string> = {
   advanced: 'text-red-600 bg-red-50/80 border-red-100',
-  intermediate: 'text-navy bg-white/80 border-gold/20',
+  intermediate: 'text-slate-900 bg-white/80 border-gold/20',
   professional: 'text-purple-600 bg-purple-50/80 border-purple-100',
   beginner: 'text-emerald-600 bg-emerald-50/80 border-emerald-100',
 };
 
-export default function CourseCard({ course }: { course: Course & { progress?: number | null } }) {
+export default function CourseCard({ course, isListView = false }: { course: any, isListView?: boolean }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const mouseXSpring = useSpring(x, { stiffness: 150, damping: 30 });
   const mouseYSpring = useSpring(y, { stiffness: 150, damping: 30 });
   
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["7deg", "-7deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-7deg", "7deg"]);
-
-  // 🛰️ فحص إذا كان الكارت معروض جوة لوحة التحكم وله نسبة تقدم (Progress)
-  const hasProgress = course.progress !== undefined && course.progress !== null;
-  const progressValue = hasProgress ? Number(course.progress) : 0;
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["4deg", "-4deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-4deg", "4deg"]);
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (e.pointerType === 'touch') return;
+    if (e.pointerType === 'touch' || isListView) return; 
     const rect = e.currentTarget.getBoundingClientRect();
     x.set((e.clientX - rect.left) / rect.width - 0.5);
     y.set((e.clientY - rect.top) / rect.height - 0.5);
@@ -46,129 +34,90 @@ export default function CourseCard({ course }: { course: Course & { progress?: n
   };
 
   return (
-    <Link href={`/courses/${course.slug}`} className="block h-full group @container perspective-1000">
+    <Link href={`/courses/${course.slug}`} className="block h-auto group @container perspective-1000 w-full min-w-0">
       <motion.div 
         onPointerMove={handlePointerMove}
         onPointerLeave={() => { x.set(0); y.set(0); }}
-        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-        whileTap={{ scale: 0.98 }}
-        className="relative h-full flex flex-col bg-white rounded-[3rem] p-3 border border-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_40px_100px_-20px_rgba(15,23,42,0.15)] transition-all duration-700 overflow-hidden"
+        style={{ rotateX: isListView ? 0 : rotateX, rotateY: isListView ? 0 : rotateY, transformStyle: "preserve-3d" }}
+        whileTap={{ scale: 0.99 }}
+        /* 🎯 التعديل الجوهري: في وضع اللستة الكارت بياخد العرض الكامل w-full، وبيتحول لأفقي md:flex-row في الديسك توب */
+        className={`relative h-auto flex transition-all duration-500 bg-white border border-slate-100 rounded-xl p-4 shadow-[0_10px_30px_rgba(15,23,42,0.03)] hover:shadow-[0_25px_60px_-15px_rgba(15,23,42,0.1)] overflow-hidden group/card w-full ${
+          isListView ? 'flex-col md:flex-row md:items-stretch gap-5' : 'flex-col'
+        }`}
       >
         
-        {/* --- 🖼️ Media Section: Compact & Responsive Aspect Ratio --- */}
-        <div className="relative aspect-[16/10] w-full rounded-[2rem] overflow-hidden shadow-inner group-hover:shadow-lg transition-all duration-700">
+        {/* --- 🖼️ Media Section: ضبط ذكي للأبعاد في الوضعين العمودي والأفقي --- */}
+        <div className={`relative rounded-lg overflow-hidden border border-black/[0.02] bg-slate-50 shrink-0 transition-all duration-500 ${
+          isListView 
+            ? 'aspect-[16/10] w-full md:w-60 md:aspect-auto md:h-auto' // في الديسك توب بياخد طول الحاوية تلقائي وبمقاس محكوم، وفي الموبايل بيفرد بكامل المساحة بالـ aspect الموزون
+            : 'aspect-[16/10] w-full'
+        }`}>
           <Image 
             src={course.image_url || '/logo.webp'} 
             alt={course.title} 
             fill 
-            priority 
-            className="object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-105"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-103"
             sizes="(max-width: 768px) 100vw, 33vw"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
           
-          {/* Subtle Overlay: أخف وأرقى */}
-          <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent opacity-80" />
-          
-          {/* Floating Level */}
-          <div className={`absolute top-3 right-3 px-3 py-1 rounded-xl border text-[7px] font-black uppercase tracking-widest backdrop-blur-md z-20 shadow-sm ${getLevelStyle()}`}>
+          <div className={`absolute top-2.5 right-2.5 px-2 py-0.5 rounded border text-[7px] font-black uppercase tracking-widest backdrop-blur-md z-20 shadow-sm ${getLevelStyle()}`}>
             {course.level}
           </div>
 
-          {/* Price & Badge */}
-          <div className="absolute bottom-3 left-4 z-20 flex items-center gap-2">
-             <div className="bg-navy/80 backdrop-blur-lg px-3 py-1.5 rounded-xl shadow-xl flex items-center gap-1.5 border border-white/10 group-hover:border-gold/40 transition-colors">
-               <Zap size={10} className="text-gold" fill="currentColor" />
-               <span className="text-gold font-black text-sm italic">£{course.price}</span>
+          <div className="absolute bottom-2.5 left-2.5 z-20 flex items-center gap-1">
+             <div className="bg-slate-900/90 backdrop-blur-md px-2 py-0.5 rounded-md shadow flex items-center gap-1 border border-white/10">
+               <Zap size={8} className="text-gold" fill="currentColor" />
+               <span className="text-gold font-black text-[10px] font-mono">£{course.price}</span>
              </div>
-             
-             {course.is_sia_accredited && (
-                <div className="size-8 bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center border border-white/20 text-white shadow-lg">
-                    <ShieldCheck size={16} />
-                </div>
-             )}
           </div>
         </div>
 
-        {/* --- 🛠️ Content Section --- */}
-        <div className="p-7 md:p-9 flex flex-col flex-grow relative" style={{ transform: "translateZ(50px)" }}>
-          <div className="flex items-center gap-3 mb-4">
-              <span className="text-gold font-black text-[10px] uppercase tracking-[0.5em] drop-shadow-sm">
-                {course.category}
-              </span>
-              <div className="h-[1.5px] w-8 bg-gold/30 rounded-full" />
-          </div>
-          
-          <h3 className="text-navy font-black text-2xl @[30rem]:text-3xl mb-6 uppercase leading-[0.95] tracking-tighter italic group-hover:text-gold transition-colors duration-500 line-clamp-2">
-            {course.title}
-          </h3>
-          
-          <div className="grid grid-cols-2 gap-4 mb-6">
-             <InfoBox icon={Clock} value={course.duration} label="Course_Time" />
-             <InfoBox icon={Users} value={hasProgress ? `Sync Active` : `Elite Access`} label="Entry_Tier" />
-          </div>
-
-          {/* 🛰️ [شريط التقدم التكتيكي] يظهر فقط للطالب المشترك */}
-          {hasProgress && (
-            <div className="w-full bg-slate-100 p-4 rounded-2xl border border-black/[0.02] mb-6 space-y-2">
-              <div className="flex justify-between items-center text-[8px] font-black uppercase tracking-wider text-slate-400">
-                <span>Operational_Progress</span>
-                <span className={progressValue === 100 ? "text-gold animate-pulse" : "text-navy"}>
-                  {progressValue === 100 ? "Completed_100%" : `Syncing_${progressValue}%`}
+        {/* --- 🛠️ Content Section: فرد المساحة بالكامل والتوزيع المتناسق --- */}
+        <div className="flex-grow flex flex-col justify-between min-w-0 pt-2 md:pt-0">
+          <div className="space-y-2">
+            <div className="flex items-center gap-1.5">
+                <span className="text-gold font-black text-[7.5px] uppercase tracking-widest font-mono">
+                  {course.category}
                 </span>
-              </div>
-              <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                <motion.div 
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progressValue}%` }}
-                  transition={{ duration: 1, ease: "easeOut" }}
-                  className={`h-full rounded-full ${progressValue === 100 ? 'bg-gradient-to-r from-gold to-yellow-500' : 'bg-navy'}`}
-                />
-              </div>
+                <div className="h-[1px] w-4 bg-gold/40 rounded-full" />
+                {course.is_sia_accredited && (
+                  <span className="text-emerald-600 bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded text-[6.5px] font-black uppercase tracking-wider ml-auto md:ml-0">SIA Accredited</span>
+                )}
             </div>
-          )}
-
-          {/* --- Bottom Nav Area --- */}
-          <div className="mt-auto pt-6 border-t border-slate-50 flex items-center justify-between">
-            <div className="flex flex-col gap-0.5">
-                <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Asset_Identity</span>
-                <span className="text-[11px] font-mono font-bold text-navy/40 group-hover:text-gold transition-colors">#BR-{course.slug.substring(0,4).toUpperCase()}</span>
+            
+            <h3 className="text-slate-900 font-black text-sm md:text-base uppercase tracking-tight leading-tight italic group-hover:text-gold transition-colors duration-300 line-clamp-1">
+              {course.title}
+            </h3>
+          </div>
+          
+          {/* الـ Controls السفلية ملحومة وموزونة بالشعرة في الوضعين */}
+          <div className="flex flex-row items-center justify-between border-t border-slate-100 pt-3 mt-4 w-full gap-4">
+            
+            {/* مقاييس المدة والوصول */}
+            <div className="flex gap-4 font-mono shrink-0">
+               <div className="flex items-center gap-1.5">
+                  <Clock size={11} className="text-slate-400" />
+                  <span className="text-[9px] font-black text-slate-800 uppercase tracking-tight">{course.duration}</span>
+               </div>
+               <div className="flex items-center gap-1.5">
+                  <Users size={11} className="text-slate-400" />
+                  <span className="text-[9px] font-black text-slate-800 uppercase tracking-tight">Elite Access</span>
+               </div>
             </div>
 
-            {/* الأيقونة الذكية المتغيرة بناءً على نسبة التقدم */}
-            <motion.div 
-              className={`size-16 rounded-[1.5rem] flex items-center justify-center shadow-xl transition-all duration-500 group-hover:rotate-12
-                ${progressValue === 100 
-                  ? 'bg-gradient-to-r from-gold to-yellow-500 text-navy shadow-gold/20' 
-                  : 'bg-navy text-gold group-hover:bg-gold group-hover:text-navy'}`}
-            >
-              {hasProgress ? (
-                progressValue === 100 ? (
-                  <Award size={26} strokeWidth={2.5} className="animate-bounce" />
-                ) : (
-                  <Play size={22} fill="currentColor" strokeWidth={0} />
-                )
-              ) : (
-                <ArrowUpRight size={28} strokeWidth={3} />
-              )}
-            </motion.div>
+            {/* سهم التحويل والـ ID التكتيكي */}
+            <div className="flex items-center gap-3 shrink-0">
+              <span className="text-[8px] font-mono font-bold text-slate-400 hidden sm:block opacity-0 group-hover/card:opacity-100 transition-opacity">#BR-{course.slug.substring(0,4).toUpperCase()}</span>
+              <motion.div className="size-8 rounded-lg flex items-center justify-center shadow-sm bg-slate-900 text-gold group-hover:bg-gold group-hover:text-slate-900 transition-all duration-300">
+                <ArrowUpRight size={14} strokeWidth={2.5} />
+              </motion.div>
+            </div>
+
           </div>
         </div>
 
-        {/* Decorative Grid Layer */}
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.03] pointer-events-none" />
       </motion.div>
     </Link>
   );
-}
-
-function InfoBox({ icon: Icon, value, label }: any) {
-    return (
-        <div className="flex flex-col gap-1.5 p-4 bg-background rounded-3xl border border-black/[0.03] hover:border-gold/20 transition-all group/box">
-            <div className="flex items-center gap-2">
-                <Icon size={12} className="text-navy opacity-30 group-hover/box:text-gold group-hover/box:opacity-100 transition-all" />
-                <span className="text-[7px] font-black text-slate-400 uppercase tracking-[0.2em]">{label}</span>
-            </div>
-            <span className="text-[11px] font-black text-navy uppercase tracking-tight">{value}</span>
-        </div>
-    );
 }

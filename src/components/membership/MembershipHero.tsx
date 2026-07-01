@@ -16,7 +16,7 @@ export default function PlansHero({ activeType, setType }: {
   // ✅ وداعاً للخطوط الحمراء والـ Double Rendering
   const isMounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  if (!isMounted) return <section className="min-h-[70vh] bg-navy" />;
+  if (!isMounted) return <section className="min-h-screen bg-navy" />;
 
   return (
     <section className="relative min-h-[70vh] flex flex-col items-center justify-center py-24 px-6 overflow-hidden bg-navy">

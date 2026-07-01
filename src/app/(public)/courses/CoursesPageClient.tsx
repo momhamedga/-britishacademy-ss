@@ -66,13 +66,13 @@ export default function CoursesPage({ initialCourses }: { initialCourses: Course
     border: "border-[oklch(25%_0.08_260/0.05)]"
   };
 
-  if (!isMounted) return <div className={`min-h-screen ${theme.bg} animate-pulse`} />;
+  if (!isMounted) return <div className={` ${theme.bg} animate-pulse`} />;
 
   return (
-    <main className={`relative min-h-screen ${theme.bg} selection:bg-gold/30 overflow-x-hidden pb-20`}>
+    <main className={`relative  ${theme.bg} selection:bg-gold/30 overflow-x-hidden pb-20`}>
       
       {/* --- 📱 Mobile Header (Sticky & Tactical) --- */}
-      <div className="md:hidden sticky top-0 z-[100] bg-[oklch(98%_0.01_260/0.8)] backdrop-blur-xl border-b border-black/[0.03] px-6 py-4 space-y-4">
+      <div className="md:hidden sticky top-0 z-100 bg-[oklch(98%_0.01_260/0.8)] backdrop-blur-xl border-b border-black/[0.03] px-6 py-4 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex flex-col">
             <h2 className={`text-2xl font-black ${theme.navy} tracking-tighter leading-none italic`}>PROGRAMS</h2>
@@ -161,7 +161,7 @@ export default function CoursesPage({ initialCourses }: { initialCourses: Course
           <section className={`relative ${isPending ? 'opacity-40' : 'opacity-100'} transition-opacity duration-500`}>
             
             {/* View Mode Controls */}
-            <div className={`hidden md:flex justify-between items-center mb-10 bg-[oklch(25%_0.08_260/0.02)] p-4 rounded-3xl border ${theme.border}`}>
+            <div className={`hidden md:flex justify-between items-center mb-10  bg-[oklch(25%_0.08_260/0.02)] p-4 rounded-3xl border ${theme.border}`}>
                 <p className={`text-[10px] font-black ${theme.navy} opacity-30 uppercase tracking-[0.2em] px-2`}>
                     Displaying {initialCourses.length} Programs
                 </p>

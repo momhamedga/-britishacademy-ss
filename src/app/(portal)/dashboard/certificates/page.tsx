@@ -1,70 +1,71 @@
 import { Suspense } from 'react';
-import { Landmark, Loader2, ShieldCheck, DownloadCloud, Award } from 'lucide-react';
+import { Loader2, ShieldCheck, Award } from 'lucide-react';
 import CertificatesList from '@/components/portal/CertificatesList';
 import { cookies } from "next/headers";
 
+// ⚡ Force dynamic rendering to prevent stale cached states
 export const dynamic = "force-dynamic";
 
 export default async function CertificatesPage() {
   const cookieStore = await cookies();
   const userId = cookieStore.get("user_id")?.value || "guest";
-        {console.log("SENDING_ID_TO_LIST:", userId);}
 
   return (
-    // 🛡️ تم تغيير التنسيق العلوى لـ pt-28 md:pt-36 للهروب من تداخل النيف بار وتأمين المساحة
-    <div className="min-h-screen space-y-12 px-4 pt-28 pb-20 md:px-12 md:pt-36 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+    /* 📉 تقليص الـ padding العلوي والـ space-y لإلغاء أي تداخل أو ضخامة مفرطة */
+    <div className="space-y-6 md:space-y-8 px-2 pt-4 pb-16 md:px-4 animate-in fade-in duration-500">
       
-      {/* 🏛️ British Academy Header - Ultra-Modern Revision */}
-      <div className="max-w-7xl mx-auto relative group p-8 md:p-12 rounded-[2.5rem] bg-navy border border-white/5 overflow-hidden shadow-2xl">
-        {/* Glows */}
-        <div className="absolute -left-20 -top-20 size-64 bg-gold/10 blur-[100px] rounded-full pointer-events-none group-hover:bg-gold/15 transition-all duration-1000" />
-        <div className="absolute -right-20 -bottom-20 size-64 bg-gold/5 blur-[80px] rounded-full pointer-events-none" />
+      {/* 🏛️ British Academy Header - Ultra-Compact Revision */}
+      <div className="max-w-5xl mx-auto relative group p-5 md:p-8 rounded-2xl bg-navy border border-white/[0.03] overflow-hidden shadow-2xl">
+        {/* Glows خافتة ومريحة */}
+        <div className="absolute -left-20 -top-20 size-48 bg-gold/5 blur-[80px] rounded-full pointer-events-none group-hover:bg-gold/10 transition-all duration-700" />
+        <div className="absolute -right-20 -bottom-20 size-48 bg-gold/5 blur-[80px] rounded-full pointer-events-none" />
         
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10">
-          <div className="flex items-center gap-6">
-            <div className="p-5 bg-gradient-to-br from-gold/20 to-transparent border border-gold/30 rounded-[2rem] text-gold shadow-[0_0_50px_rgba(212,175,55,0.15)] group-hover:scale-105 transition-transform duration-500">
-              <Award size={38} strokeWidth={1.5} /> 
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 relative z-10">
+          <div className="flex items-center gap-4">
+            {/* ترشيق الـ Container لـ p-3.5 والأيقونة لـ 26 */}
+            <div className="p-3.5 bg-gradient-to-br from-gold/10 to-transparent border border-gold/20 rounded-xl text-gold shadow-[0_0_30px_rgba(212,175,55,0.08)] group-hover:scale-105 transition-transform duration-500 shrink-0">
+              <Award size={26} strokeWidth={1.5} /> 
             </div>
             
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
-                  <ShieldCheck size={12} className="text-emerald-500" />
-                  <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Verified Credentials</span>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+                  <ShieldCheck size={10} className="text-emerald-500" />
+                  <span className="text-[7px] font-black text-emerald-500 uppercase tracking-widest">Verified Credentials</span>
                 </div>
               </div>
               
-              <h1 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter leading-none">
+              {/* تصغير الخط من text-6xl المتضخم إلى text-xl و text-2xl الأنيق والمريح */}
+              <h1 className="text-xl md:text-2xl font-black text-white italic uppercase tracking-tight leading-none">
                 British <span className="text-gold">Academy</span>
               </h1>
-              <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-[0.5em] italic">
+              <p className="text-slate-500 text-[8px] md:text-[9px] font-black uppercase tracking-[0.35em] italic">
                 Official Certification Ledger
               </p>
             </div>
           </div>
 
-          {/* Quick Stats or ID */}
-          <div className="bg-white/5 backdrop-blur-md border border-white/5 p-4 rounded-2xl flex flex-col items-end gap-2 shrink-0">
-             <p className="text-[9px] font-black text-gold/40 uppercase tracking-widest">Access Node: Abu Dhabi</p>
-             <p className="text-[11px] font-mono text-white uppercase tracking-tighter">SEC-ID: {userId.slice(0,12).toUpperCase()}</p>
+          {/* Quick Stats Node - نسخة مرشقة ومحبوكة */}
+          <div className="bg-white/[0.015] border border-white/[0.04] p-3 rounded-xl flex flex-col sm:items-end gap-1 shrink-0 font-mono">
+             <p className="text-[7px] font-black text-gold/40 uppercase tracking-widest">Access Node: Abu Dhabi</p>
+             <p className="text-[9px] font-bold text-slate-300 uppercase tracking-tight">
+               SEC-ID: <span className="text-gold">{userId.slice(0, 12).toUpperCase()}</span>
+             </p>
           </div>
         </div>
       </div>
 
-      {/* 🔄 المحرك التكتيكي لجلب البيانات */}
-      <div className="max-w-7xl mx-auto relative">
-        {/* خط ديكوري طولي يشبه الـ Timeline */}
-        <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-gold/20 via-white/5 to-transparent hidden md:block" />
-
+      {/* 🔄 المحرك التكتيكي لجلب البيانات - تم تقليل الـ max-w لـ max-w-5xl ليتناسق بصرياً */}
+      <div className="max-w-5xl mx-auto relative">
         <Suspense 
           key={userId} 
           fallback={
-            <div className="flex flex-col items-center justify-center py-40">
-              <div className="relative mb-8">
-                 <Loader2 className="animate-spin size-16 text-gold/40" strokeWidth={1} />
-                 <div className="absolute inset-0 blur-2xl bg-gold/20 animate-pulse" />
+            <div className="flex flex-col items-center justify-center py-24">
+              <div className="relative mb-5">
+                 <Loader2 className="animate-spin size-10 text-gold/30" strokeWidth={1.5} />
+                 <div className="absolute inset-0 blur-xl bg-gold/10 animate-pulse" />
               </div>
-              <p className="text-[11px] font-black uppercase tracking-[.8em] animate-pulse text-gold/60">
+              <p className="text-[9px] font-black uppercase tracking-[0.5em] animate-pulse text-gold/50">
                 Decrypting Certificates...
               </p>
             </div>
@@ -72,8 +73,8 @@ export default async function CertificatesPage() {
         >
           <CertificatesList userId={userId} />
         </Suspense>
-        
       </div>
+
     </div>
   );
 }

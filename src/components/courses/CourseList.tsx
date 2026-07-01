@@ -3,94 +3,78 @@
 import { useDeferredValue } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAcademyStore } from "@/store/useAcademyStore";
-import CourseCard from "@/components/ui/CourseCard";
 import { Search } from "lucide-react";
+import CourseCard from "../ui/CourseCard";
 
 export default function CourseList({ initialData = [] }: { initialData?: any[] }) {
-  // 1.Selectors ذرية - سحب فقط ما نحتاجه لمنع إعادة الرندر غير الضرورية
   const storeCourses = useAcademyStore((state) => state.courses);
   const activeCategory = useAcademyStore((state) => state.activeCategory);
   const activeLevel = useAcademyStore((state) => state.activeLevel);
   const activeDuration = useAcademyStore((state) => state.activeDuration);
   const viewMode = useAcademyStore((state) => state.viewMode);
   
-  // 2. استخدام useDeferredValue للبحث
-  // دي بتخلي الـ UI يفضل 60fps وأنت بتكتب بسرعة، لأنها بتأجل تحديث القائمة تقنياً للأجزاء غير العاجلة
   const searchQuery = useAcademyStore((state) => state.searchQuery);
   const deferredQuery = useDeferredValue(searchQuery);
 
   const isHomePage = initialData?.length > 0;
   const dataSource = isHomePage ? initialData : storeCourses;
 
-  // 3. الفلترة - الـ React Compiler هيتكفل بجعل هذه العملية Memoized تلقائياً
   const filtered = dataSource.filter((course) => {
     if (isHomePage) return true;
-
-    // فلترة البحث (Title + Slug) باستخدام القيمة المؤجلة
     const matchesSearch = !deferredQuery || 
       course.title?.toLowerCase().includes(deferredQuery.toLowerCase()) ||
       course.slug?.toLowerCase().includes(deferredQuery.toLowerCase());
-
     if (!matchesSearch) return false;
 
-    // فلترة التصنيفات
     const targetCat = activeCategory?.toLowerCase().trim() || 'all';
     const matchesCategory = targetCat === 'all' || course.category?.toLowerCase().includes(targetCat);
-
-    // فلترة المستويات
     const matchesLevel = !activeLevel || course.level?.toLowerCase() === activeLevel.toLowerCase();
-
-    // فلترة المدة
     const matchesDuration = !activeDuration || course.duration?.toLowerCase().includes(activeDuration.toLowerCase());
 
     return matchesCategory && matchesLevel && matchesDuration;
   });
 
+  const isList = !isHomePage && viewMode === 'list';
+
+  const gridClasses = isHomePage 
+    ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6"
+    : viewMode === 'list' 
+      ? 'grid-cols-1 gap-4' // مسافة أصغر ومحبوكة بين السطور في وضع القائمة
+      : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6';
+
   return (
-    <div className={`grid gap-8 transition-all duration-500 ${
-      viewMode === 'list' ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-    }`}>
+    <div className={`grid items-start transition-all duration-500 w-full min-w-0 ${gridClasses}`}>
       <AnimatePresence mode="popLayout">
         {filtered.length > 0 ? (
           filtered.map((course, index) => (
             <motion.div
               key={course.id}
-              layout // ميزة جبارة لتحريك العناصر لمكانها الجديد عند الفلترة
-              initial={{ opacity: 0, y: 15 }}
+              layout 
+              initial={{ opacity: 0, y: 10 }}
               animate={{ 
                 opacity: 1, 
                 y: 0,
-                transition: {
-                  delay: index * 0.02, // Stagger effect سريع جداً
-                  duration: 0.3,
-                  ease: [0.2, 0.8, 0.2, 1] 
-                }
+                transition: { delay: index * 0.015, duration: 0.25, ease: [0.2, 0.8, 0.2, 1] }
               }}
-              exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-              whileHover={{ y: -5 }}
-              className="h-full"
+              exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
+              /* 🎯 السحر هنا: لو وضع List بنلغي الـ max-w والـ mx-auto عشان الكارت يملأ العرض المتاح ويفرد تكتيكياً */
+              className={`h-auto w-full min-w-0 flex flex-col justify-start transition-all duration-500 ${
+                isList ? 'max-w-none' : 'max-w-[380px] mx-auto'
+              }`}
             >
-              <CourseCard course={course} isListView={viewMode === 'list'} />
+              {/* نمرر الـ isListView صراحة للكارت */}
+              <CourseCard course={course} isListView={isList} />
             </motion.div>
           ))
         ) : (
-          <motion.div
-            layout
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="col-span-full py-32 text-center border-2 border-dashed border-black/[0.03] rounded-[4rem] bg-white/40 backdrop-blur-md"
-          >
-            <div className="flex flex-col items-center gap-4">
-              <div className="size-14 rounded-2xl bg-[oklch(25%_0.08_260/0.05)] flex items-center justify-center">
-                 <Search className="text-[oklch(25%_0.08_260/0.2)]" size={24} />
+          <motion.div layout className="col-span-full py-16 text-center border border-slate-100 rounded-xl bg-white shadow-sm">
+            <div className="flex flex-col items-center gap-3 max-w-xs mx-auto px-4">
+              <div className="size-11 rounded-xl bg-slate-50 flex items-center justify-center border border-black/[0.02]">
+                 <Search className="text-slate-400" size={16} />
               </div>
-              <div className="space-y-1">
-                <p className="text-[oklch(25%_0.08_260)] font-black uppercase tracking-[0.2em] text-[10px]">
-                  No Matches Found
-                </p>
-                <p className="text-[oklch(25%_0.08_260/0.4)] text-[9px] font-medium uppercase">
-                  Try refining your search terms
-                </p>
+              <div className="space-y-0.5">
+                <p className="text-slate-900 font-black uppercase tracking-widest text-[9px]">No Matches Found</p>
+                <p className="text-slate-400 text-[9px] font-bold uppercase tracking-wide leading-relaxed">Try refining your search terms</p>
               </div>
             </div>
           </motion.div>

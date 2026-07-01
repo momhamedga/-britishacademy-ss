@@ -4,17 +4,20 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
-import {  User } from 'lucide-react'
+import { User } from 'lucide-react'
 import { NAV_LINKS } from '@/lib/constants'
 import ProfileDropdown from '@/components/portal/ProfileDropdown'
 
-export default function DesktopNavbar({ user, isGuest }: any) {
+export default function DesktopNavbar({ user, isAdmin = false }: any) {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
   const { scrollY } = useScroll()
 
   useMotionValueEvent(scrollY, "change", (latest) => setScrolled(latest > 20))
+
+  // تحديد وجود أي كود أو جلسة نشطة على النظام
+  const hasAccess = user || isAdmin;
 
   return (
     <nav className="fixed top-0 left-0 w-full z-100 transition-all duration-500">
@@ -54,28 +57,43 @@ export default function DesktopNavbar({ user, isGuest }: any) {
             })}
           </div>
 
-          {/* Actions */}
+          {/* Actions Panel */}
           <div className="flex items-center gap-4">
-            {user && !isGuest ? (
-              <div className="relative">
-                <button onClick={() => setIsProfileOpen(!isProfileOpen)} className={`size-10 rounded-full border flex items-center justify-center transition-all ${isProfileOpen ? 'bg-gold border-gold text-navy' : 'bg-white/5 border-white/10 text-gold hover:border-gold/50'}`}>
-                  <User size={18} />
-                </button>
-                <AnimatePresence>
-                  {isProfileOpen && (
-                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute top-full right-0 mt-4">
-                      <ProfileDropdown user={user} close={() => setIsProfileOpen(false)} />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ) : (
-              <Link href="/login" className="px-5 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white font-black text-[9px] uppercase tracking-[0.2em] hover:bg-gold hover:text-navy transition-all flex items-center gap-2 group">
-                Student Access
-                <div className="size-1.5 rounded-full bg-gold group-hover:bg-navy shadow-[0_0_8px_rgba(212,168,67,0.5)]" />
-              </Link>
-            )}
+            {/* 🎯 التعديل: نفتح الدروبر لأي دخول نشط (أدمن أو يوزر) أو كـ Guest إذا لم يتوفر أي منهما */}
+            <div className="relative">
+              <button 
+                onClick={() => setIsProfileOpen(!isProfileOpen)} 
+                className={`size-10 rounded-full border flex items-center justify-center transition-all ${
+                  isProfileOpen 
+                    ? 'bg-gold border-gold text-navy' 
+                    : hasAccess 
+                      ? 'bg-white/5 border-white/10 text-gold hover:border-gold/50' 
+                      : 'bg-white/5 border-white/10 text-white/40 hover:text-white hover:border-white/30'
+                }`}
+              >
+                <User size={18} />
+              </button>
+              
+              <AnimatePresence>
+                {isProfileOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }} 
+                    animate={{ opacity: 1, y: 0 }} 
+                    exit={{ opacity: 0, y: 10 }} 
+                    className="absolute top-full right-0 mt-4 z-[120]"
+                  >
+                    {/* تمرير الرتب بذكاء تام للدروبر هب الموحد */}
+                    <ProfileDropdown 
+                      user={user} 
+                      isAdmin={isAdmin || user?.rank === 'ADMIN'} 
+                      close={() => setIsProfileOpen(false)} 
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
+
         </div>
       </div>
     </nav>

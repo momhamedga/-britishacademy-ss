@@ -56,7 +56,7 @@ export default function DesktopHero() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
                 <ShieldCheck size={12} className="text-gold" />
-                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-white/50">Elite_Security_Briefing</span>
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-white/50">Elite Security Briefing</span>
             </div>
             
             {/* Fluid Heading - صغرنا الـ Clamp ليكون أكثر رزانة */}
@@ -71,18 +71,7 @@ export default function DesktopHero() {
               {active.description}
             </p>
 
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-5 pt-4">
-              <button className="px-8 py-4 bg-gold text-navy font-black uppercase tracking-[0.2em] text-[9px] rounded-xl hover:bg-white transition-all group flex items-center gap-2.5 shadow-xl shadow-gold/10">
-                Start Mission <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-              </button>
-              
-              <button className="group flex items-center gap-3 text-white/60 hover:text-white transition-colors">
-                <div className="size-10 border border-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm group-hover:bg-white/5 transition-all">
-                    <Play size={14} fill="currentColor" />
-                </div>
-                <span className="text-[9px] font-black uppercase tracking-widest">Preview_intro</span>
-              </button>
-            </div>
+        
           </motion.div>
 
           {/* 🖼️ Right: Visual Component */}

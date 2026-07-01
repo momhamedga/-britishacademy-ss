@@ -11,15 +11,15 @@ export default async function PortalLayout({ children }: { children: React.React
   const pathname = headerList.get("x-pathname") || ""; 
   const isAuthPage = pathname.includes('/login') || pathname.includes('/register');
   
-  // التحقق من الهوية (User Identification)
+  // Checking User Authentication
   const userId = cookieStore.get("user_id")?.value || cookieStore.get("auth_token")?.value;
 
-  // حماية المسار: لو مش مسجل دخول ومش في صفحة Auth، ارجع للـ Login
+  // Route Protection
   if (!userId && !isAuthPage) {
     redirect('/dashboard/login');
   }
 
-  // جلب بيانات الطالب لضمان تخصيص التجربة (Invisible Personalization)
+  // Invisible Personalization Feed
   let student = null;
   if (userId) {
     const data = await sql`SELECT id, name, rank FROM students WHERE id = ${userId} LIMIT 1`;
@@ -28,39 +28,46 @@ export default async function PortalLayout({ children }: { children: React.React
     }
   }
 
-  // تحديد ما إذا كان يجب عرض واجهة الداشبورد (Sidebar & MobileNav)
   const showUI = !isAuthPage && !!userId && !!student;
 
   return (
     <div 
-      className="min-h-screen flex items-start selection:bg-gold/30 relative" 
-      style={{ backgroundColor: 'oklch(25% 0.08 260)' }} // لون السايدبار للأرضية كلها لمنع الفجوات البيضاء
+      className=" text-white relative antialiased overflow-x-hidden" 
+      style={{ backgroundColor: 'oklch(20% 0.05 260)' }} // توحيد الأرضية بالكامل بلون الأكاديمية السينمائي الغامق لمنع الفجوات الفاتحة
     > 
-      
-      {/* 🖥️ Desktop Sidebar - Tactical Side Panel */}
-      {showUI && (
-        <aside 
-          className="hidden lg:flex w-80 sticky top-0 z-30 flex-col border-r border-white/5 shadow-[20px_0_50px_rgba(0,0,0,0.2)] flex-shrink-0"
-          style={{ 
-            backgroundColor: 'oklch(25% 0.08 260)',
-            height: '100vh' 
-          }}
-        >
-          <Sidebar studentData={student} />
-        </aside>
-      )}
+      {/* 🌌 خيوط هندسية خافتة جداً في الخلفية لإعطاء عمق للمنصة */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none" />
 
-      {/* 📱 Mobile UI & Main Content Area */}
-      <div className="flex-1 flex flex-col min-h-screen relative z-10 bg-[#f8fafc]"> 
-        {/* لون الخلفية الفاتح للمحتوى (Contrast UI) لسهولة القراءة */}
+      <div className={`w-full min-h-screen ${showUI ? 'flex flex-col lg:grid lg:grid-cols-[20rem_1fr]' : 'block'}`}>
         
-        {showUI && <MobileNav pathname={pathname} />}
+        {/* 🖥️ Desktop Sidebar - Secured Layout Panel */}
+        {showUI && (
+          <aside 
+            className="hidden lg:flex flex-col border-r border-white/[0.03] sticky top-0 h-screen z-40 overflow-y-auto no-scrollbar shrink-0 shadow-[10px_0_40px_rgba(0,0,0,0.3)]"
+            style={{ backgroundColor: 'oklch(22% 0.06 260)' }}
+          >
+            <Sidebar studentData={student} />
+          </aside>
+        )}
 
-        <main className={`flex-1 flex flex-col w-full ${showUI ? 'pt-[160px] lg:pt-24 pb-28' : ''}`}>
-          <div className="w-full max-w-[1400px] mx-auto px-4 md:px-10 flex-1">
-            {children}
-          </div>
-        </main>
+        {/* 📱 Mobile Navigation Trigger & Content Space */}
+        <div className="flex-1 flex flex-col min-w-0 relative z-10"> 
+          
+          {/* الـ Mobile Nav بيظهر فقط على الشاشات الصغيرة ويختفي تلقائياً في الديسكتوب بدون تداخل */}
+          {showUI && (
+            <div className="lg:hidden fixed top-0 inset-x-0 z-50">
+              <MobileNav pathname={pathname} />
+            </div>
+          )}
+
+          {/* محاذاة مسافات الأمان للهيدر على الموبيل والديسكتوب بدقة */}
+          <main className={`flex-1 flex flex-col w-full ${showUI ? 'pt-[110px] lg:pt-12 pb-32 lg:pb-16' : ''}`}>
+            <div className="w-full max-w-[1400px] mx-auto px-4 md:px-12 flex-1 animate-in fade-in duration-500">
+              {children}
+            </div>
+          </main>
+
+        </div>
       </div>
     </div>
   );

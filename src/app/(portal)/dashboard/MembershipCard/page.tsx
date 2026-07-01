@@ -15,8 +15,9 @@ async function getMembershipProfileData() {
 
     const safeVector = studentIdText.length > 5 ? studentIdText.substring(1) : studentIdText;
 
+    {/* 🎯 التعديل الجوهري: إضافة جلب عمود membership_card_url لكي يقرأه الكارت السفلّي */}
     const rows = await sql`
-      SELECT id, student_id, name, email, rank, access_code, created_at 
+      SELECT id, student_id, name, email, rank, access_code, membership_card_url, created_at 
       FROM public.students 
       WHERE student_id = ${studentIdText} 
          OR student_id LIKE ${'%' + safeVector}
@@ -32,14 +33,13 @@ async function getMembershipProfileData() {
 }
 
 export default async function MembershipCardPage() {
-  // جلب البيانات على السيرفر قبل رندرة الصفحة
   const profileData = await getMembershipProfileData();
   
   if (!profileData) notFound();
 
   return (
-    <main className="min-h-screen  text-white py-12 px-4 md:px-8">
-      {/* تمرير الداتا الجاهزة فورا للـ Client Component */}
+    <main className="w-full max-w-5xl mx-auto text-white py-6 px-4">
+      {/* تمرير الداتا الجاهزة والمكتملة فوراً */}
       <MembershipCardClient profile={profileData} />
     </main>
   );

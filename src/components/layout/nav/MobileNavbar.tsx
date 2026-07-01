@@ -1,17 +1,20 @@
-"use client"
+"use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, User, Link2, ChevronRight } from "lucide-react";
+import { Menu, X, User, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { NAV_LINKS } from "@/lib/constants";
 import ProfileDropdown from '@/components/portal/ProfileDropdown';
 
-export default function MobileNavbar({ user }: any) {
+export default function MobileNavbar({ user, isAdmin = false }: any) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  // الفحص التكتيكي لتحديد إذا كان هناك أي جلسة نشطة (طالب أو آدمن)
+  const hasActiveSession = user || isAdmin;
 
   return (
     <>
@@ -26,20 +29,26 @@ export default function MobileNavbar({ user }: any) {
         </Link>
         
         <div className="flex items-center gap-2">
-          {user && (
-            <button onClick={() => setIsProfileOpen(!isProfileOpen)} className="size-9 bg-gold rounded-lg flex items-center justify-center text-navy shadow-lg shadow-gold/20">
-              <User size={16} />
-            </button>
-          )}
+          {/* 🎯 التعديل: تظهر الأيقونة دائماً للسماح بفتح الدروبر في كل الحالات (أدمن، طالب، زائر) */}
+          <button 
+            onClick={() => setIsProfileOpen(!isProfileOpen)} 
+            className={`size-9 rounded-lg flex items-center justify-center transition-all shadow-lg ${
+              hasActiveSession ? 'bg-gold text-navy shadow-gold/20' : 'bg-white/5 text-slate-400 border border-white/10'
+            }`}
+          >
+            <User size={16} />
+          </button>
+          
           <button onClick={() => setIsOpen(true)} className="size-9 bg-white/5 rounded-lg flex items-center justify-center text-gold border border-white/10 active:scale-90 transition-transform">
             <Menu size={18} />
           </button>
         </div>
 
+        {/* 🎯 التعديل: شيلنا شرط && user المقيد لفتح الدروبر كلياً */}
         <AnimatePresence>
-          {isProfileOpen && user && (
+          {isProfileOpen && (
             <div className="absolute top-16 right-5 w-64 z-[110]">
-               <ProfileDropdown user={user} close={() => setIsProfileOpen(false)} />
+               <ProfileDropdown user={user} isAdmin={isAdmin || user?.rank === 'ADMIN'} close={() => setIsProfileOpen(false)} />
             </div>
           )}
         </AnimatePresence>
@@ -49,7 +58,6 @@ export default function MobileNavbar({ user }: any) {
         {isOpen && (
           <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }} className="fixed inset-0 z-[120] bg-navy flex flex-col">
             <div className="p-6 flex justify-end items-center border-b border-white/5">
-          
               <button onClick={() => setIsOpen(false)} className="size-10 bg-white/5 rounded-full flex items-center justify-center text-white">
                 <X size={20} />
               </button>
@@ -69,11 +77,11 @@ export default function MobileNavbar({ user }: any) {
             </div>
 
             <div className="p-8 bg-black/20 border-t border-white/5">
-               {!user ? (
+               {!hasActiveSession ? (
                  <Link href="/login" onClick={() => setIsOpen(false)}>
-                   <button className="w-full py-4 bg-gold text-navy font-black uppercase tracking-[0.2em] text-[10px] rounded-xl shadow-xl shadow-gold/10">
-                    login
-                   </button>
+                    <button className="w-full py-4 bg-gold text-navy font-black uppercase tracking-[0.2em] text-[10px] rounded-xl shadow-xl shadow-gold/10">
+                     login
+                    </button>
                  </Link>
                ) : (
                  <div className="text-center opacity-20 text-[8px] font-black uppercase tracking-[0.5em] text-white">

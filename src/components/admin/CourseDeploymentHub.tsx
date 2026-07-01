@@ -5,12 +5,19 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { 
   ChevronLeft, Send, Shield, Sparkles, Image as ImageIcon, Plus, Trash,
-  Link as LinkIcon, Upload, User, DollarSign, Clock, Layers, FileText, Video
+  Link as LinkIcon, Upload, User, DollarSign, Clock, Layers, FileText, Video, CreditCard
 } from 'lucide-react';
-import { upsertCourse, deleteCourse, getCourseLessonsForAdmin } from '@/actions/admin-actions';
+import { 
+  upsertCourse, 
+  deleteCourse, 
+  getCourseLessonsForAdmin, 
+  getAllStudentsForAdmin, 
+  updateStudentMembershipCard 
+} from '@/actions/admin-actions';
 
 const ACADEMY_LOGO_FALLBACK = "/logo.webp";
 const CERT_FALLBACK_IMAGE = "/logo.webp"; 
+const CARD_FALLBACK_IMAGE = "/logo.webp"; // الفولباك التكتيكي لصورة البطاقة
 
 export default function CourseDeploymentHub({ initialData, onBack }: any) {
   const [assetMode, setAssetMode] = useState<'link' | 'upload'>(initialData?.image_url && !initialData.image_url.includes('blob') ? 'link' : 'upload');
@@ -23,20 +30,28 @@ export default function CourseDeploymentHub({ initialData, onBack }: any) {
   const [selectedCertFile, setSelectedCertFile] = useState<File | null>(null);
   const certFileInputRef = useRef<HTMLInputElement>(null);
 
-  const [isSyncing, setIsSyncing] = useState(false);
+  // 💳 أسلحة تكتيكية لإدارة بطاقة العضوية المرتبطة بالطالب
+  const [students, setStudents] = useState<any[]>([]);
+  const [selectedStudentId, setSelectedStudentId] = useState<string>('');
+  const [cardAssetMode, setCardAssetMode] = useState<'link' | 'upload'>('upload');
+  const [cardPreview, setCardPreview] = useState(CARD_FALLBACK_IMAGE);
+  const [selectedCardFile, setSelectedCardFile] = useState<File | null>(null);
+  const cardFileInputRef = useRef<HTMLInputElement>(null);
 
-  // 🛰️ إدارة مصفوفة الدروس التفاعلية
+  const [isSyncing, setIsSyncing] = useState(false);
   const [lessons, setLessons] = useState<any[]>([]);
 
-  // جلب الدروس المسجلة مسبقاً للكورس الحالي عند التعديل
+  // 📡 جلب الداتا والطلاب والدروس عند التهيئة
   useEffect(() => {
-    async function loadLessons() {
+    async function loadInitialIntel() {
       if (initialData?.id) {
         const existingLessons = await getCourseLessonsForAdmin(initialData.id);
         if (existingLessons) setLessons(existingLessons);
       }
+      const allStudents = await getAllStudentsForAdmin();
+      if (allStudents) setStudents(allStudents);
     }
-    loadLessons();
+    loadInitialIntel();
   }, [initialData]);
 
   const addLessonRow = () => {
@@ -69,6 +84,15 @@ export default function CourseDeploymentHub({ initialData, onBack }: any) {
     }
   }, [certPreview, certAssetMode]);
 
+  // تحديث رابط المعاينة للبطاقة في وضع الـ Link
+  useEffect(() => {
+    if (cardAssetMode === 'link' && cardPreview && cardPreview !== CARD_FALLBACK_IMAGE) {
+      const img = new window.Image();
+      img.src = cardPreview;
+      img.onerror = () => setCardPreview(CARD_FALLBACK_IMAGE);
+    }
+  }, [cardPreview, cardAssetMode]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -85,7 +109,16 @@ export default function CourseDeploymentHub({ initialData, onBack }: any) {
     }
   };
 
+  const handleCardFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedCardFile(file);
+      setCardPreview(URL.createObjectURL(file));
+    }
+  };
+
   const handleAction = async (formData: FormData) => {
+    setIsSyncing(true);
     if(initialData?.id) formData.append('id', initialData.id);
     
     if (assetMode === 'upload' && selectedFile) {
@@ -98,9 +131,19 @@ export default function CourseDeploymentHub({ initialData, onBack }: any) {
       formData.append('certificate_file', selectedCertFile);
     }
 
-    formData.set('is_sia', formData.get('is_sia') === 'on' ? 'true' : 'false');
+    // 💳 بروتوكول مزامنة بطاقة العضوية للطالب المختار
+    if (selectedStudentId) {
+      const cardData = new FormData();
+      cardData.append('student_id', selectedStudentId);
+      if (cardAssetMode === 'upload' && selectedCardFile) {
+        cardData.append('card_file', selectedCardFile);
+      } else {
+        cardData.append('card_url', formData.get('membership_card_url') as string);
+      }
+      await updateStudentMembershipCard(cardData);
+    }
 
-    // تجميع الدروس كـ JSON بأمان كامل
+    formData.set('is_sia', formData.get('is_sia') === 'on' ? 'true' : 'false');
     formData.append('lessons_json', JSON.stringify(lessons));
 
     const result = await upsertCourse(formData);
@@ -125,8 +168,10 @@ export default function CourseDeploymentHub({ initialData, onBack }: any) {
 
       <form action={handleAction} className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10">
         
-        {/* Left Column */}
+        {/* Left Column (Asset Control Panels) */}
         <div className="lg:col-span-4 space-y-6">
+          
+          {/* Panel 1: Course Cover */}
           <div className="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-white relative overflow-hidden">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-[10px] font-black uppercase opacity-40 tracking-widest text-navy">Course_Cover</h3>
@@ -170,6 +215,69 @@ export default function CourseDeploymentHub({ initialData, onBack }: any) {
               </AnimatePresence>
           </div>
 
+          {/* 💳 Panel 2: Deploy Membership Card Vector */}
+          <div className="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-white relative overflow-hidden border-t-4 border-t-gold">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2">
+                  <CreditCard size={15} className="text-gold"/>
+                  <h3 className="text-[10px] font-black uppercase opacity-60 tracking-widest text-navy">Membership_Badge</h3>
+                </div>
+                <div className="flex bg-background p-1 rounded-xl">
+                   <button type="button" onClick={() => setCardAssetMode('link')} className={`p-2.5 rounded-lg transition-all ${cardAssetMode === 'link' ? 'bg-white shadow-md text-navy' : 'text-gray-400 opacity-50'}`}><LinkIcon size={14}/></button>
+                   <button type="button" onClick={() => setCardAssetMode('upload')} className={`p-2.5 rounded-lg transition-all ${cardAssetMode === 'upload' ? 'bg-white shadow-md text-navy' : 'text-gray-400 opacity-50'}`}><Upload size={14}/></button>
+                </div>
+              </div>
+
+              {/* السليكتور المربوط بجدول الـ students */}
+              <div className="space-y-2 mb-5">
+                <label className="text-[9px] font-black opacity-30 uppercase tracking-widest ml-1 text-navy">Assign Personnel (ربط الكارت بالطالب)</label>
+                <select 
+                  value={selectedStudentId}
+                  onChange={(e) => setSelectedStudentId(e.target.value)}
+                  className="w-full p-5 bg-background rounded-2xl font-black text-[11px] outline-none appearance-none cursor-pointer text-navy border-2 border-transparent focus:border-gold/30 transition-all uppercase"
+                >
+                  <option value="">-- UNASSIGNED TARGET --</option>
+                  {students.map((st) => (
+                    <option key={st.id} value={st.id}>{st.name} [{st.student_id}]</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="aspect-[1.586/1] bg-background rounded-[1.5rem] mb-6 overflow-hidden border-2 border-dashed border-gold/20 flex items-center justify-center relative group/cardPreview">
+                <Image 
+                  src={cardPreview} 
+                  alt="Membership Card Template Preview"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className={`transition-all duration-700 object-cover ${cardPreview === CARD_FALLBACK_IMAGE ? 'scale-50 opacity-20 grayscale' : 'group-hover/cardPreview:scale-105'}`}
+                  onError={() => setCardPreview(CARD_FALLBACK_IMAGE)}
+                  unoptimized={cardAssetMode === 'upload'}
+                />
+                {cardAssetMode === 'upload' && (
+                  <div onClick={() => cardFileInputRef.current?.click()} className="absolute inset-0 bg-navy/80 opacity-0 group-hover/cardPreview:opacity-100 flex flex-col items-center justify-center transition-all cursor-pointer backdrop-blur-md z-10">
+                    <Upload className="text-gold mb-2" size={24} />
+                    <p className="text-white text-[10px] font-black uppercase tracking-[0.2em]">Inject_Card_Asset</p>
+                  </div>
+                )}
+              </div>
+
+              <AnimatePresence mode="wait">
+                {cardAssetMode === 'link' ? (
+                  <motion.div key="cardLink" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                    <input name="membership_card_url" onChange={(e) => setCardPreview(e.target.value || CARD_FALLBACK_IMAGE)} placeholder="HTTPS://MEMBERSHIP_CARD_LINK..." className="w-full p-5 bg-background rounded-2xl outline-none font-bold text-[11px] border-2 border-transparent focus:border-gold/20 transition-all uppercase text-navy" />
+                  </motion.div>
+                ) : (
+                  <motion.div key="cardUpload" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                    <input type="file" ref={cardFileInputRef} onChange={handleCardFileChange} className="hidden" accept="image/*" />
+                    <div className="py-4 px-2 bg-background rounded-2xl border border-black/5 text-center">
+                      <span className="text-[9px] font-black text-gold uppercase truncate block px-2">{selectedCardFile ? `READY: ${selectedCardFile.name}` : "Awaiting_Card_Asset"}</span>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+          </div>
+
+          {/* Panel 3: Linked Certificate */}
           <div className="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-white relative overflow-hidden border-t-4 border-t-gold">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
@@ -219,7 +327,7 @@ export default function CourseDeploymentHub({ initialData, onBack }: any) {
           <StatusToggle icon={<Shield size={16}/>} label="SIA_Accreditation" name="is_sia" defChecked={initialData?.is_sia_accredited} color="var(--academy-gold)" />
         </div>
 
-        {/* Right Column */}
+        {/* Right Column (Course Information Parameters) */}
         <div className="lg:col-span-8 bg-white p-6 md:p-14 rounded-[2.5rem] md:rounded-[4rem] shadow-2xl border border-white space-y-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <HubInput label="Operation_Identity" name="title" def={initialData?.title} placeholder="CCTV_SURVEILLANCE" />

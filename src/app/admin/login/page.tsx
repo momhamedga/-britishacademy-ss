@@ -1,8 +1,8 @@
 "use client";
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, Lock, Zap, Loader2 } from 'lucide-react';
-import { verifyAdminUplink } from '@/actions/portal-auth'; // ✅ استيراد الأكشن الآمن
+import { Shield, Lock, Zap, Loader2, Home } from 'lucide-react';
+import { verifyAdminUplink } from '@/actions/portal-auth'; 
 
 export default function AdminLogin() {
   const [pass, setPass] = useState('');
@@ -15,7 +15,6 @@ export default function AdminLogin() {
     setError(null);
     
     startTransition(async () => {
-      // 🛰️ استدعاء الفحص من السيرفر بأمان مطلق
       const res = await verifyAdminUplink(pass);
       
       if (res.success) {
@@ -27,8 +26,8 @@ export default function AdminLogin() {
   };
 
   return (
-    // 🛡️ تكتيك المساحة الموزونة والهروب من النيف بار الثابت فوق
-    <main className="min-h-screen w-full flex justify-center relative overflow-hidden px-4 pt-28 pb-16 md:pt-40 bg-transparent">
+    /* 🎯 السحر هنا: min-h-screen مع items-center يضمن سنترة الحاوية بالملي في وسط الشاشة تماماً رأسياً وأفقياً */
+    <main className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden px-4 bg-transparent">
       
       {/* 🌌 Background Elements - Soft Accents */}
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -36,21 +35,34 @@ export default function AdminLogin() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gold/5 blur-[120px] rounded-full" />
       </div>
 
-      <div className="w-full max-w-md h-fit relative z-10">
-        <div className="w-full bg-navy p-8 md:p-12 rounded-[2.5rem] md:rounded-[3rem] border border-white/5 shadow-2xl relative overflow-hidden backdrop-blur-xl">
+      {/* 🎯 زر العودة للرئيسية - متجاوب، ممركز وثابت أفقياً فوق الكارت تماماً */}
+      <div className="w-full max-w-xs md:max-w-md mb-4 relative z-10 flex justify-start">
+        <button 
+          type="button"
+          onClick={() => router.push('/')}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.02] border border-white/5 text-slate-400 hover:text-gold hover:border-gold/20 transition-all text-[9px] font-black uppercase tracking-widest active:scale-95 shadow-md backdrop-blur-md"
+        >
+          <Home size={12} />
+          <span>Return_Home</span>
+        </button>
+      </div>
+
+      {/* 🎯 الحاوية: تم تكبير أبعاد العرض والارتفاع على الداتش كارد (md:max-w-md و p-10 md:p-14) لتعطي هيبة وضخامة، مع الانكماش بمرونة على الموبايل (max-w-xs) */}
+      <div className="w-full max-w-xs md:max-w-md h-auto relative z-10">
+        <div className="w-full bg-navy p-7 md:p-14 rounded-[2.5rem] md:rounded-[3.5rem] border border-white/5 shadow-2xl relative overflow-hidden backdrop-blur-xl">
           
           {/* Top Glow Decor */}
           <div className="absolute -top-10 -left-10 size-32 bg-gold/10 blur-[50px] rounded-full pointer-events-none" />
           
           {/* Header Section */}
           <div className="text-center space-y-4 relative mb-8">
-            <div className="size-16 md:size-20 bg-white/[0.03] border border-white/10 text-gold rounded-[1.8rem] flex items-center justify-center mx-auto shadow-xl">
-              <Shield size={28} />
+            <div className="size-16 md:size-20 bg-white/[0.03] border border-white/10 text-gold rounded-2xl flex items-center justify-center mx-auto shadow-xl">
+              <Shield size={26} />
             </div>
             <h1 className="text-xl md:text-3xl font-black uppercase italic tracking-tighter text-white">
               Admin_<span className="text-gold">Uplink</span>
             </h1>
-            <p className="text-[9px] font-black opacity-30 text-white uppercase tracking-[0.3em]">Identity_Verification_Required</p>
+            <p className="text-[8px] md:text-[9px] font-black opacity-30 text-white uppercase tracking-[0.3em]">Identity_Verification_Required</p>
           </div>
 
           {/* Form */}
@@ -63,7 +75,7 @@ export default function AdminLogin() {
                 value={pass}
                 onChange={(e) => setPass(e.target.value)}
                 placeholder="ENTER_ENCRYPTION_KEY"
-                className="w-full p-5 pl-14 bg-white/[0.02] border border-white/10 rounded-xl md:rounded-2xl text-white outline-none focus:border-gold/40 focus:bg-white/[0.05] font-black text-[12px] tracking-widest transition-all placeholder:text-white/10 placeholder:tracking-normal"
+                className="w-full p-4 md:p-5 pl-14 bg-white/[0.02] border border-white/10 rounded-xl md:rounded-2xl text-white outline-none focus:border-gold/40 focus:bg-white/[0.05] font-black text-[12px] tracking-widest transition-all placeholder:text-white/10 placeholder:tracking-normal text-center"
               />
             </div>
 

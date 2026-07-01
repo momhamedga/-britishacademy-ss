@@ -178,7 +178,7 @@ export async function verifyCertificateAction(code: string) {
   } catch (error) { return { success: false, message: "System Error" }; }
 }
 
-export async function updateLessonProgress(courseId: string, totalLessons: number, completedLessonsCount: number, completedLessonsIds: string[] = []) {
+export async function updateLessonProgress(courseId: string, totalLessons: number, completedLessonsCount: number, completedLessonsTitles: string[] = []) {
   try {
     const cookieStore = await cookies();
     const studentId = cookieStore.get("user_id")?.value;
@@ -186,13 +186,13 @@ export async function updateLessonProgress(courseId: string, totalLessons: numbe
     if (!studentId) return { error: "UNAUTHORIZED" };
     if (totalLessons === 0) return { success: true, progress: 0 };
 
+    // حساب النسبة المئوية الموزونة بالشعرة
     const calculatedProgress = Math.min(Math.round((completedLessonsCount / totalLessons) * 100), 100);
     const safeVector = studentId.length > 5 ? studentId.substring(1) : studentId;
 
-    // تحويل مصفوفة الـ IDs لنص مفصول بفاصلة لحفظه في عمود status الحاضر في الـ Schema
-    const statusPayload = completedLessonsIds.join(",");
+    // حقن عناوين الدروس مفصولة بفاصلة في عمود status
+    const statusPayload = completedLessonsTitles.join(",");
 
-    // تحديث النسبة المئوية وقائمة الدروس المكتملة معاً
     await sql`
       UPDATE student_courses 
       SET progress = ${calculatedProgress},
@@ -201,17 +201,13 @@ export async function updateLessonProgress(courseId: string, totalLessons: numbe
         AND course_id::text = ${courseId}
     `;
 
-    // سحر التوليد التلقائي للشهادة عند الـ 100%
+    // بروتوكول توليد الشهادة التلقائي عند اكتمال الـ 100%
     if (calculatedProgress === 100) {
       const studentInfo = await sql`SELECT id FROM public.students WHERE id::text = ${studentId} OR id::text LIKE ${'%' + safeVector} LIMIT 1`;
-      
       if (studentInfo.length > 0) {
         const cleanStudentUuid = studentInfo[0].id;
-
-        const existingCert = await sql`
-          SELECT id FROM public.certificates WHERE student_id::text = ${cleanStudentUuid}::text AND course_id::text = ${courseId} LIMIT 1
-        `;
-
+        const existingCert = await sql`SELECT id FROM public.certificates WHERE student_id::text = ${cleanStudentUuid}::text AND course_id::text = ${courseId} LIMIT 1`;
+        
         if (existingCert.length === 0) {
           const courseData = await sql`SELECT certificate_template_url FROM public.courses WHERE id::text = ${courseId} LIMIT 1`;
           const certUrl = courseData[0]?.certificate_template_url || null;
@@ -221,13 +217,13 @@ export async function updateLessonProgress(courseId: string, totalLessons: numbe
             INSERT INTO public.certificates (student_id, course_id, certificate_code, certificate_url, issued_at)
             VALUES (${cleanStudentUuid}, ${courseId}, ${uniqueSerial}, ${certUrl}, NOW())
           `;
-          console.log(`🚀 AUTOMATIC_CERT_DEPLOYED: ${uniqueSerial}`);
         }
       }
     }
 
     revalidatePath('/dashboard/courses');
     revalidatePath('/dashboard/certificates');
+    
     return { success: true, progress: calculatedProgress };
   } catch (error) {
     console.error("🔴 updateLessonProgress Failed:", error);

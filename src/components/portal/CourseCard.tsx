@@ -1,126 +1,131 @@
-"use client"
+"use client";
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Clock, Target, ChevronRight, Activity, Zap } from 'lucide-react'; // ضيف Zap هنا
+import { Clock, Target, ChevronRight, Activity, Zap } from 'lucide-react';
 import Link from 'next/link';
 
 interface CourseCardProps {
-  title: string;
-  category: string;
-  progress: number;
-  thumbnail?: string;
-  level: string;
-  duration: string;
-  slug: string;
+  course: {
+    title: string;
+    category: string;
+    progress: number;
+    image_url?: string;
+    thumbnail_url?: string;
+    level: string;
+    duration: string;
+    slug: string;
+  }
 }
 
-export default function CourseCard({ title, category, progress, thumbnail, level, duration, slug }: CourseCardProps) {
+export default function CourseCard({ course }: CourseCardProps) {
+  // تفكيك الداتا وتأمين المسميات المتطابقة مع الـ Schema بالملي
+  const { title, category, progress, image_url, thumbnail_url, level, duration, slug } = course;
+  const finalImage = image_url || thumbnail_url || "/logo.webp";
+
   const levelStyles = 
     level === 'Advanced' ? 'text-red-400 bg-red-400/10 border-red-400/20' : 
     level === 'Intermediate' ? 'text-[#D4AF37] bg-[#D4AF37]/10 border-[#D4AF37]/20' : 
     'text-emerald-400 bg-emerald-400/10 border-emerald-400/20';
 
   return (
-    <Link href={`/courses/${slug}`} className="block group w-full max-w-[500px] mx-auto lg:max-w-none">
+    <Link href={`/courses/${slug}`} className="block group w-full max-w-[400px] mx-auto">
+      {/* 🛡️ تقليص الـ border radius لـ rounded-2xl والـ padding لـ p-4 لراحة بصريّة فائقة */}
       <motion.div 
-        whileHover={{ y: -8, scale: 1.01 }}
-        whileTap={{ scale: 0.98 }}
-        className="relative border bg-navy border-white/5 rounded-[3rem] p-5 md:p-6 transition-all duration-500 hover:border-[#D4AF37]/30 shadow-[0_30px_60px_rgba(0,0,0,0.6)] overflow-hidden group/card"
+        whileHover={{ y: -4, scale: 1.005 }}
+        whileTap={{ scale: 0.99 }}
+        className="relative border bg-navy border-white/[0.03] rounded-2xl p-4 transition-all duration-500 hover:border-[#D4AF37]/20 shadow-[0_15px_40px_rgba(0,0,0,0.5)] overflow-hidden group/card"
       >
-        {/* Backdrop Blur Layer */}
-        <div className="absolute inset-0 backdrop-blur-3xl pointer-events-none" />
+        <div className="absolute inset-0 backdrop-blur-2xl pointer-events-none" />
+        <div className="absolute inset-0 bg-[#D4AF37]/2 blur-[80px] rounded-full opacity-0 group-hover/card:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
-        {/* Glow خلفي - Tactical Glow */}
-        <div className="absolute inset-0 bg-[#D4AF37]/5 blur-[120px] rounded-full opacity-0 group-hover/card:opacity-100 transition-opacity duration-1500 pointer-events-none" />
+        {/* 🖼️ Visual Area - ترشيق الطول لـ h-40 لقتل المسافات الزائدة سفلي الكارت */}
+        <div className="relative h-40 w-full rounded-xl overflow-hidden flex items-center justify-center border border-white/5 shadow-inner">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#D4AF37]/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 z-10" />
+          <div className="absolute size-32 bg-[#D4AF37]/5 blur-[50px] rounded-full z-10" />
 
-        {/* 🛡️ Visual Area - Updated for full frame image */}
-        <div className="relative h-48 sm:h-52 md:h-60 w-full rounded-[2.5rem] overflow-hidden flex items-center justify-center border border-white/5 shadow-inner">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#D4AF37]/10 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-700 z-10" />
-          
-          <div className="absolute w-32 h-32 md:w-48 md:h-48 bg-[#D4AF37]/10 blur-[70px] rounded-full group-hover/card:bg-[#D4AF37]/20 transition-all duration-1000 z-10" />
-
-          {/* 🏛️ Course Image - 🚨 التعديل هنا لملء الإطار */}
-          <div className="absolute inset-0 w-full h-full transition-all duration-1000 group-hover/card:scale-105 group-hover/card:rotate-1 z-0">
+          {/* Course Cover Image Frame */}
+          <div className="absolute inset-0 w-full h-full transition-all duration-700 group-hover/card:scale-103 z-0">
             <Image 
-              src={thumbnail || "/logo.webp"} 
+              src={finalImage} 
               alt={title}
               fill 
-              /* 🚨 استخدام object-cover هنا مهم جداً لملء الإطار */
-              className="object-cover p-2 group-hover/card:p-0 transition-all duration-700 drop-shadow-[0_0_20px_rgba(212,175,55,0.2)]" 
+              className="object-cover transition-all duration-500" 
               priority 
             />
           </div>
           
-          {/* Level Badge */}
-          <div className={`absolute top-4 sm:top-5 right-4 sm:right-5 px-3.5 sm:px-4 py-1.5 rounded-full border text-[8px] sm:text-[9px] font-black uppercase tracking-[0.2em] backdrop-blur-xl z-20 shadow-xl ${levelStyles}`}>
+          {/* Level Badge - Ultra Compact */}
+          <div className={`absolute top-3 right-3 px-2.5 py-1 rounded-md border text-[7.5px] font-black uppercase tracking-widest backdrop-blur-xl z-20 shadow-lg ${levelStyles}`}>
             <span className="animate-pulse mr-1">●</span>{level}
           </div>
         </div>
 
-        {/* 📝 Content Area */}
-        <div className="mt-8 px-1 sm:px-2 space-y-6 relative z-10">
-          <div className="flex items-center gap-2">
-             <div className="size-1.5 bg-[#D4AF37] rounded-full animate-pulse shadow-[0_0_10px_rgba(212,175,55,0.8)]" />
-             <span className="text-white/40 font-black text-[9px] sm:text-[10px] uppercase tracking-[0.3em] italic">{category}</span>
+        {/* 📝 Content Area - ترشيق الـ space-y لـ space-y-4 وإلغاء الـ Margins المفرطة */}
+        <div className="mt-4 px-0.5 space-y-4 relative z-10">
+          
+          <div className="flex items-center gap-1.5">
+             <div className="size-1 bg-[#D4AF37] rounded-full shadow-[0_0_6px_rgba(212,175,55,0.8)]" />
+             <span className="text-white/40 font-black text-[8px] uppercase tracking-widest font-mono">{category || "TRAINING"}</span>
           </div>
           
-          <h3 className="text-white font-black text-xl sm:text-2xl md:text-3xl italic uppercase tracking-tighter leading-[0.9] line-clamp-2 transition-all duration-500 group-hover/card:text-[#D4AF37]">
+          {/* تصغير خط العنوان لـ text-lg ليكون محبوكاً ومريحاً جداً للعين */}
+          <h3 className="text-white font-black text-base md:text-lg italic uppercase tracking-tight leading-tight line-clamp-1 transition-all duration-300 group-hover/card:text-[#D4AF37]">
             {title}
           </h3>
           
-          <div className="flex flex-wrap gap-2 items-center"> {/* 🚨 تجاوب المسافات */}
-              <div className="flex items-center gap-3 text-emerald-400 bg-emerald-950/40 border border-emerald-900/40 rounded-full px-4 py-1.5 text-[8px] sm:text-[9px] font-bold uppercase tracking-widest italic w-fit">
-                <Activity size={12} className="animate-pulse" />
+          {/* Deployment Status Tags */}
+          <div className="flex flex-wrap gap-1.5 items-center"> 
+              <div className="flex items-center gap-1.5 text-emerald-400 bg-emerald-950/20 border border-emerald-900/30 rounded-md px-2 py-0.5 text-[7.5px] font-bold uppercase tracking-wider italic">
+                <Activity size={10} className="animate-pulse" />
                 Active Deployment
               </div>
-              <div className="flex items-center gap-2 text-[#D4AF37] bg-white/[0.03] border border-white/5 rounded-full px-3 py-1.5 text-[8px] font-bold uppercase tracking-widest italic w-fit">
-                <Zap size={10} className="text-[#D4AF37]/60" />
+              <div className="flex items-center gap-1 text-[#D4AF37] bg-white/[0.015] border border-white/5 rounded-md px-2 py-0.5 text-[7.5px] font-bold uppercase tracking-wider italic">
+                <Zap size={9} className="text-[#D4AF37]/50" />
                 Verified Mission
               </div>
           </div>
 
-          {/* Info Grid */}
-          <div className="grid grid-cols-2 gap-4 border-y border-white/5 py-5 relative">
-            <div className="absolute inset-y-0 left-1/2 w-px bg-white/5 -translate-x-1/2" />
-             <div className="flex items-center gap-2 justify-center">
-                <Clock size={15} className="text-[#D4AF37]/50" />
-                <span className="text-white/60 text-[9px] sm:text-[10px] font-black uppercase tracking-widest font-mono italic">{duration}</span>
+          {/* Info Grid - ترشيق البادينج لـ py-3 لضغط طول الكارت */}
+          <div className="grid grid-cols-2 gap-2 border-y border-white/[0.03] py-3 relative">
+            <div className="absolute inset-y-0 left-1/2 w-px bg-white/[0.03] -translate-x-1/2" />
+             <div className="flex items-center gap-1.5 justify-center">
+                <Clock size={12} className="text-[#D4AF37]/40" />
+                <span className="text-white/50 text-[9px] font-black uppercase tracking-wider font-mono">{duration}</span>
              </div>
-             <div className="flex items-center gap-2 justify-center">
-                <Target size={15} className="text-[#D4AF37]/50" />
-                <span className="text-white/60 text-[9px] sm:text-[10px] font-black uppercase tracking-widest italic truncate">British Standards</span> {/* 🚨 التعديل ليكون أكثر إثارة */}
+             <div className="flex items-center gap-1.5 justify-center">
+                <Target size={12} className="text-[#D4AF37]/40" />
+                <span className="text-white/50 text-[8px] font-black uppercase tracking-wider italic truncate">UK Standards</span>
              </div>
           </div>
 
-          {/* Progress Bar */}
-          <div className="space-y-4 pt-2"> {/* 🚨 مسافة تكتيكية */}
-            <div className="flex justify-between items-center text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] relative">
-              <span className="text-white/30 italic">Mission Progress</span>
-              <span className="text-[#D4AF37] drop-shadow-[0_0_8px_rgba(212,175,55,0.6)] font-mono">{progress}%</span>
-              <div className="absolute bottom-[-10px] left-0 w-full h-[1px] bg-white/5 rounded-full" /> {/* Tactical line */}
+          {/* Progress Bar - Compacted Design */}
+          <div className="space-y-2 pt-0.5">
+            <div className="flex justify-between items-center text-[8px] md:text-[9px] font-black uppercase tracking-widest relative">
+              <span className="text-white/30 italic">Progress</span>
+              <span className="text-[#D4AF37] font-mono font-black">{progress}%</span>
             </div>
-            <div className="h-3 md:h-3.5 w-full bg-black/60 rounded-full overflow-hidden border border-white/5 relative shadow-inner">
-               {/* Background pattern inside progress bar */}
+            <div className="h-2 w-full bg-black/40 rounded-lg overflow-hidden border border-white/[0.03] relative">
               <div className="absolute inset-0 w-full h-full" style={{ background: 'repeating-linear-gradient(-45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 6px)'}} />
               <motion.div 
                 initial={{ width: 0 }}
                 whileInView={{ width: `${progress}%` }}
-                transition={{ duration: 1.2, ease: "circOut", delay: 0.3 }}
-                className="h-full bg-gradient-to-r from-[#D4AF37]/50 via-[#F3D179] to-[#D4AF37] rounded-full shadow-[0_0_15px_rgba(212,175,55,0.6)] relative z-10"
+                transition={{ duration: 1, ease: "circOut", delay: 0.1 }}
+                className="h-full bg-gradient-to-r from-[#D4AF37]/40 via-[#F3D179] to-[#D4AF37] rounded-lg shadow-[0_0_8px_rgba(212,175,55,0.4)] relative z-10"
               />
             </div>
           </div>
 
-          {/* Action Footer */}
-          <div className="mt-8 flex justify-between items-center pt-6 border-t border-white/5 group/btn">
-              <span className="text-[8px] sm:text-[9px] text-white/10 font-bold uppercase tracking-widest font-mono">EST. 2026 STANDARDS</span> {/* 🚨 التعديل ليكون أكثر سرية */}
-              <div className="flex items-center gap-3">
-                  <span className="text-[10px] font-black text-[#D4AF37] uppercase tracking-widest opacity-0 group-hover/card:opacity-100 -translate-x-3 group-hover/card:translate-x-0 transition-all duration-500 italic">start Course</span>
-                  <div className="size-9 rounded-full bg-[#D4AF37] text-black transition-all duration-300 group-hover/card:rotate-[-45deg] flex items-center justify-center group-hover/card:bg-white group-hover/card:text-[#050A14]">
-                    <ChevronRight size={16} strokeWidth={4} />
+          {/* Action Footer - ترشيق الـ Margin العلوي والـ Padding لقتل الفجوة السفلية */}
+          <div className="mt-4 flex justify-between items-center pt-3 border-t border-white/[0.03]">
+              <span className="text-[7px] text-white/10 font-bold uppercase tracking-widest font-mono">EST. 2026</span>
+              <div className="flex items-center gap-2">
+                  <span className="text-[8px] font-black text-[#D4AF37] uppercase tracking-widest opacity-0 group-hover/card:opacity-100 -translate-x-2 group-hover/card:translate-x-0 transition-all duration-300 italic">start</span>
+                  <div className="size-6 rounded-full bg-[#D4AF37] text-black transition-all duration-300 group-hover/card:rotate-[-45deg] flex items-center justify-center group-hover/card:bg-white group-hover/card:text-[#050A14] shrink-0">
+                    <ChevronRight size={12} strokeWidth={3} />
                   </div>
               </div>
           </div>
+
         </div>
       </motion.div>
     </Link>

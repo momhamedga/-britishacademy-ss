@@ -1,49 +1,47 @@
-"use client"
+"use client";
 import { motion } from 'framer-motion';
-// مفيش داعي لاستيراد الـ Student كامل هنا، الـ number كافي للـ Progress
-// بس بنسيب الـ Interface واضح عشان الـ Autocomplete
 
 interface ProgressProps {
-  progress: number; // النسبة اللي جاية من الـ Neon DB (من 0 لـ 100)
+  progress: number;
 }
 
 export default function ProgressCard({ progress }: ProgressProps) {
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="relative p-6 bg-navy md:p-10 rounded-[2.5rem] border border-white/5 overflow-hidden group shadow-2xl"
-
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      /* ترشيق الـ rounded لـ rounded-xl وضغط الـ padding لـ p-4 md:p-5 */
+      className="relative p-4 md:p-5 bg-navy rounded-xl border border-white/[0.03] overflow-hidden shadow-xl w-full"
     >
-      {/* Glow ذهبي خفيف في الزاوية */}
-      <div className="absolute -top-24 -right-24 size-64 bg-gold/5 blur-[100px] pointer-events-none group-hover:bg-gold/10 transition-colors duration-1000" />
+      <div className="absolute -top-16 -right-16 size-48 bg-gold/[0.02] blur-[60px] pointer-events-none" />
       
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8 relative z-10">
-        <div>
-          <h3 className="text-white text-2xl md:text-3xl font-black italic mb-2 tracking-tighter uppercase">Mission Progress</h3>
-          <p className="text-gold/40 text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em]">
-            Current Objective Completion Status
+      <div className="flex justify-between items-center gap-4 mb-3 relative z-10">
+        <div className="space-y-0.5">
+          <h3 className="text-white text-base md:text-lg font-black italic tracking-tight uppercase leading-none">Mission Progress</h3>
+          <p className="text-gold/40 text-[8px] font-black uppercase tracking-wider font-mono">
+            Objective Completion Status
           </p>
         </div>
-        <div className="text-left md:text-right w-full md:w-auto">
-          <span className="text-gold font-black text-5xl md:text-7xl tracking-tighter tabular-nums drop-shadow-[0_0_20px_rgba(212,175,55,0.4)]">
+        <div className="text-right shrink-0">
+          {/* تصغير التكست من 7xl المتضخم جداً إلى text-3xl و text-4xl الأنيق الهادئ */}
+          <span className="text-gold font-mono font-black text-3xl md:text-4xl tracking-tighter drop-shadow-[0_0_10px_rgba(212,175,55,0.4)]">
             {progress}%
           </span>
         </div>
       </div>
 
-      <div className="relative h-4 md:h-5 w-full bg-black/40 rounded-full border border-white/5 p-[2px] overflow-hidden shadow-inner">
+      {/* تصغير ارتفاع شريط التحميل لـ h-2 لقتل التضخم البصري */}
+      <div className="relative h-2 w-full bg-black/40 rounded-full border border-white/[0.02] p-[1px] overflow-hidden">
         <motion.div 
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
-          transition={{ duration: 2.5, ease: "circOut" }}
-          className="h-full rounded-full bg-gradient-to-r from-gold/40 via-gold to-gold/40 shadow-[0_0_30px_rgba(212,175,55,0.5)] relative"
+          transition={{ duration: 1.5, ease: "circOut" }}
+          className="h-full rounded-full bg-gradient-to-r from-gold/50 via-gold to-gold/50 shadow-[0_0_10px_rgba(212,175,55,0.4)] relative"
         >
-          {/* تأثير المسح الضوئي */}
           <motion.div 
-            animate={{ x: ['-100%', '400%'] }}
+            animate={{ x: ['-100%', '300%'] }}
             transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent w-20 skew-x-12"
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 Tri-transparent w-10 skew-x-12"
           />
         </motion.div>
       </div>

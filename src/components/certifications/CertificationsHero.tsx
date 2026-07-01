@@ -11,7 +11,7 @@ export default function CertificationsHero() {
   gold: "oklch(75% 0.15 85)",
 };
   return (
-    <section className="relative min-h-[70vh] flex flex-col items-center justify-center py-24 px-6 overflow-hidden" style={{ backgroundColor: COLORS.navy }}>
+    <section className="relative min-h-screen flex flex-col items-center justify-center py-24 px-6 overflow-hidden" style={{ backgroundColor: COLORS.navy }}>
       {/* خلفية تكتيكية مشابهة لتصميم الهيرو */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute -top-[20%] -right-[10%] w-[80%] h-[80%] rounded-full opacity-20 blur-[120px]" style={{ backgroundColor: COLORS.mediumBlue }} />

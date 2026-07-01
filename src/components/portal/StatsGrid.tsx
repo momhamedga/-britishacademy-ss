@@ -1,12 +1,10 @@
-"use client"
+"use client";
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
-// استيراد الـ Types لضمان التوافق الكامل
-import { StudentRank } from '@/types/portal'; 
 
 interface StatsProps {
   label: string;
-  value: string | number | StudentRank; // السماح بقيم الرتب السينمائية
+  value: string | number;
   icon: ReactNode;
   description: string;
 }
@@ -14,28 +12,30 @@ interface StatsProps {
 export default function StatsGrid({ label, value, icon, description }: StatsProps) {
   return (
     <motion.div 
-      whileHover={{ y: -5, borderColor: 'oklch(var(--gold) / 0.3)' }}
-      className="p-6 rounded-[2rem] bg-navy border border-white/5 transition-all duration-500 group relative overflow-hidden"
-   
+      whileHover={{ y: -2 }}
+      /* رشقنا الـ rounded لـ rounded-xl والـ padding لـ p-4 لتفادي الضخامة */
+      className="p-4 rounded-xl bg-navy border border-white/[0.03] transition-all duration-300 group relative overflow-hidden shadow-md min-w-0 w-full"
     >
-      <div className="flex items-start justify-between mb-6 relative z-10">
-        <div className="size-12 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center group-hover:bg-gold/10 group-hover:border-gold/20 transition-all">
+      <div className="flex items-center justify-between gap-4 relative z-10">
+        {/* تصغير حجم الفريم المربع للأيقونة لـ size-9 */}
+        <div className="size-9 rounded-lg bg-white/[0.015] border border-white/5 flex items-center justify-center group-hover:bg-gold/5 transition-all shrink-0">
           {icon}
         </div>
         
-        <div className="text-right">
-          <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 italic">{label}</p>
-          <h4 className="text-2xl md:text-3xl font-black text-white tracking-tighter uppercase italic group-hover:text-gold transition-colors">
+        <div className="text-right min-w-0">
+          <p className="text-[7.5px] font-black text-slate-500 uppercase tracking-widest mb-1 italic truncate">{label}</p>
+          {/* تصغير حجم خط الأرقام لـ text-xl لراحة فائقة للعين */}
+          <h4 className="text-lg md:text-xl font-mono font-black text-white tracking-tight uppercase italic group-hover:text-gold transition-colors truncate">
             {value}
           </h4>
         </div>
       </div>
       
-      <div className="pt-4 border-t border-white/5 flex justify-between items-center relative z-10">
-        <p className="text-[8px] md:text-[9px] font-bold text-slate-500 uppercase tracking-widest truncate max-w-[80%]">
+      <div className="pt-2.5 mt-2.5 border-t border-white/[0.03] flex justify-between items-center relative z-10">
+        <p className="text-[8px] font-bold text-slate-500 uppercase tracking-wider truncate max-w-[85%]">
           {description}
         </p>
-        <div className="size-1.5 rounded-full bg-gold/20 group-hover:bg-gold animate-pulse shadow-[0_0_8px_#D4AF37]" />
+        <div className="size-1 rounded-full bg-gold/10 group-hover:bg-gold transition-colors" />
       </div>
     </motion.div>
   );
