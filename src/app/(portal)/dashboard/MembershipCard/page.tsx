@@ -1,3 +1,6 @@
+// 🎯 التكتيك النووي لإجبار Next.js على الرندرة الديناميكية ومنع كراش الـ Build بسبب الكوكيز
+export const dynamic = "force-dynamic";
+
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { sql } from "@/lib/db";
@@ -15,7 +18,6 @@ async function getMembershipProfileData() {
 
     const safeVector = studentIdText.length > 5 ? studentIdText.substring(1) : studentIdText;
 
-    {/* 🎯 التعديل الجوهري: إضافة جلب عمود membership_card_url لكي يقرأه الكارت السفلّي */}
     const rows = await sql`
       SELECT id, student_id, name, email, rank, access_code, membership_card_url, created_at 
       FROM public.students 
@@ -38,7 +40,7 @@ export default async function MembershipCardPage() {
   if (!profileData) notFound();
 
   return (
-    <main className="w-full max-w-5xl mx-auto text-white py-6 px-4">
+    <main className=" max-w-5xl mx-auto text-white py-6 px-4">
       {/* تمرير الداتا الجاهزة والمكتملة فوراً */}
       <MembershipCardClient profile={profileData} />
     </main>
