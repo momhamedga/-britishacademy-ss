@@ -4,11 +4,6 @@ const nextConfig: NextConfig = {
   // تفعيل مترجم React 19 لزيادة الأداء
   reactCompiler: true,
 
-  typescript: {
-    // تجاهل أخطاء النوع أثناء الـ Build فقط لضمان استمرار العمل
-    ignoreBuildErrors: true,
-  },
-
   images: {
     // إعدادات الصور السينمائية عالية الجودة
     qualities: [75, 90],

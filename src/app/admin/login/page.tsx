@@ -31,8 +31,8 @@ export default function AdminLogin() {
       
       {/* 🌌 Background Elements - Soft Accents */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0 bg-grid-slate-200/[0.3] bg-[size:30px_30px] [mask-image:radial-gradient(white,transparent_85%)]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gold/5 blur-[120px] rounded-full" />
+        <div className="absolute inset-0 bg-grid-slate-200/30 bg-[size:30px_30px] [mask-image:radial-gradient(white,transparent_85%)]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-100 h-100 bg-gold/5 blur-[120px] rounded-full" />
       </div>
 
       {/* 🎯 زر العودة للرئيسية - متجاوب، ممركز وثابت أفقياً فوق الكارت تماماً */}
@@ -40,7 +40,7 @@ export default function AdminLogin() {
         <button 
           type="button"
           onClick={() => router.push('/')}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.02] border border-white/5 text-slate-400 hover:text-gold hover:border-gold/20 transition-all text-[9px] font-black uppercase tracking-widest active:scale-95 shadow-md backdrop-blur-md"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/2 border border-white/5 text-slate-400 hover:text-gold hover:border-gold/20 transition-all text-[9px] font-black uppercase tracking-widest active:scale-95 shadow-md backdrop-blur-md"
         >
           <Home size={12} />
           <span>Return_Home</span>
@@ -56,7 +56,7 @@ export default function AdminLogin() {
           
           {/* Header Section */}
           <div className="text-center space-y-4 relative mb-8">
-            <div className="size-16 md:size-20 bg-white/[0.03] border border-white/10 text-gold rounded-2xl flex items-center justify-center mx-auto shadow-xl">
+            <div className="size-16 md:size-20 bg-white/3 border border-white/10 text-gold rounded-2xl flex items-center justify-center mx-auto shadow-xl">
               <Shield size={26} />
             </div>
             <h1 className="text-xl md:text-3xl font-black uppercase italic tracking-tighter text-white">
@@ -75,7 +75,7 @@ export default function AdminLogin() {
                 value={pass}
                 onChange={(e) => setPass(e.target.value)}
                 placeholder="ENTER_ENCRYPTION_KEY"
-                className="w-full p-4 md:p-5 pl-14 bg-white/[0.02] border border-white/10 rounded-xl md:rounded-2xl text-white outline-none focus:border-gold/40 focus:bg-white/[0.05] font-black text-[12px] tracking-widest transition-all placeholder:text-white/10 placeholder:tracking-normal text-center"
+                className="w-full p-4 md:p-5 pl-14 bg-white/2 border border-white/10 rounded-xl md:rounded-2xl text-white outline-none focus:border-gold/40 focus:bg-white/5 font-black text-xs tracking-widest transition-all placeholder:text-white/10 placeholder:tracking-normal text-center"
               />
             </div>
 

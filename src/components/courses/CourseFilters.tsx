@@ -41,7 +41,7 @@ export default function CourseFilters() {
     <div className="flex flex-col gap-8">
       {/* Specialization */}
       <div className="space-y-4">
-        <h3 className="text-[12px] font-black uppercase tracking-widest text-navy/40 px-2">Specialization</h3>
+        <h3 className="text-xs font-black uppercase tracking-widest text-navy/40 px-2">Specialization</h3>
         <div className="flex flex-col gap-1">
           {CATEGORIES.map((cat) => (
             <label key={cat.id} className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-navy/5 cursor-pointer group transition-colors">
@@ -62,7 +62,7 @@ export default function CourseFilters() {
 
       {/* Level */}
       <div className="space-y-4">
-        <h3 className="text-[12px] font-black uppercase tracking-widest text-navy/40 px-2">Level</h3>
+        <h3 className="text-xs font-black uppercase tracking-widest text-navy/40 px-2">Level</h3>
         <div className="flex flex-col gap-1">
           {LEVELS.map((level) => (
             <label key={level.id} className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-navy/5 cursor-pointer group transition-colors">
@@ -82,7 +82,7 @@ export default function CourseFilters() {
 
       {/* Duration */}
       <div className="space-y-4 px-2">
-        <h3 className="text-[12px] font-black uppercase tracking-widest text-navy/40">Duration</h3>
+        <h3 className="text-xs font-black uppercase tracking-widest text-navy/40">Duration</h3>
         <select 
           value={activeDuration || ""}
           onChange={(e) => setActiveDuration(e.target.value)}

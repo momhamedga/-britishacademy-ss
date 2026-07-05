@@ -7,8 +7,9 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-
 import { User } from 'lucide-react'
 import { NAV_LINKS } from '@/lib/constants'
 import ProfileDropdown from '@/components/portal/ProfileDropdown'
+import type { NavUser } from '@/types'
 
-export default function DesktopNavbar({ user, isAdmin = false }: any) {
+export default function DesktopNavbar({ user, isAdmin = false }: { user?: NavUser | null; isAdmin?: boolean }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
@@ -80,7 +81,7 @@ export default function DesktopNavbar({ user, isAdmin = false }: any) {
                     initial={{ opacity: 0, y: 10 }} 
                     animate={{ opacity: 1, y: 0 }} 
                     exit={{ opacity: 0, y: 10 }} 
-                    className="absolute top-full right-0 mt-4 z-[120]"
+                    className="absolute top-full right-0 mt-4 z-120"
                   >
                     {/* تمرير الرتب بذكاء تام للدروبر هب الموحد */}
                     <ProfileDropdown 

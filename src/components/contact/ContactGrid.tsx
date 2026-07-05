@@ -18,7 +18,7 @@ export default function TacticalContactGrid() {
   // ✅ استخدام الـ Standard الجديد بتاعنا
   const isMounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  if (!isMounted) return <div className="min-h-[600px] animate-pulse bg-white/5 rounded-[3rem]" />;
+  if (!isMounted) return <div className="min-h-150 animate-pulse bg-white/5 rounded-[3rem]" />;
 
   return (
     <div className="w-full max-w-320 mx-auto px-4 py-8">
@@ -43,7 +43,7 @@ function DesktopBentoLayout() {
       </motion.div>
 
       {/* 2. Interactive Map Widget */}
-      <motion.div className="h-[300px] rounded-[2.5rem] overflow-hidden border border-navy/10 shadow-xl relative group/map">
+      <motion.div className="h-75 rounded-[2.5rem] overflow-hidden border border-navy/10 shadow-xl relative group/map">
         <iframe
           src="https://www.google.com/maps/embed?pb=..." 
           className="size-full grayscale contrast-[1.1] transition-all group-hover/map:grayscale-0"
@@ -133,7 +133,7 @@ function MobileNativeLayout() {
       {/* 3. Bento Map Widget */}
       <motion.div 
         whileTap={{ scale: 0.98 }}
-        className="relative h-[400px] rounded-[3.5rem] overflow-hidden border-4 border-white shadow-2xl group"
+        className="relative h-100 rounded-[3.5rem] overflow-hidden border-4 border-white shadow-2xl group"
       >
         <iframe
           src="https://www.google.com/maps/embed?pb=..." 
@@ -183,7 +183,7 @@ function MobileNativeLayout() {
             whileTap={{ x: 10 }}
             className="p-6 bg-white rounded-[2.5rem] border border-navy/5 flex items-center gap-5 shadow-sm active:shadow-inner transition-all"
           >
-            <div className="size-14 rounded-2xl bg-navy/5 flex items-center justify-center text-gold ring-8 ring-navy/[0.02]">
+            <div className="size-14 rounded-2xl bg-navy/5 flex items-center justify-center text-gold ring-8 ring-navy/2">
               <item.icon size={24} />
             </div>
             <div className="flex-1">

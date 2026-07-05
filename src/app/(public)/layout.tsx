@@ -1,13 +1,11 @@
 import { Suspense } from "react";
-import { cookies } from "next/headers";
 import { sql } from "@/lib/db";
+import { getCurrentStudentId } from "@/lib/session";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
-  // بنجيب الـ Token هنا عشان نمرره للـ Wrapper
-  const cookieStore = await cookies();
-  const userId = cookieStore.get('auth_token')?.value;
+  const userId = await getCurrentStudentId();
 
   return (
     <div className="flex flex-col min-h-screen ">
@@ -26,28 +24,26 @@ export default async function PublicLayout({ children }: { children: React.React
 }
 
 // الـ Server Component المسؤول عن فحص بيانات الطالب
-async function NavbarWrapper({ userId }: { userId?: string }) {
-  if (!userId) return <Navbar isGuest={true} />;
+async function NavbarWrapper({ userId }: { userId?: string | null }) {
+  const student = userId ? await fetchNavStudent(userId) : null;
 
+  if (!student) return <Navbar isGuest={true} />;
+
+  return <Navbar user={{ name: student.name, rank: student.rank }} isGuest={false} />;
+}
+
+async function fetchNavStudent(userId: string) {
   try {
     // جلب بيانات الطالب من قاعدة البيانات مباشرة (Server-Side)
     const [student] = await sql`
-      SELECT name, rank 
-      FROM students 
-      WHERE id = ${userId} 
+      SELECT name, rank
+      FROM students
+      WHERE id = ${userId}
       LIMIT 1
     `;
-
-    if (!student) return <Navbar isGuest={true} />;
-
-    return (
-      <Navbar 
-        user={{ name: student.name, rank: student.rank }} 
-        isGuest={false} 
-      />
-    );
+    return student ?? null;
   } catch (error) {
     console.error("Auth Wrapper Error:", error);
-    return <Navbar isGuest={true} />;
+    return null;
   }
 }

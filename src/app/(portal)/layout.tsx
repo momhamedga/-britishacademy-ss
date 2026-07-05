@@ -1,18 +1,19 @@
 import Sidebar from "@/components/portal/Sidebar";
 import MobileNav from "@/components/portal/MobileNav";
 import { sql } from "@/lib/db";
-import { cookies, headers } from "next/headers";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getCurrentStudentId } from "@/lib/session";
+import type { NavUser } from "@/types";
 
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
-  const cookieStore = await cookies();
   const headerList = await headers();
-  
-  const pathname = headerList.get("x-pathname") || ""; 
+
+  const pathname = headerList.get("x-pathname") || "";
   const isAuthPage = pathname.includes('/login') || pathname.includes('/register');
-  
+
   // Checking User Authentication
-  const userId = cookieStore.get("user_id")?.value || cookieStore.get("auth_token")?.value;
+  const userId = await getCurrentStudentId();
 
   // Route Protection
   if (!userId && !isAuthPage) {
@@ -20,11 +21,11 @@ export default async function PortalLayout({ children }: { children: React.React
   }
 
   // Invisible Personalization Feed
-  let student = null;
+  let student: (NavUser & { id?: string }) | null = null;
   if (userId) {
-    const data = await sql`SELECT id, name, rank FROM students WHERE id = ${userId} LIMIT 1`;
+    const data = await sql`SELECT id, name, rank FROM students WHERE id = ${userId}::uuid LIMIT 1`;
     if (data[0]) {
-      student = { ...data[0], student_id: data[0].id };
+      student = { ...data[0], student_id: data[0].id } as unknown as NavUser & { id?: string };
     }
   }
 
@@ -43,7 +44,7 @@ export default async function PortalLayout({ children }: { children: React.React
         {/* 🖥️ Desktop Sidebar - Secured Layout Panel */}
         {showUI && (
           <aside 
-            className="hidden lg:flex flex-col border-r border-white/[0.03] sticky top-0 h-screen z-40 overflow-y-auto no-scrollbar shrink-0 shadow-[10px_0_40px_rgba(0,0,0,0.3)]"
+            className="hidden lg:flex flex-col border-r border-white/3 sticky top-0 h-screen z-40 overflow-y-auto no-scrollbar shrink-0 shadow-[10px_0_40px_rgba(0,0,0,0.3)]"
             style={{ backgroundColor: 'oklch(22% 0.06 260)' }}
           >
             <Sidebar studentData={student} />
@@ -56,13 +57,13 @@ export default async function PortalLayout({ children }: { children: React.React
           {/* الـ Mobile Nav بيظهر فقط على الشاشات الصغيرة ويختفي تلقائياً في الديسكتوب بدون تداخل */}
           {showUI && (
             <div className="lg:hidden fixed top-0 inset-x-0 z-50">
-              <MobileNav pathname={pathname} />
+              <MobileNav />
             </div>
           )}
 
           {/* محاذاة مسافات الأمان للهيدر على الموبيل والديسكتوب بدقة */}
-          <main className={`flex-1 flex flex-col w-full ${showUI ? 'pt-[110px] lg:pt-12 pb-32 lg:pb-16' : ''}`}>
-            <div className="w-full max-w-[1400px] mx-auto px-4 md:px-12 flex-1 animate-in fade-in duration-500">
+          <main className={`flex-1 flex flex-col w-full ${showUI ? 'pt-27.5 lg:pt-12 pb-32 lg:pb-16' : ''}`}>
+            <div className="w-full max-w-350 mx-auto px-4 md:px-12 flex-1 animate-in fade-in duration-500">
               {children}
             </div>
           </main>

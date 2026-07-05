@@ -23,7 +23,7 @@ export default function AdminDashboard() {
     <div className="min-h-screen text-navy relative bg-transparent">
       
       {/* 🎯 NAVIGATION & CONTROLS HEADER BAR */}
-      <div className="fixed top-6 right-6 z-[1000] flex items-center gap-3">
+      <div className="fixed top-6 right-6 z-1000 flex items-center gap-3">
         
         {/* 🏠 زر العودة للرئيسية التكتيكي المضاف */}
         <motion.button 
@@ -70,7 +70,7 @@ export default function AdminDashboard() {
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-gold">
                 <Activity size={12} className="animate-pulse" />
-                <h1 className="text-[14px] font-black uppercase tracking-widest italic leading-none">Admin Control Center</h1>
+                <h1 className="text-sm font-black uppercase tracking-widest italic leading-none">Admin Control Center</h1>
               </div>
             </div>
           </div>
@@ -83,7 +83,7 @@ export default function AdminDashboard() {
             whileTap={{ scale: 0.99 }}
             className="relative group cursor-pointer overflow-hidden rounded-[2.5rem] md:rounded-[3.5rem] bg-navy p-8 md:p-16 text-white shadow-[0_40px_100px_-20px_rgba(15,23,42,0.3)] border border-white/5"
           >
-            <div className="absolute top-0 right-0 w-2/3 h-full bg-gradient-to-l from-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-2/3 h-full bg-linear-to-l from-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
             
             <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-8">
               <div className="flex flex-col sm:flex-row sm:items-center gap-6 md:gap-10">

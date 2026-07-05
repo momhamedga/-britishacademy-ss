@@ -7,8 +7,9 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { NAV_LINKS } from "@/lib/constants";
 import ProfileDropdown from '@/components/portal/ProfileDropdown';
+import type { NavUser } from "@/types";
 
-export default function MobileNavbar({ user, isAdmin = false }: any) {
+export default function MobileNavbar({ user, isAdmin = false }: { user?: NavUser | null; isAdmin?: boolean }) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -47,7 +48,7 @@ export default function MobileNavbar({ user, isAdmin = false }: any) {
         {/* 🎯 التعديل: شيلنا شرط && user المقيد لفتح الدروبر كلياً */}
         <AnimatePresence>
           {isProfileOpen && (
-            <div className="absolute top-16 right-5 w-64 z-[110]">
+            <div className="absolute top-16 right-5 w-64 z-110">
                <ProfileDropdown user={user} isAdmin={isAdmin || user?.rank === 'ADMIN'} close={() => setIsProfileOpen(false)} />
             </div>
           )}
@@ -56,7 +57,7 @@ export default function MobileNavbar({ user, isAdmin = false }: any) {
 
       <AnimatePresence>
         {isOpen && (
-          <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }} className="fixed inset-0 z-[120] bg-navy flex flex-col">
+          <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }} className="fixed inset-0 z-120 bg-navy flex flex-col">
             <div className="p-6 flex justify-end items-center border-b border-white/5">
               <button onClick={() => setIsOpen(false)} className="size-10 bg-white/5 rounded-full flex items-center justify-center text-white">
                 <X size={20} />

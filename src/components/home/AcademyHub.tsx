@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, ChevronRight, Shield } from "lucide-react";
 import { ACADEMY_HUB_ITEMS } from "@/lib/AcademyHub";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import KineticText from "@/components/shared/KineticHeading";
 
 // ✅ دالات الـ Sync الـ Ultra-Modern
 const subscribe = () => () => {}; 
@@ -35,7 +36,10 @@ export default function AcademyHub() {
           </motion.div>
           
           <h2 className="text-3xl md:text-6xl font-black italic uppercase tracking-tighter text-navy leading-[0.9]">
-            why <span className="text-transparent bg-clip-text bg-linear-to-b from-gold to-gold/60"> our academy</span>
+            <KineticText text="why" />
+            <span className="block text-transparent bg-clip-text bg-linear-to-b from-gold to-gold/60">
+              <KineticText text="our academy" delayOffset={1} />
+            </span>
           </h2>
         </div>
 
@@ -64,7 +68,7 @@ const MobileHub = memo(() => {
             >
               <div 
                 onClick={() => router.push(item.href)}
-                className="relative h-full overflow-hidden bg-white rounded-[2rem] p-8 border border-black/5 shadow-xl shadow-black/5 active:scale-95 transition-transform duration-300"
+                className="relative h-full overflow-hidden bg-white rounded-4xl p-8 border border-black/5 shadow-xl shadow-black/5 active:scale-95 transition-transform duration-300"
               >
                 {/* ✅ v4: size-32 بدلاً من w-32 h-32 */}
                 <div className="absolute top-0 right-0 size-32 bg-gold/5 blur-3xl -z-0" />

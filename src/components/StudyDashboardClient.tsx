@@ -1,13 +1,29 @@
 "use client";
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, CheckCircle2, Circle, Award, BookOpen, ChevronLeft, Video, FileText, RefreshCw, Trophy, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, Circle, Award, BookOpen, ChevronLeft, Video, FileText, RefreshCw, Trophy } from 'lucide-react';
 import { updateLessonProgress } from '@/actions/academy-actions';
 import Link from 'next/link';
+import type { Course } from '@/types';
 
-export default function StudyDashboardClient({ course, lessons, initialProgress, initialCompletedLessons = [] }: any) {
-  const [completedLessons, setCompletedLessons] = useState<string[]>(initialCompletedLessons); 
-  const [currentLesson, setCurrentLesson] = useState(lessons[0] || null);
+interface StudyLesson {
+  id?: string;
+  title: string;
+  description?: string;
+  video_url?: string;
+  duration?: string;
+}
+
+interface StudyDashboardClientProps {
+  course: Course;
+  lessons: StudyLesson[];
+  initialProgress: number;
+  initialCompletedLessons?: string[];
+}
+
+export default function StudyDashboardClient({ course, lessons, initialProgress, initialCompletedLessons = [] }: StudyDashboardClientProps) {
+  const [completedLessons, setCompletedLessons] = useState<string[]>(initialCompletedLessons);
+  const [currentLesson, setCurrentLesson] = useState<StudyLesson | null>(lessons[0] || null);
   const [progress, setProgress] = useState(initialProgress || 0);
 
   const toggleLessonComplete = async (lessonTitle: string) => {
@@ -57,14 +73,14 @@ export default function StudyDashboardClient({ course, lessons, initialProgress,
           </div>
         </div>
 
-        <div className="bg-white/5 border border-white/10 p-6 rounded-[2rem] w-full md:w-96 space-y-3 relative overflow-hidden group">
+        <div className="bg-white/5 border border-white/10 p-6 rounded-4xl w-full md:w-96 space-y-3 relative overflow-hidden group">
           <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-wider text-slate-400">
             <span>Overall Clearance</span>
             <span className="text-gold font-mono text-xs">{progress}%</span>
           </div>
           <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
             <motion.div 
-              className="h-full bg-gradient-to-r from-gold to-yellow-500"
+              className="h-full bg-linear-to-r from-gold to-yellow-500"
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.5 }}
@@ -83,7 +99,7 @@ export default function StudyDashboardClient({ course, lessons, initialProgress,
               initial={{ opacity: 0, y: -20, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.98 }}
-              className="w-full bg-gradient-to-r from-gold/10 via-white/[0.02] to-transparent border border-gold/30 rounded-[2rem] p-6 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden shadow-2xl"
+              className="w-full bg-linear-to-r from-gold/10 via-white/2 to-transparent border border-gold/30 rounded-4xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden shadow-2xl"
             >
               <div className="flex items-center gap-5">
                 <div className="size-14 bg-gold/10 border border-gold/40 rounded-xl flex items-center justify-center text-gold shrink-0 shadow-[0_0_20px_rgba(212,175,55,0.1)]">
@@ -145,27 +161,27 @@ export default function StudyDashboardClient({ course, lessons, initialProgress,
                   )}
                 </div>
 
-                <div className="bg-white/[0.02] border border-white/5 p-8 rounded-[2.5rem] text-left">
+                <div className="bg-white/2 border border-white/5 p-8 rounded-[2.5rem] text-left">
                   <h3 className="text-xl font-black text-gold mb-3 uppercase tracking-tight">{currentLesson.title}</h3>
                   <p className="text-slate-400 text-sm leading-relaxed">{currentLesson.description || "No supplemental written intel provided for this operational module."}</p>
                 </div>
               </div>
             ) : (
-              <div className="aspect-video bg-white/[0.02] border border-dashed border-white/10 rounded-[2.5rem] flex items-center justify-center">
+              <div className="aspect-video bg-white/2 border border-dashed border-white/10 rounded-[2.5rem] flex items-center justify-center">
                 <p className="text-slate-500 font-mono text-xs uppercase tracking-widest">Awaiting Module Selection...</p>
               </div>
             )}
           </div>
 
           {/* Right Side: Curriculum Interactive List */}
-          <div className="lg:col-span-4 bg-white/[0.02] border border-white/5 p-6 rounded-[2.5rem] h-[600px] overflow-y-auto no-scrollbar">
+          <div className="lg:col-span-4 bg-white/2 border border-white/5 p-6 rounded-[2.5rem] h-150 overflow-y-auto no-scrollbar">
             <div className="flex items-center gap-2 mb-6 px-2">
               <BookOpen size={16} className="text-gold" />
               <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">Mission Syllabus</h3>
             </div>
 
             <div className="space-y-3">
-              {lessons.map((lesson: any, index: number) => {
+              {lessons.map((lesson, index: number) => {
                 const isCurrent = currentLesson?.title === lesson.title;
                 const isCompleted = completedLessons.includes(lesson.title);
 
@@ -173,7 +189,7 @@ export default function StudyDashboardClient({ course, lessons, initialProgress,
                   <div 
                     key={`lesson-vector-${index}`}
                     className={`p-4 rounded-2xl border transition-all duration-300 flex items-center justify-between group/item cursor-pointer
-                      ${isCurrent ? 'bg-white/10 border-gold/40 shadow-lg' : 'bg-white/[0.01] border-white/5 hover:bg-white/5'}`}
+                      ${isCurrent ? 'bg-white/10 border-gold/40 shadow-lg' : 'bg-white/1 border-white/5 hover:bg-white/5'}`}
                     onClick={() => setCurrentLesson(lesson)}
                   >
                     <div className="flex items-center gap-4 flex-1 text-left">

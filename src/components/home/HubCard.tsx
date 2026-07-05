@@ -3,8 +3,9 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowUpRight, ChevronRight } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import type { HubCard as HubCardItem } from "@/types";
 
-export default function HubCard({ item, index }: { item: any, index: number }) {
+export default function HubCard({ item, index }: { item: HubCardItem, index: number }) {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   return (
@@ -16,16 +17,16 @@ export default function HubCard({ item, index }: { item: any, index: number }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: index * 0.1, duration: 0.6 }}
-          className="relative h-72 rounded-[2rem] overflow-hidden group cursor-pointer border border-white/10 bg-navy/20"
+          className="relative h-72 rounded-4xl overflow-hidden group cursor-pointer border border-white/10 bg-navy/20"
         >
           {/* Background & Effects */}
-          <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/40 to-transparent z-10 transition-opacity duration-500 group-hover:opacity-80" />
+          <div className="absolute inset-0 bg-linear-to-t from-navy via-navy/40 to-transparent z-10 transition-opacity duration-500 group-hover:opacity-80" />
           
           {/* Animated Background Placeholder */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#1B3156] to-[#D4AF37]/10 group-hover:scale-110 transition-transform duration-700 ease-out" />
+          <div className="absolute inset-0 bg-linear-to-br from-[#1B3156] to-[#D4AF37]/10 group-hover:scale-110 transition-transform duration-700 ease-out" />
           
           {/* Glow Effect */}
-          <div className="absolute -inset-1 bg-gradient-to-r from-gold/0 via-gold/20 to-gold/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-xl z-0" />
+          <div className="absolute -inset-1 bg-linear-to-r from-gold/0 via-gold/20 to-gold/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-xl z-0" />
 
           <div className="relative z-20 h-full p-8 flex flex-col justify-end">
             <div className="flex justify-between items-end">
@@ -62,7 +63,7 @@ export default function HubCard({ item, index }: { item: any, index: number }) {
             style={{ backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`, backgroundSize: '24px 24px' }} 
           />
           
-          <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/80 to-transparent z-10" />
+          <div className="absolute inset-0 bg-linear-to-r from-navy via-navy/80 to-transparent z-10" />
 
           <div className="relative z-20 h-full p-6 flex items-center justify-between">
             <div className="space-y-1">

@@ -17,7 +17,7 @@ export default function InstructorsLoading() {
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div 
               key={i}
-              className="relative h-[480px] md:h-[520px] rounded-[3rem] md:rounded-[4rem] border border-white/5 bg-white/[0.02] overflow-hidden p-8 md:p-10"
+              className="relative h-120 md:h-130 rounded-[3rem] md:rounded-[4rem] border border-white/5 bg-white/2 overflow-hidden p-8 md:p-10"
             >
               {/* Central Circle Skeleton */}
               <div className="absolute inset-0 flex items-center justify-center">
@@ -42,7 +42,7 @@ export default function InstructorsLoading() {
                 initial={{ x: '-100%' }}
                 animate={{ x: '100%' }}
                 transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent z-10"
+                className="absolute inset-0 bg-linear-to-r from-transparent via-white/3 to-transparent z-10"
               />
             </div>
           ))}

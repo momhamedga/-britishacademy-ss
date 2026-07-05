@@ -1,12 +1,12 @@
 import { sql } from "@/lib/db";
-import { cookies } from 'next/headers';
-import { ShieldCheck, User, Mail, Zap, Target, Award, Fingerprint } from 'lucide-react';
+import { getCurrentStudentId } from "@/lib/session";
+import { ShieldCheck, Mail, Zap, Target, Award, Fingerprint } from 'lucide-react';
 
 export default async function ProfilePage() {
-  const cookieStore = await cookies();
-  const userId = cookieStore.get('auth_token')?.value || cookieStore.get('user_id')?.value;
+  const userId = await getCurrentStudentId();
+  if (!userId) return null;
 
-  const students = await sql`SELECT * FROM students WHERE id = ${userId} LIMIT 1`;
+  const students = await sql`SELECT id, student_id, name, email, rank, created_at FROM students WHERE id = ${userId}::uuid LIMIT 1`;
   const user = students[0];
 
   // إحصائيات وهمية أو يمكن جلبها من الـ DB (عدد الشهادات مثلاً)
@@ -21,12 +21,12 @@ export default async function ProfilePage() {
       <div className="relative max-w-2xl w-full group">
         
         {/* 🌌 تأثير الإضاءة الخلفية (Ambient Glow) */}
-        <div className="absolute -inset-1 bg-gradient-to-r from-gold/20 to-blue-500/20 rounded-[3.5rem] blur-2xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>
+        <div className="absolute -inset-1 bg-linear-to-r from-gold/20 to-blue-500/20 rounded-[3.5rem] blur-2xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>
 
         <div className="relative glass p-8 md:p-12 rounded-[3rem] border border-white/10 bg-navy overflow-hidden">
           
           {/* 🛡️ الشعار المائي (Watermark) */}
-          <div className="absolute top-[-20px] right-[-20px] p-8 opacity-[0.03] text-white rotate-12 group-hover:rotate-0 transition-transform duration-1000">
+          <div className="absolute -top-5 -right-5 p-8 opacity-[0.03] text-white rotate-12 group-hover:rotate-0 transition-transform duration-1000">
             <ShieldCheck size={250} />
           </div>
 
@@ -34,7 +34,7 @@ export default async function ProfilePage() {
           <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                 <span className="h-[2px] w-8 bg-gold inline-block"></span>
+                 <span className="h-0.5 w-8 bg-gold inline-block"></span>
                  <h1 className="text-gold font-black uppercase tracking-[0.5em] text-[10px]">Verified Student Identity</h1>
               </div>
               <h2 className="text-5xl md:text-6xl font-black text-white italic tracking-tighter uppercase leading-none">
@@ -54,7 +54,7 @@ export default async function ProfilePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
             
             {/* Identity Vector (ID) */}
-            <div className="flex items-center gap-5 p-6 bg-white/[0.02] border border-white/5 rounded-[2rem] hover:bg-white/[0.05] transition-colors group/item">
+            <div className="flex items-center gap-5 p-6 bg-white/2 border border-white/5 rounded-4xl hover:bg-white/5 transition-colors group/item">
               <div className="p-3 bg-gold/10 rounded-2xl text-gold group-hover/item:scale-110 transition-transform">
                 <Fingerprint size={24} strokeWidth={1.5} />
               </div>
@@ -65,13 +65,13 @@ export default async function ProfilePage() {
             </div>
 
             {/* Email Field */}
-            <div className="flex items-center gap-5 p-6 bg-white/[0.02] border border-white/5 rounded-[2rem] hover:bg-white/[0.05] transition-colors group/item">
+            <div className="flex items-center gap-5 p-6 bg-white/2 border border-white/5 rounded-4xl hover:bg-white/5 transition-colors group/item">
               <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-400 group-hover/item:scale-110 transition-transform">
                 <Mail size={24} strokeWidth={1.5} />
               </div>
               <div>
                 <p className="text-[8px] text-slate-500 uppercase font-black tracking-[0.2em]">Contact Node</p>
-                <p className="text-white/80 font-bold text-sm truncate max-w-[150px]">{user?.email}</p>
+                <p className="text-white/80 font-bold text-sm truncate max-w-37.5">{user?.email}</p>
               </div>
             </div>
 

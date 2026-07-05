@@ -6,7 +6,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { Sparkles, Loader2, Lock, ArrowRight, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function EnrollButton({ courseId, userId }: { courseId: string, userId?: string }) {
+export default function EnrollButton({ courseId, userId }: { courseId: string, userId?: string | null }) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const pathname = usePathname();
@@ -27,7 +27,7 @@ export default function EnrollButton({ courseId, userId }: { courseId: string, u
           // استبدال الـ alert بـ console أو toast مستقبلاً
           console.error(result.error);
         }
-      } catch (err) {
+      } catch {
         console.error("UPLINK DISRUPTED");
       }
     });
@@ -43,7 +43,7 @@ export default function EnrollButton({ courseId, userId }: { courseId: string, u
         onClick={handleEnroll}
         disabled={isPending}
         className={`
-          relative w-full py-6 md:py-5 rounded-[1.2rem] md:rounded-[1.5rem] 
+          relative w-full py-6 md:py-5 rounded-[1.2rem] md:rounded-3xl 
           font-black uppercase italic tracking-[0.2em] 
           transition-all duration-500 flex items-center justify-center gap-3 overflow-hidden text-[10px] md:text-[11px]
           ${!userId 
@@ -88,7 +88,7 @@ export default function EnrollButton({ courseId, userId }: { courseId: string, u
         </AnimatePresence>
 
         {/* 📱 Mobile Optimized Glow Effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-navy/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
+        <div className="absolute inset-0 bg-linear-to-r from-transparent via-navy/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
         
         {isPending && (
           <motion.div 
@@ -100,7 +100,7 @@ export default function EnrollButton({ courseId, userId }: { courseId: string, u
 
       {/* Decorative Border Glow (Desktop only) */}
       {!isPending && userId && (
-        <div className="hidden md:block absolute -inset-[1px] bg-gold opacity-0 group-hover:opacity-20 blur-md rounded-[1.5rem] transition-opacity -z-10" />
+        <div className="hidden md:block absolute -inset-[1px] bg-gold opacity-0 group-hover:opacity-20 blur-md rounded-3xl transition-opacity -z-10" />
       )}
     </motion.div>
   );

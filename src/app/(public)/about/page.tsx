@@ -13,7 +13,7 @@ export default function AboutPage() {
     <main className="relative min-h-screen  overflow-hidden">
       {/* Cinematic Overlays */}
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_bottom_left,#D4AF3703,transparent_50%)] pointer-events-none" />
-      <div className="fixed inset-0 bg-[url('/noise.png')] opacity-[0.02] pointer-events-none" />
+      <div className="grain-overlay fixed inset-0 opacity-[0.02] pointer-events-none" />
 
       <div className="relative z-10">
         <AboutHero />

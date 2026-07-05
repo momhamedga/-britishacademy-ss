@@ -14,11 +14,11 @@ export default function StatsGrid({ label, value, icon, description }: StatsProp
     <motion.div 
       whileHover={{ y: -2 }}
       /* رشقنا الـ rounded لـ rounded-xl والـ padding لـ p-4 لتفادي الضخامة */
-      className="p-4 rounded-xl bg-navy border border-white/[0.03] transition-all duration-300 group relative overflow-hidden shadow-md min-w-0 w-full"
+      className="p-4 rounded-xl bg-navy border border-white/3 transition-all duration-300 group relative overflow-hidden shadow-md min-w-0 w-full"
     >
       <div className="flex items-center justify-between gap-4 relative z-10">
         {/* تصغير حجم الفريم المربع للأيقونة لـ size-9 */}
-        <div className="size-9 rounded-lg bg-white/[0.015] border border-white/5 flex items-center justify-center group-hover:bg-gold/5 transition-all shrink-0">
+        <div className="size-9 rounded-lg bg-white/1.5 border border-white/5 flex items-center justify-center group-hover:bg-gold/5 transition-all shrink-0">
           {icon}
         </div>
         
@@ -31,7 +31,7 @@ export default function StatsGrid({ label, value, icon, description }: StatsProp
         </div>
       </div>
       
-      <div className="pt-2.5 mt-2.5 border-t border-white/[0.03] flex justify-between items-center relative z-10">
+      <div className="pt-2.5 mt-2.5 border-t border-white/3 flex justify-between items-center relative z-10">
         <p className="text-[8px] font-bold text-slate-500 uppercase tracking-wider truncate max-w-[85%]">
           {description}
         </p>

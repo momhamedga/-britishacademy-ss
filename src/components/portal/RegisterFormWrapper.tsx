@@ -1,19 +1,12 @@
 "use client";
-import { useActionState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useActionState } from 'react';
 import { registerStudent } from '@/actions/portal-auth';
 import RegisterFormView from './RegisterFormView';
 
 export function RegisterFormWrapper({ callbackUrl }: { callbackUrl: string }) {
+  // ملحوظة: registerStudent بينفذ redirect() بنفسه عند النجاح (Server-side)،
+  // فمفيش أبدًا state.success يوصل هنا — الـ state دايمًا إما null أو { error }
   const [state, formAction, isPending] = useActionState(registerStudent, null);
-  const router = useRouter();
-
-  useEffect(() => {
-    if (state?.success) {
-      router.refresh(); 
-      setTimeout(() => router.push(callbackUrl), 1500);
-    }
-  }, [state, callbackUrl, router]);
 
   return (
     <RegisterFormView 

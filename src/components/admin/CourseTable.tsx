@@ -2,28 +2,38 @@
 import { useReducer, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image'; // ✅ استخدام Image الخاص بـ Next
-import { 
-  Search, Trash2, Zap, Users, Clock, UserCheck, 
-  AlertTriangle, X, ShieldCheck 
+import {
+  Search, Trash2, Zap, Users, Clock, UserCheck,
+  ShieldCheck
 } from 'lucide-react';
 import { deleteCourse } from '@/actions/admin-actions';
+import type { Course } from '@/types';
 
 // 🛡️ تعريف اللوجو كـ Fallback
 const ACADEMY_LOGO_FALLBACK = "/logo.webp";
 
-const reducer = (state: any, action: any) => {
+interface TableState {
+  data: Course[];
+  query: string;
+}
+
+type TableAction =
+  | { type: 'SET_SEARCH'; payload: string }
+  | { type: 'DELETE'; payload: string };
+
+const reducer = (state: TableState, action: TableAction): TableState => {
   switch (action.type) {
     case 'SET_SEARCH': return { ...state, query: action.payload };
-    case 'DELETE': return { ...state, data: state.data.filter((i: any) => i.id !== action.payload) };
+    case 'DELETE': return { ...state, data: state.data.filter((i) => i.id !== action.payload) };
     default: return state;
   }
 };
 
-export default function CourseTable({ initialCourses, onEdit }: any) {
+export default function CourseTable({ initialCourses, onEdit }: { initialCourses: Course[]; onEdit: (course: Course) => void }) {
   const [state, dispatch] = useReducer(reducer, { data: initialCourses, query: '' });
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const filtered = state.data.filter((c: any) => 
+  const filtered = state.data.filter((c) =>
     c.title.toLowerCase().includes(state.query.toLowerCase()) ||
     c.instructor_name?.toLowerCase().includes(state.query.toLowerCase())
   );
@@ -41,7 +51,7 @@ export default function CourseTable({ initialCourses, onEdit }: any) {
       {/* Search Header - Tactical Interface */}
       <div className="relative max-w-xl group">
         <div className="absolute inset-0 bg-gold/5 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-700" />
-        <div className="relative flex items-center bg-white/40 backdrop-blur-xl border border-white p-2 rounded-[2rem] shadow-sm overflow-hidden">
+        <div className="relative flex items-center bg-white/40 backdrop-blur-xl border border-white p-2 rounded-4xl shadow-sm overflow-hidden">
           <div className="size-12 bg-navy rounded-2xl flex items-center justify-center text-gold shadow-lg shadow-navy/20">
             <Search size={20} />
           </div>
@@ -58,7 +68,7 @@ export default function CourseTable({ initialCourses, onEdit }: any) {
         <table className="w-full border-separate border-spacing-y-4">
           <tbody className="w-full">
             <AnimatePresence mode="popLayout">
-              {filtered.map((course: any) => (
+              {filtered.map((course) => (
                 <motion.tr 
                   layout key={course.id} 
                   initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, x: -20 }}
@@ -149,7 +159,7 @@ export default function CourseTable({ initialCourses, onEdit }: any) {
       {/* Mobile View */}
       <div className="grid grid-cols-1 gap-4 md:hidden pb-20">
         <AnimatePresence mode="popLayout">
-          {filtered.map((course: any) => (
+          {filtered.map((course) => (
             <motion.div 
               layout key={course.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               className="bg-white/70 backdrop-blur-2xl p-6 rounded-[2.5rem] border border-white shadow-xl space-y-6"
@@ -164,7 +174,7 @@ export default function CourseTable({ initialCourses, onEdit }: any) {
                     />
                 </div>
                 <div className="flex-1">
-                  <h4 className="text-[14px] font-black uppercase italic leading-tight text-navy">{course.title}</h4>
+                  <h4 className="text-sm font-black uppercase italic leading-tight text-navy">{course.title}</h4>
                   <p className="text-[10px] font-black text-gold uppercase tracking-[0.2em] mt-1">{course.instructor_name}</p>
                 </div>
               </div>
@@ -173,11 +183,11 @@ export default function CourseTable({ initialCourses, onEdit }: any) {
                 <div className="flex gap-6">
                   <div className="flex flex-col">
                     <span className="text-[7px] font-black opacity-20 uppercase tracking-widest text-navy">Units</span>
-                    <span className="text-[12px] font-black text-navy">{course.enrollment_count || 0}</span>
+                    <span className="text-xs font-black text-navy">{course.enrollment_count || 0}</span>
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[7px] font-black opacity-20 uppercase tracking-widest text-navy">Period</span>
-                    <span className="text-[12px] font-black text-navy">{course.duration}</span>
+                    <span className="text-xs font-black text-navy">{course.duration}</span>
                   </div>
                 </div>
                 

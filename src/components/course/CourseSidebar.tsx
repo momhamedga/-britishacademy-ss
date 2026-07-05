@@ -1,15 +1,24 @@
 "use client";
-import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Users, BookOpen, Video, FileText, 
-  History, ShieldCheck, Zap, Lock, ArrowRight, Play, Award 
+import { motion } from "framer-motion";
+import {
+  Users, BookOpen, Video, FileText,
+  History, Zap, Lock, Play, Award
 } from "lucide-react";
 import EnrollButton from "../portal/EnrollButton";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { checkStudentVectorProgress } from "@/actions/academy-actions";
+import type { Course } from "@/types";
 
-export default function CourseSidebar({ course, stats, userId }: any) {
+interface CourseStats {
+  enrolledCount: number;
+  modulesCount: number;
+  liveClasses: number;
+  hasResources: boolean;
+  hasClassRecord: boolean;
+}
+
+export default function CourseSidebar({ course, stats, userId }: { course: Course; stats: CourseStats; userId?: string | null }) {
   // 🛰️ حالة تتبع التقدم والاشتراك للطالب الحالي
   const [enrollment, setEnrollment] = useState<{ isEnrolled: boolean; progress: number }>({ 
     isEnrolled: false, 
@@ -73,7 +82,7 @@ export default function CourseSidebar({ course, stats, userId }: any) {
               <div className="h-full bg-gold transition-all duration-500" style={{ width: `${enrollment.progress}%` }} />
             </div>
           </div>
-          <Link href={`/courses/${course.slug}?mode=study`} className="w-full bg-emerald-600 hover:bg-emerald-500 py-5 rounded-2xl text-white font-black uppercase text-center text-xs tracking-[0.1em] transition-all flex items-center justify-center gap-2 shadow-[0_10px_30px_rgba(16,185,129,0.2)]">
+          <Link href={`/courses/${course.slug}?mode=study`} className="w-full bg-emerald-600 hover:bg-emerald-500 py-5 rounded-2xl text-white font-black uppercase text-center text-xs tracking-widest transition-all flex items-center justify-center gap-2 shadow-[0_10px_30px_rgba(16,185,129,0.2)]">
             <Play size={14} fill="currentColor" /> Resume Protocol 
           </Link>
         </div>
@@ -86,7 +95,7 @@ export default function CourseSidebar({ course, stats, userId }: any) {
         {/* زر تحميل الشهادة الفخم برابط لوحة الشهادات */}
         <Link 
           href="/dashboard/certificates" 
-          className="w-full bg-gradient-to-r from-gold to-yellow-600 hover:opacity-90 py-5 rounded-2xl text-navy font-black uppercase text-center text-xs tracking-[0.1em] transition-all flex items-center justify-center gap-2 shadow-[0_10px_30px_rgba(212,175,55,0.3)]"
+          className="w-full bg-linear-to-r from-gold to-yellow-600 hover:opacity-90 py-5 rounded-2xl text-navy font-black uppercase text-center text-xs tracking-widest transition-all flex items-center justify-center gap-2 shadow-[0_10px_30px_rgba(212,175,55,0.3)]"
         >
           <Award size={16} /> Download Certificate
         </Link>
@@ -94,7 +103,7 @@ export default function CourseSidebar({ course, stats, userId }: any) {
         {/* زر إبقاء صلاحية دخول الكورس للمراجعة حتى بعد التكفيل 100% */}
         <Link 
           href={`/courses/${course.slug}?mode=study`} 
-          className="w-full bg-emerald-600 hover:bg-emerald-500 py-4 rounded-2xl text-white font-black uppercase text-center text-[11px] tracking-[0.1em] transition-all flex items-center justify-center gap-2 shadow-[0_10px_20px_rgba(16,185,129,0.15)]"
+          className="w-full bg-emerald-600 hover:bg-emerald-500 py-4 rounded-2xl text-white font-black uppercase text-center text-[11px] tracking-widest transition-all flex items-center justify-center gap-2 shadow-[0_10px_20px_rgba(16,185,129,0.15)]"
         >
           <Play size={12} fill="currentColor" /> Review Course Intel
         </Link>
@@ -130,7 +139,7 @@ export default function CourseSidebar({ course, stats, userId }: any) {
             </p>
             
             {courseFeatures.map((feature, index) => (
-              <div key={index} className="flex items-center justify-between p-3 rounded-2xl border border-transparent hover:border-white/5 hover:bg-white/[0.02] transition-all group/item">
+              <div key={index} className="flex items-center justify-between p-3 rounded-2xl border border-transparent hover:border-white/5 hover:bg-white/2 transition-all group/item">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-navy border border-white/5 group-hover/item:border-gold/30 transition-colors">
                     <feature.icon size={14} className="text-gold/60 group-hover/item:text-gold group-hover/item:rotate-12 transition-all" />
@@ -155,8 +164,8 @@ export default function CourseSidebar({ course, stats, userId }: any) {
       </div>
 
       {/* --- Mobile Hub --- */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[100] pointer-events-none px-4 pb-6">
-        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-navy via-navy/90 to-transparent -z-10" />
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-100 pointer-events-none px-4 pb-6">
+        <div className="absolute bottom-0 left-0 right-0 h-48 bg-linear-to-t from-navy via-navy/90 to-transparent -z-10" />
 
         <motion.div 
           initial={{ y: 100, scale: 0.9, opacity: 0 }}
@@ -164,7 +173,7 @@ export default function CourseSidebar({ course, stats, userId }: any) {
           transition={{ type: "spring", damping: 25, stiffness: 200 }}
           className="relative pointer-events-auto w-full bg-navy/90 backdrop-blur-[30px] border border-white/10 rounded-[2.5rem] shadow-[0_40px_80px_rgba(2,6,23,0.8),inset_0_1px_1px_rgba(255,255,255,0.05)] overflow-hidden"
         >
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-linear-to-r from-transparent via-gold/40 to-transparent" />
 
           <div className="flex items-center p-2.5">
             <div className="flex flex-col justify-center pl-6 pr-5 border-r border-white/5 py-2">

@@ -11,7 +11,7 @@ export default function PortalHeader({ studentName = "PILOT", studentRank = "PRO
     const firstName = studentName.split(' ')[0].toUpperCase();
 
     return (
-      <header className="w-full flex flex-col sm:flex-row justify-between sm:items-center gap-4 relative z-20 pb-1 border-b border-white/[0.02]">
+      <header className="w-full flex flex-col sm:flex-row justify-between sm:items-center gap-4 relative z-20 pb-1 border-b border-white/2">
         
         {/* Left Side: Identity Section */}
         <div className="space-y-1">
@@ -31,7 +31,7 @@ export default function PortalHeader({ studentName = "PILOT", studentRank = "PRO
           {/* 🎯 قفل الأزمة اللونيّة: غيرنا الـ text-navy لـ text-white وصغرنا الخط لـ text-2xl */}
           <h1 className="text-xl md:text-2xl font-black text-white tracking-tight uppercase italic leading-none">
             Welcome,{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gold/90 to-gold md:ml-1 drop-shadow-[0_0_20px_rgba(212,175,55,0.15)]">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-white via-gold/90 to-gold md:ml-1 drop-shadow-[0_0_20px_rgba(212,175,55,0.15)]">
                {firstName}
             </span>
           </h1>
@@ -41,10 +41,10 @@ export default function PortalHeader({ studentName = "PILOT", studentRank = "PRO
         <motion.div 
           whileHover={{ y: -1 }}
           /* تصغير الـ padding لـ p-2.5 والحواف لـ rounded-xl لمنع تضخم الكارت رأسيًا */
-          className="relative border border-white/[0.04] p-2.5 rounded-xl flex items-center gap-3 w-full sm:w-auto overflow-hidden group shadow-xl backdrop-blur-md"
+          className="relative border border-white/4 p-2.5 rounded-xl flex items-center gap-3 w-full sm:w-auto overflow-hidden group shadow-xl backdrop-blur-md"
           style={{ backgroundColor: 'oklch(22% 0.05 260)' }}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          <div className="absolute inset-0 bg-linear-to-br from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           
           {/* Icon Container - Ultra Compact size-8 */}
           <div className="relative size-8 rounded-lg bg-black/40 flex items-center justify-center border border-white/5 shrink-0">

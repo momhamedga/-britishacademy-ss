@@ -1,43 +1,27 @@
 // 🎯 تأكد أن هذا هو الكارت الجديد والمعدل تماماً
 import { sql } from "@/lib/db";
-import { cookies } from "next/headers";
+import { getCurrentStudentId } from "@/lib/session";
 import { LayoutGrid, Check, ZodiacLibra } from "lucide-react";
 import CourseCard from "@/components/portal/CourseCard";
+import type { Course } from "@/types";
 
 // ⚡ Force dynamic rendering to prevent stale cached deployment matrices
 export const dynamic = 'force-dynamic';
 
 export default async function CoursesPage() {
-  const cookieStore = await cookies();
-  const studentIdText = cookieStore.get("user_id")?.value || cookieStore.get("auth_token")?.value;
+  const studentId = await getCurrentStudentId();
 
-  let courses: any[] = [];
+  let courses: Course[] = [];
 
-  if (studentIdText) {
-    const safeVector = studentIdText.length > 5 ? studentIdText.substring(1) : studentIdText;
-
-    // 🎯 لقط الـ UUID الحقيقي أولاً لمنع اختفاء الكورسات عند الـ Refresh
-    const studentRow = await sql`
-      SELECT id FROM public.students 
-      WHERE student_id = ${studentIdText} 
-         OR student_id LIKE ${'%' + safeVector}
-         OR id::text = ${studentIdText}
-      LIMIT 1
-    `;
-
-    if (studentRow.length > 0) {
-      const realStudentUuid = studentRow[0].id;
-
-      // 📡 جلب الكورسات بناءً على الـ UUID المضمون والمؤمن
-      courses = await sql`
-        SELECT 
-          c.id, c.title, c.category, c.duration, c.level, c.slug, c.image_url, sc.progress, c.price
-        FROM public.courses c
-        INNER JOIN public.student_courses sc ON c.id = sc.course_id
-        WHERE sc.student_id = ${realStudentUuid}::uuid
-        ORDER BY sc.enrolled_at DESC
-      `;
-    }
+  if (studentId) {
+    courses = (await sql`
+      SELECT
+        c.id, c.title, c.category, c.duration, c.level, c.slug, c.image_url, sc.progress, c.price
+      FROM public.courses c
+      INNER JOIN public.student_courses sc ON c.id = sc.course_id
+      WHERE sc.student_id = ${studentId}::uuid
+      ORDER BY sc.enrolled_at DESC
+    `) as unknown as Course[];
   }
 
   return (
@@ -45,12 +29,12 @@ export default async function CoursesPage() {
     <div className="w-full max-w-5xl mx-auto px-4 py-2 text-white antialiased">
       
       {/* 🛰️ Tactical Header - محبوك بدون أي مسافات مفرطة */}
-      <div className="relative group p-4 md:p-5 rounded-xl bg-navy border border-white/[0.03] overflow-hidden shadow-2xl mb-6">
+      <div className="relative group p-4 md:p-5 rounded-xl bg-navy border border-white/3 overflow-hidden shadow-2xl mb-6">
         <div className="absolute -left-20 -top-20 size-48 bg-gold/5 blur-[80px] rounded-full pointer-events-none group-hover:bg-gold/10 transition-all duration-700" />
         
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
           <div className="flex items-center gap-4">
-            <div className="p-2 bg-gradient-to-br from-gold/10 to-transparent border border-gold/15 rounded-xl text-gold shrink-0">
+            <div className="p-2 bg-linear-to-br from-gold/10 to-transparent border border-gold/15 rounded-xl text-gold shrink-0">
               <ZodiacLibra size={18} strokeWidth={1.5} /> 
             </div>
             
@@ -88,6 +72,7 @@ export default async function CoursesPage() {
               ...item,
               title: item.title || "Mission Unnamed",
               level: item.level || "Beginner",
+              progress: item.progress ?? 0,
             };
 
             return (
@@ -110,7 +95,7 @@ export default async function CoursesPage() {
         </div>
       ) : (
         /* 🛡️ Empty State */
-        <div className="relative py-14 rounded-xl border border-white/[0.03] bg-navy overflow-hidden text-center shadow-2xl">
+        <div className="relative py-14 rounded-xl border border-white/3 bg-navy overflow-hidden text-center shadow-2xl">
           <div className="relative z-10 flex flex-col items-center gap-3 max-w-xs mx-auto px-4">
             <LayoutGrid size={28} className="text-slate-600 animate-pulse" />
             <div className="space-y-1">

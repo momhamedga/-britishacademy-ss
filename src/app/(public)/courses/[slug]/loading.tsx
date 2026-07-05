@@ -2,7 +2,7 @@ export default function CourseLoading() {
   return (
     <main className="min-h-screen pt-32 md:pt-44 pb-20 px-4 md:px-6  overflow-hidden">
       {/* تأثيرات الإضاءة في الخلفية */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 blur-[120px] animate-pulse" />
+      <div className="absolute top-0 right-0 w-125 h-125 bg-gold/5 blur-[120px] animate-pulse" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* 1. Skeleton للهيرو (العنوان) */}
@@ -16,7 +16,7 @@ export default function CourseLoading() {
         </div>
 
         {/* 2. Skeleton للإحصائيات الثلاثية */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-y border-white/5 bg-white/[0.01] mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-y border-white/5 bg-white/1 mb-16">
           {[1, 2, 3].map((i) => (
             <div key={i} className="p-10 flex items-center gap-4">
               <div className="w-12 h-12 bg-white/10 rounded-xl animate-pulse" />
@@ -36,12 +36,12 @@ export default function CourseLoading() {
               <div className="h-10 w-28 bg-white/5 rounded-t-lg animate-pulse" />
               <div className="h-10 w-28 bg-white/5 rounded-t-lg animate-pulse" />
             </div>
-            <div className="h-[400px] w-full bg-white/[0.02] rounded-[2.5rem] border border-white/5 animate-pulse" />
+            <div className="h-100 w-full bg-white/2 rounded-[2.5rem] border border-white/5 animate-pulse" />
           </div>
 
           {/* 4. Skeleton للـ Sidebar (4 أعمدة) */}
           <div className="lg:col-span-4">
-            <div className="h-[500px] w-full bg-white/[0.03] rounded-[2.5rem] border border-gold/10 p-8 space-y-8">
+            <div className="h-125 w-full bg-white/3 rounded-[2.5rem] border border-gold/10 p-8 space-y-8">
               <div className="flex flex-col items-center gap-2">
                 <div className="h-4 w-20 bg-white/5 rounded animate-pulse" />
                 <div className="h-12 w-32 bg-white/10 rounded-xl animate-pulse" />

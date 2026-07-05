@@ -1,15 +1,22 @@
 // D:\Next-Tailwind\british-academy\src\proxy.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { verifyStudentSessionToken, verifyAdminSessionToken } from '@/lib/session-core';
 
-export default function proxy(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  
+
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-pathname', pathname);
 
-  const token = request.cookies.get('auth_token')?.value;
-  const adminToken = request.cookies.get('admin_session')?.value;
+  const rawToken = request.cookies.get('auth_token')?.value;
+  const rawAdminToken = request.cookies.get('admin_session')?.value;
+
+  // تحقق فعلي من توقيع الجلسة، مش مجرد وجود الكوكيز
+  const [studentId, isAdmin] = await Promise.all([
+    verifyStudentSessionToken(rawToken),
+    verifyAdminSessionToken(rawAdminToken),
+  ]);
 
   const isDashboardPage = pathname.startsWith('/dashboard');
   const isUserLoginPage = pathname === '/login';
@@ -17,24 +24,24 @@ export default function proxy(request: NextRequest) {
   const isAdminLoginPage = pathname === '/admin/login';
 
   // --- حماية Dashboard المستخدم ---
-  if (isDashboardPage && !token) {
+  if (isDashboardPage && !studentId) {
     return NextResponse.redirect(new URL('/login', request.url), {
       headers: requestHeaders
     });
   }
-  if (isUserLoginPage && token) {
+  if (isUserLoginPage && studentId) {
     return NextResponse.redirect(new URL('/dashboard', request.url), {
       headers: requestHeaders
     });
   }
 
   // --- حماية Admin Panel ---
-  if (isAdminPage && !adminToken) {
+  if (isAdminPage && !isAdmin) {
     return NextResponse.redirect(new URL('/admin/login', request.url), {
       headers: requestHeaders
     });
   }
-  if (isAdminLoginPage && adminToken) {
+  if (isAdminLoginPage && isAdmin) {
     return NextResponse.redirect(new URL('/admin/courses', request.url), {
       headers: requestHeaders
     });

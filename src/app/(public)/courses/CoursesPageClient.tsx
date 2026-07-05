@@ -5,19 +5,7 @@ import { useAcademyStore } from "@/store/useAcademyStore";
 import CourseFilters from "@/components/courses/CourseFilters";
 import CourseList from "@/components/courses/CourseList";
 import { LayoutGrid, Search, List, X } from "lucide-react";
-
-// ✅ Interface نظيف
-interface Course {
-  id: string | number;
-  title: string;
-  category: string;
-  slug: string;
-  level: string;
-  price: number;
-  duration: string;
-  is_sia_accredited: boolean;
-  [key: string]: any; 
-}
+import type { Course } from "@/types";
 
 export default function CoursesPage({ initialCourses }: { initialCourses: Course[] }) {
   const [isPending, startTransition] = useTransition();
@@ -72,7 +60,7 @@ export default function CoursesPage({ initialCourses }: { initialCourses: Course
     <main className={`relative  ${theme.bg} selection:bg-gold/30 overflow-x-hidden pb-20`}>
       
       {/* --- 📱 Mobile Header (Sticky & Tactical) --- */}
-      <div className="md:hidden sticky top-0 z-100 bg-[oklch(98%_0.01_260/0.8)] backdrop-blur-xl border-b border-black/[0.03] px-6 py-4 space-y-4">
+      <div className="md:hidden sticky top-0 z-100 bg-[oklch(98%_0.01_260/0.8)] backdrop-blur-xl border-b border-black/3 px-6 py-4 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex flex-col">
             <h2 className={`text-2xl font-black ${theme.navy} tracking-tighter leading-none italic`}>PROGRAMS</h2>
@@ -89,7 +77,7 @@ export default function CoursesPage({ initialCourses }: { initialCourses: Course
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search catalog..."
-            className="w-full bg-white/50 border border-black/[0.05] rounded-xl py-3 pl-10 pr-4 text-[11px] font-bold focus:outline-none focus:ring-2 focus:ring-gold/20 transition-all"
+            className="w-full bg-white/50 border border-black/5 rounded-xl py-3 pl-10 pr-4 text-[11px] font-bold focus:outline-none focus:ring-2 focus:ring-gold/20 transition-all"
           />
           {searchQuery && (
             <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 bg-black/5 rounded-full">
@@ -116,7 +104,7 @@ export default function CoursesPage({ initialCourses }: { initialCourses: Course
         </div>
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-6 md:px-12 pt-10 md:pt-32 relative z-10">
+      <div className="max-w-400 mx-auto px-6 md:px-12 pt-10 md:pt-32 relative z-10">
         
         {/* --- 🖥️ Desktop Header (Ultra Impact) --- */}
         <header className="hidden md:block mb-20">
@@ -134,7 +122,7 @@ export default function CoursesPage({ initialCourses }: { initialCourses: Course
             <div className="sticky top-32 h-fit space-y-12">
                <div className="space-y-4">
                   <h3 className={`${theme.gold} text-[10px] font-black uppercase tracking-[0.3em] flex items-center gap-3`}>
-                    <div className="w-8 h-[1px] bg-gold" /> Search
+                    <div className="w-8 h-px bg-gold" /> Search
                   </h3>
                   <div className="relative group">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 opacity-20" size={16} />
@@ -143,14 +131,14 @@ export default function CoursesPage({ initialCourses }: { initialCourses: Course
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Type to search..."
-                      className="w-full bg-white border border-black/[0.03] rounded-2xl py-4 pl-12 pr-4 text-xs font-bold focus:outline-none focus:border-gold/50 transition-all shadow-sm"
+                      className="w-full bg-white border border-black/3 rounded-2xl py-4 pl-12 pr-4 text-xs font-bold focus:outline-none focus:border-gold/50 transition-all shadow-sm"
                     />
                   </div>
                </div>
                
                <div className="space-y-6">
                   <h3 className={`${theme.gold} text-[10px] font-black uppercase tracking-[0.3em] flex items-center gap-3`}>
-                    <div className="w-8 h-[1px] bg-gold" /> Filter By
+                    <div className="w-8 h-px bg-gold" /> Filter By
                   </h3>
                   <CourseFilters />
                </div>

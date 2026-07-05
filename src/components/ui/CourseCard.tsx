@@ -2,7 +2,8 @@
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Clock, Users, ArrowUpRight, Zap, ShieldCheck } from 'lucide-react';
+import { Clock, Users, ArrowUpRight, Zap } from 'lucide-react';
+import type { Course } from '@/types';
 
 const LEVEL_CONFIG: Record<string, string> = {
   advanced: 'text-red-600 bg-red-50/80 border-red-100',
@@ -11,7 +12,7 @@ const LEVEL_CONFIG: Record<string, string> = {
   beginner: 'text-emerald-600 bg-emerald-50/80 border-emerald-100',
 };
 
-export default function CourseCard({ course, isListView = false }: { course: any, isListView?: boolean }) {
+export default function CourseCard({ course, isListView = false }: { course: Course, isListView?: boolean }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const mouseXSpring = useSpring(x, { stiffness: 150, damping: 30 });
@@ -47,10 +48,10 @@ export default function CourseCard({ course, isListView = false }: { course: any
       >
         
         {/* --- 🖼️ Media Section: ضبط ذكي للأبعاد في الوضعين العمودي والأفقي --- */}
-        <div className={`relative rounded-lg overflow-hidden border border-black/[0.02] bg-slate-50 shrink-0 transition-all duration-500 ${
+        <div className={`relative rounded-lg overflow-hidden border border-black/2 bg-slate-50 shrink-0 transition-all duration-500 ${
           isListView 
-            ? 'aspect-[16/10] w-full md:w-60 md:aspect-auto md:h-auto' // في الديسك توب بياخد طول الحاوية تلقائي وبمقاس محكوم، وفي الموبايل بيفرد بكامل المساحة بالـ aspect الموزون
-            : 'aspect-[16/10] w-full'
+            ? 'aspect-16/10 w-full md:w-60 md:aspect-auto md:h-auto' // في الديسك توب بياخد طول الحاوية تلقائي وبمقاس محكوم، وفي الموبايل بيفرد بكامل المساحة بالـ aspect الموزون
+            : 'aspect-16/10 w-full'
         }`}>
           <Image 
             src={course.image_url || '/logo.webp'} 
@@ -59,7 +60,7 @@ export default function CourseCard({ course, isListView = false }: { course: any
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-103"
             sizes="(max-width: 768px) 100vw, 33vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-60" />
           
           <div className={`absolute top-2.5 right-2.5 px-2 py-0.5 rounded border text-[7px] font-black uppercase tracking-widest backdrop-blur-md z-20 shadow-sm ${getLevelStyle()}`}>
             {course.level}
@@ -80,7 +81,7 @@ export default function CourseCard({ course, isListView = false }: { course: any
                 <span className="text-gold font-black text-[7.5px] uppercase tracking-widest font-mono">
                   {course.category}
                 </span>
-                <div className="h-[1px] w-4 bg-gold/40 rounded-full" />
+                <div className="h-px w-4 bg-gold/40 rounded-full" />
                 {course.is_sia_accredited && (
                   <span className="text-emerald-600 bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded text-[6.5px] font-black uppercase tracking-wider ml-auto md:ml-0">SIA Accredited</span>
                 )}

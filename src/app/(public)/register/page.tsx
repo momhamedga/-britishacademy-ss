@@ -15,12 +15,12 @@ export default async function RegisterPage({
       
       {/* 🌌 Background Layer */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0 bg-grid-slate-200/[0.3] bg-[size:30px_30px] [mask-image:radial-gradient(white,transparent_85%)]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[600px] h-[600px] bg-slate-100/50 blur-[120px] rounded-full" />
+        <div className="absolute inset-0 bg-grid-slate-200/30 bg-[size:30px_30px] [mask-image:radial-gradient(white,transparent_85%)]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-150 h-150 bg-slate-100/50 blur-[120px] rounded-full" />
       </div>
 
       {/* 🛡️ Section Container */}
-      <section className="relative z-10 w-full max-w-[420px] md:max-w-[540px] flex flex-col items-center h-fit">
+      <section className="relative z-10 w-full max-w-105 md:max-w-135 flex flex-col items-center h-fit">
         
         {/* الكارت الأساسي: Navy مع Glassmorphism */}
         <div className="w-full bg-navy border border-white/5 rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-12 shadow-2xl backdrop-blur-xl relative overflow-hidden group">

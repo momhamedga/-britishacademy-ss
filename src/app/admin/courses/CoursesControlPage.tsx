@@ -6,13 +6,14 @@ import CourseTable from '@/components/admin/CourseTable';
 import CourseDeploymentHub from '@/components/admin/CourseDeploymentHub';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
+import type { Course } from '@/types';
 
-export default function CoursesControlPage({ initialCourses }: { initialCourses: any[] }) {
+export default function CoursesControlPage({ initialCourses }: { initialCourses: Course[] }) {
   const [view, setView] = useState<'inventory' | 'deploy'>('inventory');
-  const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const router = useRouter();
 
-  const handleAction = (course: any = null) => {
+  const handleAction = (course: Course | null = null) => {
     setSelectedCourse(course);
     setView('deploy');
   };
@@ -64,7 +65,7 @@ export default function CoursesControlPage({ initialCourses }: { initialCourses:
                       <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.3em] text-navy/40 group-hover:text-gold transition-colors">
                         Return_to_admin
                       </span>
-                      <div className="h-[2px] w-0 bg-gold group-hover:w-full transition-all duration-500 mt-1" />
+                      <div className="h-0.5 w-0 bg-gold group-hover:w-full transition-all duration-500 mt-1" />
                     </div>
                   </motion.div>
                 </Link>
@@ -73,7 +74,7 @@ export default function CoursesControlPage({ initialCourses }: { initialCourses:
               {/* Action Button - الموحد بثيم الأكاديمية الملكي */}
               <button 
                 onClick={() => handleAction()}
-                className="group relative w-full md:w-auto px-12 py-6 bg-navy text-gold rounded-2xl font-black text-[12px] uppercase tracking-[0.3em] transition-all hover:shadow-[0_20px_40px_rgba(32,45,72,0.15)] active:scale-95 overflow-hidden border border-white/5"
+                className="group relative w-full md:w-auto px-12 py-6 bg-navy text-gold rounded-2xl font-black text-xs uppercase tracking-[0.3em] transition-all hover:shadow-[0_20px_40px_rgba(32,45,72,0.15)] active:scale-95 overflow-hidden border border-white/5"
               >
                 <span className="relative z-10 flex items-center justify-center gap-3">
                   new_course <span className="text-xl">+</span>

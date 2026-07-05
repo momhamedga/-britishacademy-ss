@@ -6,7 +6,7 @@ export const RecoveryHeader = () => (
       <Satellite className="text-gold animate-bounce" size={28} strokeWidth={1.5} />
     </div>
     <h1 className="text-2xl md:text-3xl font-black text-white tracking-tighter uppercase italic mb-3">Identity Recovery</h1>
-    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.25em] leading-relaxed max-w-[300px] mx-auto">
+    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.25em] leading-relaxed max-w-75 mx-auto">
       Initiate deep-scan to retrieve <span className="text-gold">System ID</span> & <span className="text-gold">Access Cipher</span>
     </p>
   </div>

@@ -1,23 +1,19 @@
 "use client"
-import { useState, useEffect } from "react";
+import { useCallback, useSyncExternalStore } from "react";
+
+const getServerSnapshot = () => false;
 
 export function useMediaQuery(query: string): boolean {
-  const [value, setValue] = useState(false);
+  const subscribe = useCallback(
+    (callback: () => void) => {
+      const mql = window.matchMedia(query);
+      mql.addEventListener("change", callback);
+      return () => mql.removeEventListener("change", callback);
+    },
+    [query]
+  );
 
-  useEffect(() => {
-    // التأكد من أننا في المتصفح وليس السيرفر
-    if (typeof window === "undefined") return;
+  const getSnapshot = useCallback(() => window.matchMedia(query).matches, [query]);
 
-    const onChange = (event: MediaQueryListEvent) => {
-      setValue(event.matches);
-    };
-
-    const result = window.matchMedia(query);
-    result.addEventListener("change", onChange);
-    setValue(result.matches);
-
-    return () => result.removeEventListener("change", onChange);
-  }, [query]);
-
-  return value;
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

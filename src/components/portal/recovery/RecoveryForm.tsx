@@ -5,7 +5,7 @@ import { Mail, ShieldAlert, Loader2, KeyRound } from 'lucide-react';
 interface RecoveryFormProps {
   formAction: (payload: FormData) => void;
   isPending: boolean;
-  state: any;
+  state: { error?: string; success?: boolean; email?: string } | null;
 }
 
 export const RecoveryForm = ({ formAction, isPending, state }: RecoveryFormProps) => {
@@ -25,7 +25,7 @@ export const RecoveryForm = ({ formAction, isPending, state }: RecoveryFormProps
           </label>
           <input 
             required name="email" type="email" placeholder="pilot@british-academy.ae"
-            className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-5 text-white text-sm focus:border-gold/40 outline-none transition-all placeholder:text-slate-700 font-bold italic"
+            className="w-full bg-white/3 border border-white/10 rounded-2xl px-6 py-5 text-white text-sm focus:border-gold/40 outline-none transition-all placeholder:text-slate-700 font-bold italic"
           />
         </div>
 

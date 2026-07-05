@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Award, DownloadCloud, Clipboard, ClipboardCheck, ShieldCheck, Calendar } from "lucide-react";
+import type { StudentCertificate } from "@/types";
 
-export default function CertificateCard({ data }: { data: any }) {
+export default function CertificateCard({ data }: { data: StudentCertificate }) {
   const [copied, setCopied] = useState(false);
 
   // دالة النسخ الذكية
@@ -70,7 +71,7 @@ export default function CertificateCard({ data }: { data: any }) {
             href={data.certificate_url || "#"} // الربط بـ URL الشهادة
             target="_blank" 
             rel="noopener noreferrer"
-            className={`flex-[2] py-4 rounded-xl font-black uppercase tracking-[0.15em] text-[9px] md:text-[10px] flex items-center justify-center gap-3 transition-all shadow-[0_10px_30px_rgba(212,175,55,0.15)] 
+            className={`flex-2 py-4 rounded-xl font-black uppercase tracking-[0.15em] text-[9px] md:text-[10px] flex items-center justify-center gap-3 transition-all shadow-[0_10px_30px_rgba(212,175,55,0.15)] 
               ${data.certificate_url ? 'bg-gold text-[#050a14] hover:bg-gold/90' : 'bg-white/5 text-white/20 pointer-events-none'}`}
           >
             <DownloadCloud size={16} />

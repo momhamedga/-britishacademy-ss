@@ -1,16 +1,9 @@
 "use client";
 import { LEADERSHIP_TEAM, ACCREDITATIONS } from '@/lib/constants';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Linkedin, ArrowUpRight, ShieldCheck } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { useRef } from 'react';
-
-// لوحة ألوان OKLCH مشبعة للفخامة التقنية
-const COLORS = {
-  navy: "oklch(22% 0.06 260)",
-  mediumBlue: "oklch(40% 0.1 255)",
-  gold: "oklch(75% 0.15 85)", // الذهب بنسخة OKLCH أكثر سطوعاً
-  bgLight: "oklch(99% 0.005 260)",
-};
+import type { TeamMember } from '@/types';
 
 export default function CreativeLeadershipPortal() {
   return (
@@ -27,7 +20,7 @@ export default function CreativeLeadershipPortal() {
             viewport={{ once: true }}
             className="flex flex-col items-center lg:items-start space-y-6"
           >
-            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-black/[0.08] bg-white/50 backdrop-blur-xl shadow-inner">
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-black/8 bg-white/50 backdrop-blur-xl shadow-inner">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]"></span>
@@ -36,7 +29,7 @@ export default function CreativeLeadershipPortal() {
             </div>
 
             <h2 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter text-[#1B2A41] leading-[0.85]">
-              Leadership <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#D4AF37] via-[#D4AF37]/80 to-[#1B2A41]/20">team</span> <br/>
+              Leadership <span className="text-transparent bg-clip-text bg-linear-to-br from-[#D4AF37] via-[#D4AF37]/80 to-[#1B2A41]/20">team</span> <br/>
   
             </h2>
           </motion.div>
@@ -50,7 +43,7 @@ export default function CreativeLeadershipPortal() {
         </div>
 
         {/* 🛡️ Accreditations: Minimalist Floating Grid */}
-        <div className="border-t border-black/[0.05] pt-20">
+        <div className="border-t border-black/5 pt-20">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 mb-16">
                   <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -58,7 +51,7 @@ export default function CreativeLeadershipPortal() {
             viewport={{ once: true }}
             className="flex flex-col items-center lg:items-start space-y-6"
           >
-            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-black/[0.08] bg-white/50 backdrop-blur-xl shadow-inner">
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-black/8 bg-white/50 backdrop-blur-xl shadow-inner">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]"></span>
@@ -67,7 +60,7 @@ export default function CreativeLeadershipPortal() {
             </div>
 
             <h2 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter text-[#1B2A41] leading-[0.85]">
-              international <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#D4AF37] via-[#D4AF37]/80 to-[#1B2A41]/20"> Accreditations</span> <br/>
+              international <span className="text-transparent bg-clip-text bg-linear-to-br from-[#D4AF37] via-[#D4AF37]/80 to-[#1B2A41]/20"> Accreditations</span> <br/>
   
             </h2>
           </motion.div>
@@ -81,7 +74,7 @@ export default function CreativeLeadershipPortal() {
                 whileInView={{ opacity: 1 }}
                 transition={{ delay: i * 0.1 }}
                 whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,1)" }}
-                className="h-24 rounded-2xl border border-black/[0.03] bg-white/40 backdrop-blur-sm flex items-center justify-center group transition-all duration-500 cursor-none"
+                className="h-24 rounded-2xl border border-black/3 bg-white/40 backdrop-blur-sm flex items-center justify-center group transition-all duration-500 cursor-none"
               >
                 <span className="text-xl font-black text-[#1B2A41]/20 group-hover:text-[#1B2A41] group-hover:scale-110 transition-all duration-500 tracking-tighter uppercase">
                   {brand.name}
@@ -93,13 +86,13 @@ export default function CreativeLeadershipPortal() {
       </div>
 
       {/* 🎞️ Grainy Texture (Noise) لزيادة حدة التفاصيل */}
-      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.015] pointer-events-none mix-blend-overlay" />
+      <div className="grain-overlay mix-blend-overlay" />
     </section>
   );
 }
 
 // مكون الكارت المنفصل للتحكم في الأداء (Tilt Effect)
-function TeamCard({ member, index }: { member: any, index: number }) {
+function TeamCard({ member, index }: { member: TeamMember, index: number }) {
   const cardRef = useRef<HTMLDivElement>(null);
   
   // Motion values for tilt effect
@@ -137,17 +130,17 @@ function TeamCard({ member, index }: { member: any, index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8, delay: index * 0.1 }}
-      className="relative h-[450px] group cursor-none"
+      className="relative h-112.5 group cursor-none"
     >
-      <div className="absolute inset-0 rounded-[3rem] bg-white border border-black/[0.04] shadow-[0_30px_100px_rgba(0,0,0,0.04)] overflow-hidden transition-all duration-700 group-hover:shadow-[0_50px_120px_rgba(0,0,0,0.08)] group-hover:border-[#D4AF37]/20">
+      <div className="absolute inset-0 rounded-[3rem] bg-white border border-black/4 shadow-[0_30px_100px_rgba(0,0,0,0.04)] overflow-hidden transition-all duration-700 group-hover:shadow-[0_50px_120px_rgba(0,0,0,0.08)] group-hover:border-[#D4AF37]/20">
         
         {/* Animated Background Pulse */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-1000" />
+        <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-[#D4AF37] to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-1000" />
 
         <div className="p-10 h-full flex flex-col items-center text-center">
           {/* Avatar Area with Floating Effect */}
           <div className="relative mb-10" style={{ transform: "translateZ(50px)" }}>
-            <div className="w-28 h-28 rounded-[2rem] bg-[#1B2A41] flex items-center justify-center text-white shadow-2xl rotate-3 group-hover:rotate-12 transition-transform duration-700">
+            <div className="w-28 h-28 rounded-4xl bg-[#1B2A41] flex items-center justify-center text-white shadow-2xl rotate-3 group-hover:rotate-12 transition-transform duration-700">
               <span className="text-3xl font-black">{member.initials}</span>
             </div>
             {/* Glow Behind */}
@@ -163,7 +156,7 @@ function TeamCard({ member, index }: { member: any, index: number }) {
               {member.role}
             </div>
             <p className="pt-4 text-sm text-black/40 font-medium leading-relaxed italic">
-              "{member.description}"
+              &quot;{member.description}&quot;
             </p>
           </div>
 
@@ -180,7 +173,7 @@ function TeamCard({ member, index }: { member: any, index: number }) {
         </div>
 
         {/* Tactical Corner Element */}
-        <div className="absolute bottom-[-20px] right-[-20px] w-20 h-20 bg-[#D4AF37]/5 rounded-full blur-2xl group-hover:bg-[#D4AF37]/20 transition-all duration-700" />
+        <div className="absolute -bottom-5 -right-5 w-20 h-20 bg-[#D4AF37]/5 rounded-full blur-2xl group-hover:bg-[#D4AF37]/20 transition-all duration-700" />
       </div>
     </motion.div>
   );

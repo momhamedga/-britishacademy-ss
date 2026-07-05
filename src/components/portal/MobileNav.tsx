@@ -1,17 +1,21 @@
 "use client";
 
-import { LayoutDashboard, BookOpen, User, Settings, LogOut, Menu, X, Globe } from "lucide-react";
+import { LayoutDashboard, BookOpen, User, Settings, LogOut, Menu, X, Globe, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { logout } from "@/actions/portal-auth";
 import { useState } from "react";
 import { usePathname } from "next/navigation"; // 🛡️ الحل لضمان تحديث الحالة لحظيًا
 
+type NavItem =
+  | { isTrigger: true }
+  | { isTrigger?: false; href: string; icon: LucideIcon; label: string };
+
 export default function MobileNav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname(); // 🛰️ مراقبة المسار الحالي مباشرة
 
-  const navItems = [
+  const navItems: NavItem[] = [
     { href: "/dashboard", icon: LayoutDashboard, label: "Stats" },
     { href: "/dashboard/courses", icon: BookOpen, label: "Missions" },
     { isTrigger: true }, // المركز التكتيكي (Menu)
@@ -28,7 +32,7 @@ export default function MobileNav() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-[oklch(15%_0.04_260)]/90 backdrop-blur-3xl flex flex-col items-center justify-center p-6 lg:hidden"
+            className="fixed inset-0 z-60 bg-[oklch(15%_0.04_260)]/90 backdrop-blur-3xl flex flex-col items-center justify-center p-6 lg:hidden"
           >
             {/* Background Decoration */}
             <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5 pointer-events-none" />
@@ -65,13 +69,13 @@ export default function MobileNav() {
       </AnimatePresence>
 
       {/* 🚀 The Bio-Dock (Navigation Bar) */}
-      <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-[440px] z-50">
+      <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-110 z-50">
         <nav className="relative h-20 bg-[oklch(25%_0.08_260)]/80 border border-white/10 backdrop-blur-2xl rounded-[2.5rem] flex items-center justify-between px-2 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)]">
           
           {/* Internal Glow Effect */}
-          <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent rounded-[2.5rem] pointer-events-none" />
+          <div className="absolute inset-0 bg-linear-to-b from-white/5 to-transparent rounded-[2.5rem] pointer-events-none" />
 
-          {navItems.map((item, idx) => {
+          {navItems.map((item) => {
             // الحالة المركزية (Menu Button)
             if (item.isTrigger) {
               return (
@@ -129,7 +133,7 @@ export default function MobileNav() {
                 {isActive && (
                   <motion.div 
                     layoutId="liquid-dot"
-                    className="absolute bottom-2 w-4 h-[2px] bg-gold rounded-full shadow-[0_0_15px_#D4AF37]"
+                    className="absolute bottom-2 w-4 h-0.5 bg-gold rounded-full shadow-[0_0_15px_#D4AF37]"
                   />
                 )}
               </Link>
@@ -142,7 +146,15 @@ export default function MobileNav() {
 }
 
 // مكون الأكشن السريع (داخل المنيو)
-function QuickAction({ icon: Icon, label, color, onClick, href }: any) {
+interface QuickActionProps {
+  icon: LucideIcon;
+  label: string;
+  color: string;
+  onClick?: () => void;
+  href?: string;
+}
+
+function QuickAction({ icon: Icon, label, color, onClick, href }: QuickActionProps) {
   const content = (
     <div className="p-6 rounded-[2.5rem] bg-[oklch(25%_0.08_260)]/50 border border-white/5 backdrop-blur-md flex flex-col items-center gap-3 active:scale-95 transition-all hover:bg-[oklch(25%_0.08_260)] hover:border-white/10 group">
       <div className={`p-4 rounded-2xl bg-white/5 transition-colors group-hover:bg-white/10`}>

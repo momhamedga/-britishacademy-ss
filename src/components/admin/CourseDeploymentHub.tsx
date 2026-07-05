@@ -3,23 +3,37 @@ import { useState, useRef, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { 
-  ChevronLeft, Send, Shield, Sparkles, Image as ImageIcon, Plus, Trash,
+import {
+  ChevronLeft, Send, Shield, Sparkles, Plus, Trash,
   Link as LinkIcon, Upload, User, DollarSign, Clock, Layers, FileText, Video, CreditCard
 } from 'lucide-react';
-import { 
-  upsertCourse, 
-  deleteCourse, 
-  getCourseLessonsForAdmin, 
-  getAllStudentsForAdmin, 
-  updateStudentMembershipCard 
+import {
+  upsertCourse,
+  deleteCourse,
+  getCourseLessonsForAdmin,
+  getAllStudentsForAdmin,
+  updateStudentMembershipCard
 } from '@/actions/admin-actions';
+import type { Course } from '@/types';
 
 const ACADEMY_LOGO_FALLBACK = "/logo.webp";
-const CERT_FALLBACK_IMAGE = "/logo.webp"; 
+const CERT_FALLBACK_IMAGE = "/logo.webp";
 const CARD_FALLBACK_IMAGE = "/logo.webp"; // الفولباك التكتيكي لصورة البطاقة
 
-export default function CourseDeploymentHub({ initialData, onBack }: any) {
+interface AdminStudent {
+  id: string;
+  name: string;
+  student_id: string;
+}
+
+interface Lesson {
+  title: string;
+  description?: string;
+  video_url?: string;
+  duration: string;
+}
+
+export default function CourseDeploymentHub({ initialData, onBack }: { initialData?: Partial<Course> | null; onBack: () => void }) {
   const [assetMode, setAssetMode] = useState<'link' | 'upload'>(initialData?.image_url && !initialData.image_url.includes('blob') ? 'link' : 'upload');
   const [preview, setPreview] = useState(initialData?.image_url || ACADEMY_LOGO_FALLBACK);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -31,7 +45,7 @@ export default function CourseDeploymentHub({ initialData, onBack }: any) {
   const certFileInputRef = useRef<HTMLInputElement>(null);
 
   // 💳 أسلحة تكتيكية لإدارة بطاقة العضوية المرتبطة بالطالب
-  const [students, setStudents] = useState<any[]>([]);
+  const [students, setStudents] = useState<AdminStudent[]>([]);
   const [selectedStudentId, setSelectedStudentId] = useState<string>('');
   const [cardAssetMode, setCardAssetMode] = useState<'link' | 'upload'>('upload');
   const [cardPreview, setCardPreview] = useState(CARD_FALLBACK_IMAGE);
@@ -39,17 +53,17 @@ export default function CourseDeploymentHub({ initialData, onBack }: any) {
   const cardFileInputRef = useRef<HTMLInputElement>(null);
 
   const [isSyncing, setIsSyncing] = useState(false);
-  const [lessons, setLessons] = useState<any[]>([]);
+  const [lessons, setLessons] = useState<Lesson[]>([]);
 
   // 📡 جلب الداتا والطلاب والدروس عند التهيئة
   useEffect(() => {
     async function loadInitialIntel() {
       if (initialData?.id) {
         const existingLessons = await getCourseLessonsForAdmin(initialData.id);
-        if (existingLessons) setLessons(existingLessons);
+        if (existingLessons) setLessons(existingLessons as unknown as Lesson[]);
       }
       const allStudents = await getAllStudentsForAdmin();
-      if (allStudents) setStudents(allStudents);
+      if (allStudents) setStudents(allStudents as unknown as AdminStudent[]);
     }
     loadInitialIntel();
   }, [initialData]);
@@ -62,9 +76,9 @@ export default function CourseDeploymentHub({ initialData, onBack }: any) {
     setLessons(lessons.filter((_, i) => i !== index));
   };
 
-  const handleLessonChange = (index: number, field: string, value: string) => {
+  const handleLessonChange = (index: number, field: keyof Lesson, value: string) => {
     const updated = [...lessons];
-    updated[index][field] = value;
+    updated[index] = { ...updated[index], [field]: value };
     setLessons(updated);
   };
 
@@ -181,7 +195,7 @@ export default function CourseDeploymentHub({ initialData, onBack }: any) {
                 </div>
               </div>
 
-              <div className="aspect-square bg-background rounded-[2rem] mb-6 overflow-hidden border-2 border-dashed border-black/5 flex items-center justify-center relative group/preview">
+              <div className="aspect-square bg-background rounded-4xl mb-6 overflow-hidden border-2 border-dashed border-black/5 flex items-center justify-center relative group/preview">
                 <Image 
                   src={preview} 
                   alt="Course Preview"
@@ -243,7 +257,7 @@ export default function CourseDeploymentHub({ initialData, onBack }: any) {
                 </select>
               </div>
 
-              <div className="aspect-[1.586/1] bg-background rounded-[1.5rem] mb-6 overflow-hidden border-2 border-dashed border-gold/20 flex items-center justify-center relative group/cardPreview">
+              <div className="aspect-[1.586/1] bg-background rounded-3xl mb-6 overflow-hidden border-2 border-dashed border-gold/20 flex items-center justify-center relative group/cardPreview">
                 <Image 
                   src={cardPreview} 
                   alt="Membership Card Template Preview"
@@ -290,7 +304,7 @@ export default function CourseDeploymentHub({ initialData, onBack }: any) {
                 </div>
               </div>
 
-              <div className="aspect-[1.414/1] bg-background rounded-[1.5rem] mb-6 overflow-hidden border-2 border-dashed border-gold/20 flex items-center justify-center relative group/certPreview">
+              <div className="aspect-[1.414/1] bg-background rounded-3xl mb-6 overflow-hidden border-2 border-dashed border-gold/20 flex items-center justify-center relative group/certPreview">
                 <Image 
                   src={certPreview} 
                   alt="Certificate Template Preview"
@@ -361,7 +375,7 @@ export default function CourseDeploymentHub({ initialData, onBack }: any) {
               </button>
             </div>
 
-            <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 no-scrollbar">
+            <div className="space-y-4 max-h-100 overflow-y-auto pr-2 no-scrollbar">
               <AnimatePresence mode="popLayout">
                 {lessons.map((lesson, idx) => (
                   <motion.div 
@@ -424,20 +438,22 @@ export default function CourseDeploymentHub({ initialData, onBack }: any) {
               <Sparkles size={14} className="text-gold"/>
               <label className="text-[10px] font-black uppercase tracking-[0.5em] text-navy">Module_Briefing</label>
             </div>
-            <textarea name="full_content" defaultValue={initialData?.full_content} placeholder="Inject technical module details..." className="w-full h-80 bg-background rounded-[3rem] p-10 text-[15px] font-medium outline-none focus:bg-white border-2 border-transparent focus:border-gold/20 transition-all resize-none shadow-inner text-navy" />
+            <textarea name="full_content" defaultValue={typeof initialData?.full_content === "string" ? initialData.full_content : ""} placeholder="Inject technical module details..." className="w-full h-80 bg-background rounded-[3rem] p-10 text-[15px] font-medium outline-none focus:bg-white border-2 border-transparent focus:border-gold/20 transition-all resize-none shadow-inner text-navy" />
           </div>
 
           <div className="flex gap-6 pt-6">
             {initialData?.id && (
               <div className="flex-1">
                 <DeleteActionGate onConfirm={async () => {
+                  const courseId = initialData.id;
+                  if (!courseId) return;
                   setIsSyncing(true);
-                  await deleteCourse(initialData.id);
+                  await deleteCourse(courseId);
                   onBack();
                 }} isSyncing={isSyncing} />
               </div>
             )}
-            <div className="flex-[2]">
+            <div className="flex-2">
               <SubmitAction isFallback={preview === ACADEMY_LOGO_FALLBACK} />
             </div>
           </div>
@@ -447,17 +463,17 @@ export default function CourseDeploymentHub({ initialData, onBack }: any) {
   );
 }
 
-function DeleteActionGate({ onConfirm, isSyncing }: any) {
+function DeleteActionGate({ onConfirm, isSyncing }: { onConfirm: () => void; isSyncing: boolean }) {
   const [isDeleting, setIsDeleting] = useState(false);
   return (
     <div className="w-full">
       <AnimatePresence mode="wait">
         {!isDeleting ? (
-          <motion.button key="init" type="button" onClick={() => setIsDeleting(true)} className="w-full py-7 bg-error/10 text-error rounded-[2rem] font-black uppercase text-[10px] border border-error/20 hover:bg-error hover:text-white transition-all">Purge_Asset</motion.button>
+          <motion.button key="init" type="button" onClick={() => setIsDeleting(true)} className="w-full py-7 bg-error/10 text-error rounded-4xl font-black uppercase text-[10px] border border-error/20 hover:bg-error hover:text-white transition-all">Purge_Asset</motion.button>
         ) : (
           <motion.div key="confirm" className="grid grid-cols-2 gap-2">
-            <button type="button" onClick={() => setIsDeleting(false)} className="py-7 bg-background rounded-[2rem] font-black uppercase text-[10px]">Abort</button>
-            <button type="button" onClick={onConfirm} disabled={isSyncing} className="py-7 bg-error text-white rounded-[2rem] font-black uppercase text-[10px] shadow-lg shadow-error/20">{isSyncing ? "..." : "Confirm"}</button>
+            <button type="button" onClick={() => setIsDeleting(false)} className="py-7 bg-background rounded-4xl font-black uppercase text-[10px]">Abort</button>
+            <button type="button" onClick={onConfirm} disabled={isSyncing} className="py-7 bg-error text-white rounded-4xl font-black uppercase text-[10px] shadow-lg shadow-error/20">{isSyncing ? "..." : "Confirm"}</button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -468,14 +484,22 @@ function DeleteActionGate({ onConfirm, isSyncing }: any) {
 function SubmitAction({ isFallback }: { isFallback: boolean }) {
   const { pending } = useFormStatus();
   return (
-    <button disabled={pending} className={`w-full py-7 md:py-8 rounded-[2rem] md:rounded-[3rem] font-black uppercase tracking-[0.4em] text-[12px] flex items-center justify-center gap-4 transition-all shadow-xl ${isFallback ? 'bg-navy/90 text-gold border border-gold/30' : 'bg-navy text-gold hover:shadow-navy/20'}`}>
+    <button disabled={pending} className={`w-full py-7 md:py-8 rounded-4xl md:rounded-[3rem] font-black uppercase tracking-[0.4em] text-xs flex items-center justify-center gap-4 transition-all shadow-xl ${isFallback ? 'bg-navy/90 text-gold border border-gold/30' : 'bg-navy text-gold hover:shadow-navy/20'}`}>
       {pending ? "Syncing_Protocol..." : (isFallback ? "Deploy_With_Identity" : "Execute_Deployment")}
       {!pending && <Send size={18} />}
     </button>
   );
 }
 
-function StatusToggle({ icon, label, name, defChecked, color }: any) {
+interface StatusToggleProps {
+  icon: React.ReactNode;
+  label: string;
+  name: string;
+  defChecked?: boolean;
+  color: string;
+}
+
+function StatusToggle({ icon, label, name, defChecked, color }: StatusToggleProps) {
   return (
     <label className="flex items-center justify-between p-8 bg-white rounded-[2.5rem] border border-black/5 cursor-pointer hover:border-gold transition-all group">
       <div className="flex items-center gap-4">
@@ -487,26 +511,43 @@ function StatusToggle({ icon, label, name, defChecked, color }: any) {
   );
 }
 
-function HubInput({ label, name, def, type = "text", placeholder, icon }: any) {
+interface HubInputProps {
+  label: string;
+  name: string;
+  def?: string | number;
+  type?: string;
+  placeholder?: string;
+  icon?: React.ReactNode;
+}
+
+function HubInput({ label, name, def, type = "text", placeholder, icon }: HubInputProps) {
   return (
     <div className="space-y-3">
       <label className="text-[10px] font-black opacity-30 uppercase tracking-widest ml-5 text-navy">{label}</label>
       <div className="relative flex items-center">
         {icon && <div className="absolute left-7 opacity-20 transition-all text-gold">{icon}</div>}
-        <input name={name} defaultValue={def} type={type} placeholder={placeholder} className={`w-full p-7 bg-background rounded-[2.5rem] font-black text-[14px] outline-none border-2 border-transparent focus:border-gold/30 transition-all text-navy ${icon ? 'pl-16' : ''}`} />
+        <input name={name} defaultValue={def} type={type} placeholder={placeholder} className={`w-full p-7 bg-background rounded-[2.5rem] font-black text-sm outline-none border-2 border-transparent focus:border-gold/30 transition-all text-navy ${icon ? 'pl-16' : ''}`} />
       </div>
     </div>
   );
 }
 
-function HubSelect({ label, name, options, def, icon }: any) {
+interface HubSelectProps {
+  label: string;
+  name: string;
+  options: string[];
+  def?: string;
+  icon?: React.ReactNode;
+}
+
+function HubSelect({ label, name, options, def, icon }: HubSelectProps) {
   return (
     <div className="space-y-3">
       <label className="text-[10px] font-black opacity-30 uppercase tracking-widest ml-5 text-navy">{label}</label>
       <div className="relative flex items-center">
         {icon && <div className="absolute left-7 opacity-20 text-gold">{icon}</div>}
-        <select name={name} defaultValue={def} className="w-full p-7 bg-background rounded-[2.5rem] font-black text-[12px] outline-none appearance-none cursor-pointer pl-16 uppercase text-navy border-2 border-transparent focus:border-gold/30 transition-all">
-          {options.map((o: any) => <option key={o} value={o}>{o}</option>)}
+        <select name={name} defaultValue={def} className="w-full p-7 bg-background rounded-[2.5rem] font-black text-xs outline-none appearance-none cursor-pointer pl-16 uppercase text-navy border-2 border-transparent focus:border-gold/30 transition-all">
+          {options.map((o) => <option key={o} value={o}>{o}</option>)}
         </select>
       </div>
     </div>

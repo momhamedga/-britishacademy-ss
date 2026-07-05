@@ -3,7 +3,7 @@ import CourseHero from "@/components/course/CourseHero";
 import CourseSidebar from "@/components/course/CourseSidebar";
 import CourseTabs from "@/components/course/CourseTabs";
 import StudyDashboardClient from "@/components/StudyDashboardClient";
-import { cookies } from "next/headers";
+import { getCurrentStudentId } from "@/lib/session";
 import { notFound } from "next/navigation";
 
 interface CoursePageProps {
@@ -12,27 +12,25 @@ interface CoursePageProps {
 }
 
 export default async function CourseDetailsPage({ params, searchParams }: CoursePageProps) {
-  const [{ slug }, { mode }, cookieStore] = await Promise.all([
+  const [{ slug }, { mode }, userId] = await Promise.all([
     params,
     searchParams,
-    cookies()
+    getCurrentStudentId()
   ]);
 
   const course = await getCourseBySlug(slug);
   if (!course) notFound();
 
-  const userId = cookieStore.get("user_id")?.value;
-  
   // 🛰️ فحص حالة اشتراك الطالب والتقدم والدروس من السيرفر فوراً
-  const enrollmentStatus = userId ? await checkStudentVectorProgress(course.id) : { isEnrolled: false, progress: 0, lessons: [] };
+  const enrollmentStatus = userId ? await checkStudentVectorProgress(course.id) : { isEnrolled: false, progress: 0, lessons: [], completedLessons: [] };
 
   // 🛡️ إذا كان الطالب مشترك وضغط على "تابع الدراسة" (سيتغير الرابط لـ ?mode=study)
   if (enrollmentStatus.isEnrolled && mode === "study") {
     return (
-      <StudyDashboardClient 
-      course={course} 
-  lessons={enrollmentStatus.lessons} 
-  initialProgress={enrollmentStatus.progress} 
+      <StudyDashboardClient
+      course={course}
+  lessons={enrollmentStatus.lessons as unknown as { title: string; description?: string; video_url?: string; duration?: string }[]}
+  initialProgress={enrollmentStatus.progress}
   initialCompletedLessons={enrollmentStatus.completedLessons || []}
       />
     );
@@ -63,11 +61,11 @@ export default async function CourseDetailsPage({ params, searchParams }: Course
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-10 relative">          
           
-          <div className="flex-1 min-w-0 min-h-[600px]">
+          <div className="flex-1 min-w-0 min-h-150">
             <CourseTabs course={course} fullContent={fullContent} />
           </div>
 
-          <aside className="w-full lg:w-[400px]">
+          <aside className="w-full lg:w-100">
             <div className="lg:sticky lg:top-28 transition-all duration-500">
               <CourseSidebar 
                 course={course} 

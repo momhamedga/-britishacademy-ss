@@ -6,8 +6,32 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { Resend } from 'resend';
+import { randomBytes, timingSafeEqual } from 'crypto';
+import {
+  AUTH_COOKIE,
+  ADMIN_COOKIE,
+  STUDENT_SESSION_MAX_AGE,
+  ADMIN_SESSION_MAX_AGE,
+  createStudentSessionToken,
+  createAdminSessionToken,
+  getCurrentStudentId,
+} from '@/lib/session';
+import { hashPassword, verifyPassword, isLegacyPlaintext } from '@/lib/password';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+function isSafeRelativePath(path: string): boolean {
+  return path.startsWith('/') && !path.startsWith('//') && !path.includes('://');
+}
+
+function escapeHtml(value: string): string {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
 // 1. Schema التحقق من البيانات
 const LoginSchema = z.object({
@@ -18,46 +42,45 @@ const LoginSchema = z.object({
 /**
  * تسجيل الدخول للنظام
  */
-export async function loginToPortal(prevState: any, formData: FormData) {
+export async function loginToPortal(prevState: unknown, formData: FormData) {
   const studentId = formData.get('studentId');
   const accessCode = formData.get('accessCode'); 
   const validated = LoginSchema.safeParse({ studentId, accessCode });
 
   if (!validated.success) {
-    return { error: validated.error.errors?.[0]?.message || "Validation failed" };
+    return { error: validated.error.issues?.[0]?.message || "Validation failed" };
   }
 
   let loginSuccessful = false;
 
   try {
     const students = await sql`
-      SELECT id, student_id, access_code, name, rank 
-      FROM students 
+      SELECT id, student_id, access_code, name, rank
+      FROM students
       WHERE student_id = ${validated.data.studentId}
       LIMIT 1
     `;
 
     const student = students[0];
 
-    if (!student || student.access_code !== validated.data.accessCode) {
+    if (!student || !verifyPassword(validated.data.accessCode, student.access_code)) {
       return { error: "ACCESS DENIED: IDENTITY NOT RECOGNIZED" };
+    }
+
+    // ترقية كلمات السر القديمة المخزنة نصياً إلى هاش عند أول تسجيل دخول ناجح
+    if (isLegacyPlaintext(student.access_code)) {
+      await sql`UPDATE students SET access_code = ${hashPassword(validated.data.accessCode)} WHERE id = ${student.id}`;
     }
 
     await sql`UPDATE students SET last_access = NOW() WHERE id = ${student.id}`;
 
     const cookieStore = await cookies();
-    
-    cookieStore.set('auth_token', student.id, {
+
+    cookieStore.set(AUTH_COOKIE, await createStudentSessionToken(student.id), {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24, 
-      path: '/',
-    });
-
-    cookieStore.set('user_id', student.id, {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24,
+      sameSite: 'lax',
+      maxAge: STUDENT_SESSION_MAX_AGE,
       path: '/',
     });
 
@@ -73,18 +96,19 @@ export async function loginToPortal(prevState: any, formData: FormData) {
 /**
  * تحديث إعدادات الملف الشخصي
  */
-export async function updateSettings(prevState: any, formData: FormData) {
-  const studentId = formData.get('studentId') as string;
+export async function updateSettings(prevState: unknown, formData: FormData) {
   const name = formData.get('name') as string;
   const password = formData.get('password') as string;
 
   try {
-    if (!studentId) return { error: "CRITICAL: IDENTITY VECTOR MISSING" };
+    // 🛡️ الهوية تُشتق من الجلسة الموقّعة فقط، مش من حقل الفورم (كان بيسمح لأي حد يعدل حساب غيره)
+    const studentId = await getCurrentStudentId();
+    if (!studentId) return { error: "UNAUTHORIZED: SESSION EXPIRED OR INVALID" };
 
     await sql`UPDATE students SET name = ${name} WHERE id = ${studentId}`;
 
     if (password && password.trim() !== "") {
-      await sql`UPDATE students SET access_code = ${password} WHERE id = ${studentId}`;
+      await sql`UPDATE students SET access_code = ${hashPassword(password)} WHERE id = ${studentId}`;
     }
 
     revalidatePath('/dashboard/settings');
@@ -100,35 +124,42 @@ export async function updateSettings(prevState: any, formData: FormData) {
 /**
  * استعادة بيانات الدخول
  */
-export async function requestPasswordReset(prevState: any, formData: FormData) {
+export async function requestPasswordReset(prevState: unknown, formData: FormData) {
   const email = formData.get("email") as string;
 
   try {
-    // 🔍 1. استرجاع البيانات (تأكد من دعم الهيكلتين rows أو مصفوفة مباشرة)
     const result = await sql`
-      SELECT name, student_id, access_code 
-      FROM students 
-      WHERE email = ${email} 
+      SELECT id, name, student_id
+      FROM students
+      WHERE email = ${email}
       LIMIT 1
     `;
-    
-    const user = result[0] || (result as any).rows?.[0];
+
+    const user = result[0];
 
     if (!user) {
       return { error: "ACCESS DENIED: Identity not found in archives." };
     }
 
+    // 🛡️ ما بنقدرش نسترجع الكلمة القديمة لأنها متخزنة كـ hash — بنولّد كود مؤقت جديد بدلها
+    const temporaryAccessCode = randomBytes(4).toString('hex').toUpperCase();
+    await sql`UPDATE students SET access_code = ${hashPassword(temporaryAccessCode)} WHERE id = ${user.id}`;
+
+    const safeName = escapeHtml(user.name);
+    const safeStudentId = escapeHtml(user.student_id);
+
     // 📧 2. إرسال الإيميل (مع معالجة أخطاء Resend بهدوء)
-    const { data, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: 'Academy Terminal <info@britishacademy-ss.com>',
       to: [email], // ⚠️ ملاحظة: Resend المجاني يرسل فقط لإيميلك المسجل لديهم
       subject: '🔒 Identity Recovery Protocol',
       html: `
         <div style="background-color: #020617; color: white; padding: 40px; border: 2px solid #d4af37; border-radius: 15px; font-family: monospace;">
           <h2 style="color: #d4af37;">IDENTITY RETRIEVED</h2>
-          <p>Agent: <strong>${user.name}</strong></p>
-          <p>SYSTEM ID: <strong>${user.student_id}</strong></p>
-          <p>ACCESS CIPHER: <strong>${user.access_code}</strong></p>
+          <p>Agent: <strong>${safeName}</strong></p>
+          <p>SYSTEM ID: <strong>${safeStudentId}</strong></p>
+          <p>TEMPORARY ACCESS CIPHER: <strong>${temporaryAccessCode}</strong></p>
+          <p style="color:#94a3b8;font-size:12px;">Sign in with this temporary code, then set a new one from your dashboard settings.</p>
         </div>
       `,
     });
@@ -151,7 +182,7 @@ export async function requestPasswordReset(prevState: any, formData: FormData) {
 /**
  * تسجيل طالب جديد - (تم إصلاح خطأ الـ rows[0])
  */
-export async function registerStudent(prevState: any, formData: FormData) {
+export async function registerStudent(prevState: unknown, formData: FormData) {
   const name = formData.get('name') as string;
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
@@ -171,39 +202,33 @@ export async function registerStudent(prevState: any, formData: FormData) {
 
     // التنفيذ مع جلب الـ ID المولد (UUID)
     const result = await sql`
-      INSERT INTO students (name, email, student_id, access_code, rank, progress) 
-      VALUES (${name}, ${email}, ${student_id}, ${password}, 'AGENT', 0)
+      INSERT INTO students (name, email, student_id, access_code, rank, progress)
+      VALUES (${name}, ${email}, ${student_id}, ${hashPassword(password)}, 'AGENT', 0)
       RETURNING id
     `;
 
-    // 🛰️ إصلاح الخطأ: في بعض إصدارات المكتبة النتيجة تكون المصفوفة مباشرة
-    const newId = result[0]?.id || result.rows?.[0]?.id;
+    const newId = result[0]?.id;
 
     if (!newId) throw new Error("ID_GENERATION_FAILED");
 
     const cookieStore = await cookies();
-    cookieStore.set('user_id', newId.toString(), {
-      httpOnly: false,
+    cookieStore.set(AUTH_COOKIE, await createStudentSessionToken(newId.toString()), {
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24,
+      sameSite: 'lax',
+      maxAge: STUDENT_SESSION_MAX_AGE,
       path: '/',
     });
 
-    cookieStore.set('auth_token', newId.toString(), {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24,
-        path: '/',
-    });
-
-  } catch (error: any) {
-    if (error.message?.includes('NEXT_REDIRECT')) throw error;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('NEXT_REDIRECT')) throw error;
     console.error("🔴 Registration Error Detail:", error);
     return { error: "TERMINAL ERROR: DATABASE SYNC FAILED" };
   }
 
   revalidatePath('/');
-  redirect(callbackUrl);
+  // 🛡️ منع Open Redirect: نقبل مسارات داخلية فقط
+  redirect(isSafeRelativePath(callbackUrl) ? callbackUrl : '/dashboard');
 }
 
 /**
@@ -211,29 +236,34 @@ export async function registerStudent(prevState: any, formData: FormData) {
  */
 export async function logout() {
   const cookieStore = await cookies();
-  cookieStore.delete("auth_token");
-  cookieStore.delete("user_id");
+  cookieStore.delete(AUTH_COOKIE);
+  cookieStore.delete("user_id"); // تنظيف الكوكي القديمة غير الموقّعة لو لسه موجودة عند مستخدمين قدامى
   redirect("/login");
 }
 
 export async function verifyAdminUplink(password: string) {
   // هنا تسحب الباسورد من البيئة بأمان بدون PUBLIC
-  const secretKey = process.env.ADMIN_SECRET; 
+  const secretKey = process.env.ADMIN_SECRET;
 
   if (!secretKey) {
     console.error("🔴 CRITICAL: ADMIN_SECRET IS NOT SET IN ENVIRONMENT VARIABLES");
     return { success: false, error: "SYSTEM_MISCONFIGURATION" };
   }
 
-  if (password === secretKey) {
+  // مقارنة بزمن ثابت لمنع Timing Attacks على السر
+  const provided = Buffer.from(password || "");
+  const expected = Buffer.from(secretKey);
+  const matches = provided.length === expected.length && timingSafeEqual(provided, expected);
+
+  if (matches) {
     const cookieStore = await cookies();
-    // وضع الـ Cookie بشكل مشفر وآمن من السيرفر مباشرة لمدة 24 ساعة
-    cookieStore.set("admin_session", "authorized", {
+    // كوكي موقّعة بـ HMAC بدل قيمة ثابتة "authorized" ممكن حد يبعتها يدوياً
+    cookieStore.set(ADMIN_COOKIE, await createAdminSessionToken(), {
       path: "/",
-      maxAge: 86400,
+      maxAge: ADMIN_SESSION_MAX_AGE,
       sameSite: "strict",
       secure: true,
-      httpOnly: true, // يمنع سرقة الـ Cookie عبر أكواد الجافا سكريبت الخبيثة
+      httpOnly: true,
     });
     return { success: true };
   }
@@ -243,9 +273,9 @@ export async function verifyAdminUplink(password: string) {
 
 export async function logoutAdmin() {
   const cookieStore = await cookies();
-  
+
   // مسح الكوكي الـ httpOnly تماماً من جذورها
-  cookieStore.set("admin_session", "", {
+  cookieStore.set(ADMIN_COOKIE, "", {
     path: "/",
     maxAge: 0, // تنتهي فوراً
     sameSite: "strict",

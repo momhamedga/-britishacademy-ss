@@ -23,7 +23,7 @@ export const RecoverySuccess = ({ email }: { email: string }) => (
 
     <div className="space-y-3">
       <h3 className="text-green-400 font-black uppercase tracking-[0.3em] text-lg italic">Signal Dispatched</h3>
-      <p className="text-slate-400 text-[11px] font-medium leading-relaxed max-w-[280px] mx-auto">
+      <p className="text-slate-400 text-[11px] font-medium leading-relaxed max-w-70 mx-auto">
         A secure recovery packet has been sent to your uplink: <br/>
         <span className="text-white font-bold block mt-2 text-xs bg-white/5 py-2 rounded-lg border border-white/5">{email}</span>
       </p>

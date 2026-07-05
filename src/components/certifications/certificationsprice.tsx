@@ -1,10 +1,21 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { ShieldCheck, Target, Building, Clock, BarChart3, Star, Zap } from 'lucide-react';
+import { ShieldCheck, Target, Building, Zap, type LucideIcon } from 'lucide-react';
+
+interface Program {
+  icon: LucideIcon;
+  id: string;
+  title: string;
+  duration: string;
+  level: string;
+  skills: string[];
+  popular?: boolean;
+  label: string;
+}
 
 // --- 📊 البيانات المستخرجة من تصميم الهوية المعتمد ---
-const PROFESSIONAL_PROGRAMS = [
+const PROFESSIONAL_PROGRAMS: Program[] = [
   {
     icon: Building,
     id: "FSO",
@@ -61,7 +72,7 @@ export default function CertificationsPricePage() {
 }
 
 // 🛡️ مكون الكارت التكتيكي
-function ProgramCard({ program, index }: any) {
+function ProgramCard({ program, index }: { program: Program; index: number }) {
   const isPopular = program.popular;
   return (
     <motion.div
@@ -95,7 +106,7 @@ function ProgramCard({ program, index }: any) {
         </div>
       </div>
 
-      <div className="space-y-3 mb-10 min-h-[100px]">
+      <div className="space-y-3 mb-10 min-h-25">
         {program.skills.map((skill: string) => (
           <div key={skill} className="flex items-center gap-3">
             <div className={`w-1.5 h-1.5 rounded-full ${isPopular ? 'bg-[oklch(75%_0.15_85)]' : 'bg-slate-200'}`} />

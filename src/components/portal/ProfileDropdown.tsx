@@ -20,7 +20,7 @@ const ProfileDropdown = ({ user, isAdmin = false, close }: ProfileDropdownProps)
       initial={{ opacity: 0, y: 15, scale: 0.95, filter: 'blur(10px)' }}
       animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
       exit={{ opacity: 0, y: 15, scale: 0.95, filter: 'blur(10px)' }}
-      className="absolute top-16 right-0 w-72 border border-white/10 rounded-[2rem] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 backdrop-blur-3xl bg-navy"
+      className="absolute top-16 right-0 w-72 border border-white/10 rounded-4xl p-5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 backdrop-blur-3xl bg-navy"
     >
       
       {/* 👑 1. حالة الـ Admin (إذا كان الآدمن مسجل دخول، يلغي ويخفي ترويسة الطالب تماماً) */}
@@ -29,7 +29,7 @@ const ProfileDropdown = ({ user, isAdmin = false, close }: ProfileDropdownProps)
           {/* Header Section: Admin Identity */}
           <div className="flex items-center gap-4 pb-5 mb-5 border-b border-white/5">
             <div className="relative">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold/30 to-transparent border border-gold flex items-center justify-center text-gold font-black text-sm shadow-[0_0_20px_rgba(212,175,55,0.3)] animate-pulse">
+              <div className="w-12 h-12 rounded-full bg-linear-to-br from-gold/30 to-transparent border border-gold flex items-center justify-center text-gold font-black text-sm shadow-[0_0_20px_rgba(212,175,55,0.3)] animate-pulse">
                 AD
               </div>
               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gold rounded-full border-2 border-[#000B21] flex items-center justify-center shadow-lg">
@@ -53,9 +53,9 @@ const ProfileDropdown = ({ user, isAdmin = false, close }: ProfileDropdownProps)
               { icon: Settings, label: 'Core System Controls', href: '/admin/settings' },
             ].map((item) => (
               <Link key={item.label} href={item.href} onClick={close}>
-                <div className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/[0.03] border border-transparent hover:border-gold/20 transition-all group text-white/50 hover:text-white">
+                <div className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/3 border border-transparent hover:border-gold/20 transition-all group text-white/50 hover:text-white">
                   <item.icon size={16} className="group-hover:text-gold transition-colors duration-300" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.1em]">{item.label}</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">{item.label}</span>
                 </div>
               </Link>
             ))}
@@ -69,7 +69,7 @@ const ProfileDropdown = ({ user, isAdmin = false, close }: ProfileDropdownProps)
               className="w-full mt-3 flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all duration-300 group text-red-400/60 hover:text-red-400"
             >
               <LogOut size={16} className="group-hover:translate-x-1 transition-transform" />
-              <span className="text-[10px] font-black uppercase tracking-[0.1em]">Disconnect Link</span>
+              <span className="text-[10px] font-black uppercase tracking-widest">Disconnect Link</span>
             </button>
           </div>
         </>
@@ -80,7 +80,7 @@ const ProfileDropdown = ({ user, isAdmin = false, close }: ProfileDropdownProps)
           {/* Header Section: The Identity Core */}
           <div className="flex items-center gap-4 pb-5 mb-5 border-b border-white/5">
             <div className="relative">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold/20 to-transparent border border-gold/30 flex items-center justify-center text-gold font-black text-sm shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+              <div className="w-12 h-12 rounded-full bg-linear-to-br from-gold/20 to-transparent border border-gold/30 flex items-center justify-center text-gold font-black text-sm shadow-[0_0_15px_rgba(212,175,55,0.2)]">
                 {user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
               </div>
               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gold rounded-full border-2 border-[#000B21] flex items-center justify-center shadow-lg">
@@ -104,9 +104,9 @@ const ProfileDropdown = ({ user, isAdmin = false, close }: ProfileDropdownProps)
               { icon: Settings, label: 'Security Settings', href: '/dashboard/settings' },
             ].map((item) => (
               <Link key={item.label} href={item.href} onClick={close}>
-                <div className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/[0.03] border border-transparent hover:border-white/5 transition-all group text-white/50 hover:text-white">
+                <div className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/3 border border-transparent hover:border-white/5 transition-all group text-white/50 hover:text-white">
                   <item.icon size={16} className="group-hover:text-gold transition-colors duration-300" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.1em]">{item.label}</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">{item.label}</span>
                 </div>
               </Link>
             ))}
@@ -120,7 +120,7 @@ const ProfileDropdown = ({ user, isAdmin = false, close }: ProfileDropdownProps)
               className="w-full mt-3 flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all duration-300 group text-red-400/60 hover:text-red-400"
             >
               <LogOut size={16} className="group-hover:translate-x-1 transition-transform" />
-              <span className="text-[10px] font-black uppercase tracking-[0.1em]">Terminate Session</span>
+              <span className="text-[10px] font-black uppercase tracking-widest">Terminate Session</span>
             </button>
           </div>
         </>

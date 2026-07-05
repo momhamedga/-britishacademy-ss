@@ -17,8 +17,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTransition } from 'react'; 
 import { motion, AnimatePresence } from 'framer-motion';
+import type { NavUser } from '@/types';
 
-export default function Sidebar({ studentData }: { studentData: any }) {
+export default function Sidebar({ studentData }: { studentData: (NavUser & { id?: string }) | null }) {
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
 
@@ -80,7 +81,7 @@ export default function Sidebar({ studentData }: { studentData: any }) {
                   <motion.div 
                     layoutId="sidebar-active"
                     transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
-                    className="absolute left-[-24px] top-1/2 -translate-y-1/2 w-[4px] h-9 bg-gold shadow-[0_0_20px_#D4AF37] rounded-r-full" 
+                    className="absolute -left-6 top-1/2 -translate-y-1/2 w-1 h-9 bg-gold shadow-[0_0_20px_#D4AF37] rounded-r-full" 
                   />
                 )}
 
@@ -89,8 +90,8 @@ export default function Sidebar({ studentData }: { studentData: any }) {
                   whileTap={{ scale: 0.98 }}
                   className={`flex items-center justify-between px-5 py-3.5 rounded-2xl transition-all duration-300 relative overflow-hidden ${
                     isActive 
-                    ? 'bg-gradient-to-r from-white/[0.06] to-transparent text-white border border-white/[0.03]' 
-                    : 'text-slate-400 hover:text-white hover:bg-white/[0.02]'
+                    ? 'bg-linear-to-r from-white/6 to-transparent text-white border border-white/3' 
+                    : 'text-slate-400 hover:text-white hover:bg-white/2'
                   }`}
                 >
                   <div className="flex items-center gap-4 relative z-10">
@@ -121,10 +122,10 @@ export default function Sidebar({ studentData }: { studentData: any }) {
       </div>
 
       {/* 👤 Footer Controls - Locked tightly at the base */}
-      <div className="pt-8 space-y-4 border-t border-white/[0.03] mt-8 shrink-0">
+      <div className="pt-8 space-y-4 border-t border-white/3 mt-8 shrink-0">
         
         {/* Profile Identity Card */}
-        <div className="bg-white/[0.02] border border-white/[0.04] rounded-2xl p-4 flex items-center gap-3.5 group hover:bg-white/[0.04] transition-all duration-500 backdrop-blur-md">
+        <div className="bg-white/2 border border-white/4 rounded-2xl p-4 flex items-center gap-3.5 group hover:bg-white/4 transition-all duration-500 backdrop-blur-md">
           <div className="relative size-11 shrink-0">
             <div className="absolute inset-0 bg-gold blur-md rounded-xl opacity-10 group-hover:opacity-20 transition-opacity" />
             <div className="relative h-full w-full bg-navy border border-white/10 rounded-xl flex items-center justify-center text-gold font-mono font-black text-lg shadow-2xl">
@@ -169,7 +170,7 @@ export default function Sidebar({ studentData }: { studentData: any }) {
         <Link href="/" className="block">
           <motion.div 
             whileHover={{ scale: 1.01 }}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-lg transition-all duration-300 border border-white/[0.03] text-slate-500 hover:border-gold/20 hover:text-gold bg-white/[0.005] hover:bg-white/[0.02]"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-lg transition-all duration-300 border border-white/3 text-slate-500 hover:border-gold/20 hover:text-gold bg-white/0.5 hover:bg-white/2"
           >
             <Globe size={13} />
             <span className="text-[8px] font-black uppercase tracking-widest">Return to Base</span>

@@ -10,6 +10,7 @@
   --academy-gold: oklch(75% 0.15 85);
   --academy-gold-light: oklch(88% 0.12 95);
   --academy-gold-dark: oklch(55% 0.15 75);
+  --academy-medium-blue: oklch(45% 0.12 255);
 
   --success: oklch(65% 0.22 150);
   --error: oklch(55% 0.20 25);
@@ -37,6 +38,7 @@ html[data-scroll-behavior="smooth"] {
   --color-gold: var(--academy-gold);
   --color-gold-light: var(--academy-gold-light);
   --color-gold-dark: var(--academy-gold-dark);
+  --color-mediumBlue: var(--academy-medium-blue);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   
@@ -110,6 +112,53 @@ html[data-scroll-behavior="smooth"] {
     backdrop-filter: blur(10px);
   }
 }
+/* 🌟 Hero 2026: حدود متدرجة دوّارة بتقنية @property (متحركة بسلاسة GPU) */
+@property --border-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes spin-border {
+  to { --border-angle: 360deg; }
+}
+
+.animated-border {
+  position: relative;
+  isolation: isolate;
+}
+.animated-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(from var(--border-angle), transparent 0%, var(--academy-gold) 15%, transparent 30%);
+  animation: spin-border 6s linear infinite;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animated-border::before { animation: none; }
+}
+
+/* 🖱️ Spotlight يتبع المؤشر (بيتحدث بمتغيرات CSS من الـ JS) */
+.cursor-spotlight {
+  background: radial-gradient(
+    480px circle at var(--mx, 50%) var(--my, 50%),
+    oklch(75% 0.15 85 / 12%),
+    transparent 60%
+  );
+}
+
+/* 🎞️ نسيج حبيبي سينمائي خفيف فوق الخلفيات الغامقة — بدون position/opacity/blend مثبتة
+   عشان تفضل قابلة للتركيب مع أي utility classes (fixed/absolute, opacity-*, mix-blend-*) */
+.grain-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 /* إخفاء شريط التمرير لكل المتصفحات */
 .no-scrollbar::-webkit-scrollbar {
     display: none;

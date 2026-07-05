@@ -31,7 +31,7 @@ export default function UnifiedTacticalFooter() {
           className="absolute inset-0" 
           style={{ background: `linear-gradient(to bottom, transparent, ${COLORS.navy})` }} 
         />
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
       </div>
 
       <div className="max-w-6xl mx-auto relative z-10 px-6">
@@ -51,7 +51,7 @@ export default function UnifiedTacticalFooter() {
             
             <motion.div 
               whileTap={{ scale: 0.95 }}
-              className="relative p-7 md:p-11 rounded-[2.5rem] md:rounded-[3.5rem] bg-white/[0.02] border border-white/10 backdrop-blur-2xl shadow-2xl transition-all duration-700"
+              className="relative p-7 md:p-11 rounded-[2.5rem] md:rounded-[3.5rem] bg-white/2 border border-white/10 backdrop-blur-2xl shadow-2xl transition-all duration-700"
             >
               <Image 
                 src="/logo.webp" 
@@ -63,7 +63,7 @@ export default function UnifiedTacticalFooter() {
             </motion.div>
 
             <div className="mt-8 text-center space-y-2">
-              <h2 className="text-3xl md:text-5xl font-black text-white tracking-[0.1em] uppercase italic leading-none">
+              <h2 className="text-3xl md:text-5xl font-black text-white tracking-widest uppercase italic leading-none">
                 BRITISH <span className="text-[#D4AF37]">ACADEMY</span>
               </h2>
               <p className="text-[7px] md:text-[9px] text-white/30 font-bold uppercase tracking-[0.6em]">
@@ -76,7 +76,7 @@ export default function UnifiedTacticalFooter() {
           {/* هنا التغيير في الموبايل: العناصر بتترص عمودياً مع عرض كامل */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
             <Link href={`mailto:${CONTACT_CONFIG.email}`} className="group w-full">
-              <div className="flex items-center justify-between p-5 bg-white/[0.03] border border-white/5 rounded-2xl group-hover:border-[#D4AF37]/50 transition-all duration-500">
+              <div className="flex items-center justify-between p-5 bg-white/3 border border-white/5 rounded-2xl group-hover:border-[#D4AF37]/50 transition-all duration-500">
                 <div className="flex items-center gap-4 overflow-hidden">
                   <div className="shrink-0 p-2 rounded-lg bg-[#D4AF37]/10">
                     <Mail size={14} className="text-[#D4AF37]" />
@@ -89,7 +89,7 @@ export default function UnifiedTacticalFooter() {
               </div>
             </Link>
 
-            <div className="flex items-center justify-around p-5 bg-white/[0.03] border border-white/5 rounded-2xl w-full">
+            <div className="flex items-center justify-around p-5 bg-white/3 border border-white/5 rounded-2xl w-full">
               {[Facebook, Instagram, Twitter, Linkedin].map((Icon, i) => (
                 <motion.a 
                   key={i} 
@@ -108,7 +108,7 @@ export default function UnifiedTacticalFooter() {
           {/* في الموبايل هنخليها Stack عمودي منظم */}
           <div className="w-full pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-10">
             <div className="flex flex-wrap items-center justify-center gap-4">
-              <div className="flex items-center gap-2.5 px-4 py-2 bg-white/[0.03] border border-white/5 rounded-full">
+              <div className="flex items-center gap-2.5 px-4 py-2 bg-white/3 border border-white/5 rounded-full">
                 <Globe size={11} className="text-[#D4AF37] animate-pulse" />
                 <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">London HQ</span>
               </div>
@@ -119,7 +119,7 @@ export default function UnifiedTacticalFooter() {
             </div>
 
             <div className="text-center md:text-right space-y-3">
-              <p className="text-[7px] md:text-[8px] text-white/20 font-bold uppercase tracking-[0.5em] leading-relaxed max-w-[250px] md:max-w-none">
+              <p className="text-[7px] md:text-[8px] text-white/20 font-bold uppercase tracking-[0.5em] leading-relaxed max-w-62.5 md:max-w-none">
                 © {currentYear} British Academy Intelligence. <br className="md:hidden" /> All Rights Reserved.
               </p>
               <p className="text-[10px] md:text-[11px] text-[#D4AF37]/60 font-black tracking-[0.3em] uppercase">
@@ -134,7 +134,7 @@ export default function UnifiedTacticalFooter() {
       <motion.div 
         animate={{ x: ['-100%', '100%'] }}
         transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-        className="absolute bottom-0 left-0 w-1/2 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent" 
+        className="absolute bottom-0 left-0 w-1/2 h-px bg-linear-to-r from-transparent via-[#D4AF37]/40 to-transparent" 
       />
     </footer>
   );

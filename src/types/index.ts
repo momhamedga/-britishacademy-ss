@@ -11,9 +11,12 @@ export interface Course {
   short_description?: string;
   enrollment_count?: number;
   image_url?: string;
+  instructor_name?: string;
+  certificate_template_url?: string | null;
+  progress?: number;
   
-  // المحتوى التفصيلي (بما إننا هنخزنه كـ JSON في الـ DB أو ندمجه)
-  full_content?: {
+  // المحتوى التفصيلي — بييجي من الـ DB كـ string (JSON نصي) أحيانًا وكـ object مُفكك أحيانًا تانية
+  full_content?: string | {
     overview: string;
     benefits: string[];
     curriculum: string[];
@@ -38,6 +41,11 @@ export interface HeroSlide {
 export interface NavLink {
   name: string;
   href: string;
+}
+
+export interface NavUser {
+  name: string;
+  rank: string;
 }
 
 // إضافة تيب لـ Hub Cards لو حبيت تستخدمه لاحقاً
@@ -83,5 +91,6 @@ export interface StudentCertificate {
   title: string;        // من جدول الكورسات
   category: string;     // من جدول الكورسات
   certificate_code: string; // من جدول الشهادات
-  issued_at: Date;      // من جدول الشهادات
+  certificate_url?: string | null;
+  issued_at: string | Date;      // من جدول الشهادات
 }

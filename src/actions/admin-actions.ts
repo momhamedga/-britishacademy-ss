@@ -2,20 +2,23 @@
 import { sql } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { put } from "@vercel/blob";
+import { isAdminAuthorized } from "@/lib/session";
 
 export async function upsertCourse(formData: FormData) {
+  if (!(await isAdminAuthorized())) return { error: "UNAUTHORIZED" };
+
   const id = formData.get('id') as string;
   let imageUrl = formData.get('image_url') as string;
   const imageFile = formData.get('image_file') as File;
   
-  let certificateTemplateUrl = formData.get('certificate_template_url') as string;
+  let certificateTemplateUrl = formData.get('certificate_template_url') as string | null;
   const certificateFile = formData.get('certificate_file') as File;
 
   const lessonsDataRaw = formData.get('lessons_json') as string;
   const lessonsList = lessonsDataRaw ? JSON.parse(lessonsDataRaw) : [];
 
   // 🎯 تكتيك الحماية النووي: لو تعديل، جيب الداتا القديمة من الـ DB قبل أي تغيير
-  let existingCourse: any = null;
+  let existingCourse: { image_url?: string; certificate_template_url?: string } | null = null;
   if (id) {
     try {
       const rows = await sql`SELECT image_url, certificate_template_url FROM courses WHERE id::text = ${id} LIMIT 1`;
@@ -107,38 +110,48 @@ export async function upsertCourse(formData: FormData) {
 }
 
 export async function deleteCourse(id: string) {
+  if (!(await isAdminAuthorized())) return { error: "UNAUTHORIZED" };
+
   try {
     await sql`DELETE FROM courses WHERE id::text = ${id}`;
     revalidatePath('/admin');
     revalidatePath('/academy');
     revalidatePath('/dashboard/certificates');
     return { success: true };
-  } catch (e) { return { error: "DELETE_FAILED" }; }
+  } catch { return { error: "DELETE_FAILED" }; }
 }
 
 export async function getCourseLessonsForAdmin(courseId: string) {
+  if (!(await isAdminAuthorized())) return [];
+
   try {
     return await sql`SELECT title, description, video_url, duration FROM public.lessons WHERE course_id::text = ${courseId} ORDER BY created_at ASC`;
-  } catch (e) { return []; }
+  } catch { return []; }
 }
 
 export async function updateUserRank(userId: string, newRank: 'AGENT' | 'INSTRUCTOR' | 'ADMIN') {
+  if (!(await isAdminAuthorized())) return { error: "UNAUTHORIZED" };
+
   try {
     await sql`UPDATE students SET rank = ${newRank} WHERE id::text = ${userId}`;
     revalidatePath('/admin/users');
     return { success: true };
-  } catch (e) { return { error: "RANK_UPDATE_FAILED" }; }
+  } catch { return { error: "RANK_UPDATE_FAILED" }; }
 }
 
 export async function issueCertificate(studentId: string, courseId: string, code: string) {
+  if (!(await isAdminAuthorized())) return { error: "UNAUTHORIZED" };
+
   try {
     await sql`INSERT INTO certificates (student_id, course_id, certificate_code, issued_at) VALUES (${studentId}::uuid, ${courseId}::uuid, ${code}, NOW())`;
     revalidatePath('/admin/certificates');
     return { success: true };
-  } catch (e) { return { error: "CERTIFICATE_ISSUE_FAILED" }; }
+  } catch { return { error: "CERTIFICATE_ISSUE_FAILED" }; }
 }
 
 export async function getAllStudentsForAdmin() {
+  if (!(await isAdminAuthorized())) return [];
+
   try {
     const data = await sql`
       SELECT id, student_id, name, email, rank FROM public.students 
@@ -152,8 +165,9 @@ export async function getAllStudentsForAdmin() {
 }
 
 // 2. تحديث ورفع بطاقة العضوية الخاصة بالطالب المختار صراحة
-// 2. تحديث ورفع بطاقة العضوية الخاصة بالطالب المختار صراحة
 export async function updateStudentMembershipCard(formData: FormData) {
+  if (!(await isAdminAuthorized())) return { success: false, error: "UNAUTHORIZED" };
+
   try {
     const incomingId = formData.get('id') as string || formData.get('student_id') as string;
     let cardUrl = formData.get('card_url') as string;

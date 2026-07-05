@@ -7,11 +7,16 @@ interface CardType {
   icon: React.ElementType;
 }
 
-export const ABOUT_CONTENT = {
+export const ABOUT_CONTENT: {
+  badge: string;
+  headline: string;
+  description: string;
+  cards: CardType[];
+} = {
   badge: "About Us",
   headline: "WE ARE  GLOBAL SECURITY ",
   description: "A specialized security training platform serving private security companies and individuals since 2018.",
-  
+
   cards: [
     {
       title: "Our Mission",

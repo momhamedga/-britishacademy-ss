@@ -1,5 +1,5 @@
 
-import { motion, useInView, useMotionValue, useSpring } from 'framer-motion';
+import { useInView, useMotionValue, useSpring } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 export default function Counter({ value, direction = "up" }: { value: string, direction?: "up" | "down" }) {
   const ref = useRef<HTMLSpanElement>(null);

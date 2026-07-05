@@ -1,13 +1,11 @@
-import { 
-  ShieldCheck, 
-  Target, 
-  Award, 
-  TrendingUp, 
-  Users, 
-  RefreshCw, 
-  Search,
-  BookOpen,
-  Briefcase
+import {
+  ShieldCheck,
+  Target,
+  Award,
+  TrendingUp,
+  Users,
+  RefreshCw,
+  Search
 } from 'lucide-react';
 
 export const CERTIFICATE_OVERVIEW = {

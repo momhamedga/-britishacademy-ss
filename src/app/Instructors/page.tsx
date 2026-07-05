@@ -10,8 +10,8 @@ export default function InstructorsPage() {
   return (
     <main className="relative min-h-screen  overflow-x-hidden ">
       {/* Dynamic Background - CSS Only for SEO speed */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] pointer-events-none -z-10">
-        <div className="absolute top-[-10%] left-[-20%] w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-gold/5 blur-[120px] rounded-full opacity-50 animate-pulse" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-200 pointer-events-none -z-10">
+        <div className="absolute top-[-10%] left-[-20%] w-75 md:w-150 h-75 md:h-150 bg-gold/5 blur-[120px] rounded-full opacity-50 animate-pulse" />
       </div>
 
       {/* Cinematic Header with Fluid Font */}

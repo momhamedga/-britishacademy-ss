@@ -2,13 +2,21 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { QrCode, ShieldCheck, FileText, Share2, Search, ArrowRight, Loader2, XCircle, CheckCircle2 } from 'lucide-react';
+import { QrCode, ShieldCheck, FileText, Share2, Search, ArrowRight, Loader2, XCircle, CheckCircle2, type LucideIcon } from 'lucide-react';
 import { verifyCertificateAction } from "@/actions/academy-actions"; // تأكد من المسار
+
+interface CertificateResult {
+  student_name: string;
+  course_title: string;
+  certificate_url?: string | null;
+  certificate_code: string;
+  issued_at: string;
+}
 
 export default function CertificateVerification() {
   const [code, setCode] = useState("");
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<CertificateResult | null>(null);
 
   const handleVerify = async () => {
     if (!code) return;
@@ -17,7 +25,7 @@ export default function CertificateVerification() {
     const response = await verifyCertificateAction(code);
     
     if (response.success) {
-      setResult(response.certificate);
+      setResult(response.certificate as unknown as CertificateResult);
       setStatus('success');
     } else {
       setStatus('error');
@@ -86,7 +94,7 @@ export default function CertificateVerification() {
       initial={{ opacity: 0, height: 0 }} 
       animate={{ opacity: 1, height: 'auto' }}
       exit={{ opacity: 0, height: 0 }}
-      className="p-6 bg-emerald-50/50 border border-emerald-100 rounded-[2rem] space-y-4 relative overflow-hidden"
+      className="p-6 bg-emerald-50/50 border border-emerald-100 rounded-4xl space-y-4 relative overflow-hidden"
     >
       {/* Success Badge */}
       <div className="flex items-center gap-2 text-emerald-600">
@@ -165,7 +173,7 @@ export default function CertificateVerification() {
   );
 }
 
-function FeatureItem({ icon: Icon, text }: { icon: any, text: string }) {
+function FeatureItem({ icon: Icon, text }: { icon: LucideIcon, text: string }) {
   return (
     <div className="flex items-center gap-4 group">
       <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">

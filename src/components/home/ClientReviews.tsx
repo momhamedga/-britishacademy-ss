@@ -1,20 +1,22 @@
 "use client";
-import { useSyncExternalStore, useRef, memo,  useEffect, useState } from "react";
+import { useSyncExternalStore, useRef, memo } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 import { REVIEWS } from "@/lib/constants/clientReviews";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import KineticText from "@/components/shared/KineticHeading";
+import type { Review } from "@/types/Reviews";
 
-export default function ClientReviews() {
-  const subscribe = () => () => {};
+const subscribe = () => () => {};
 const getSnapshot = () => true;
 const getServerSnapshot = () => false;
-const isMounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);  const isDesktop = useMediaQuery("(min-width: 1024px)");
+
+export default function ClientReviews() {
+  const isMounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
   const scrollRef = useRef<HTMLDivElement>(null);
 
-
-
-const handleScroll = (direction: 'left' | 'right') => {
+  const handleScroll = (direction: 'left' | 'right') => {
     const el = scrollRef.current;
     if (el) {
       const scrollAmount = direction === 'left' ? -el.clientWidth * 0.8 : el.clientWidth * 0.8;
@@ -42,12 +44,12 @@ const handleScroll = (direction: 'left' | 'right') => {
             </span>
           </motion.div>
           
-          <h2 className="font-black text-5xl md:text-[105px] font-black italic uppercase tracking-tighter text-navy leading-[0.85]">
-            Client 
+          <h2 className="font-black text-5xl md:text-[105px] italic uppercase tracking-tighter text-navy leading-[0.85]">
+            <KineticText text="Client" />
             {/* ✅ v4: bg-linear-to-b هو السنتاكس الجديد للجرادينت */}
-            <span className="text-transparent bg-clip-text bg-linear-to-b from-gold to-gold-dark">
-              Reviews
-            </span> 
+            <span className="block text-transparent bg-clip-text bg-linear-to-b from-gold to-gold-dark">
+              <KineticText text="Reviews" delayOffset={1} />
+            </span>
           </h2>
         </header>
 
@@ -82,7 +84,7 @@ const handleScroll = (direction: 'left' | 'right') => {
   );
 }
 
-const ReviewCard = memo(({ review, isDesktop }: { review: any, isDesktop: boolean }) => {
+const ReviewCard = memo(({ review, isDesktop }: { review: Review, isDesktop: boolean }) => {
   return (
     <motion.div 
       whileHover={isDesktop ? { y: -5 } : {}}
@@ -162,7 +164,7 @@ const GoogleIcon = ({ className }: { className?: string }) => (
 const ReviewsSkeleton = () => (
   <div className="py-40 flex justify-center gap-10 overflow-hidden px-8">
     {[1, 2, 3].map(i => (
-      <div key={i} className="w-[480px] h-[480px] bg-slate-50 rounded-[4rem] animate-pulse shrink-0" />
+      <div key={i} className="w-120 h-120 bg-slate-50 rounded-[4rem] animate-pulse shrink-0" />
     ))}
   </div>
 );

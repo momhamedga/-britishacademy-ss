@@ -5,8 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAcademyStore } from "@/store/useAcademyStore";
 import { Search } from "lucide-react";
 import CourseCard from "../ui/CourseCard";
+import type { Course } from "@/types";
 
-export default function CourseList({ initialData = [] }: { initialData?: any[] }) {
+export default function CourseList({ initialData = [] }: { initialData?: Course[] }) {
   const storeCourses = useAcademyStore((state) => state.courses);
   const activeCategory = useAcademyStore((state) => state.activeCategory);
   const activeLevel = useAcademyStore((state) => state.activeLevel);
@@ -59,7 +60,7 @@ export default function CourseList({ initialData = [] }: { initialData?: any[] }
               exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
               /* 🎯 السحر هنا: لو وضع List بنلغي الـ max-w والـ mx-auto عشان الكارت يملأ العرض المتاح ويفرد تكتيكياً */
               className={`h-auto w-full min-w-0 flex flex-col justify-start transition-all duration-500 ${
-                isList ? 'max-w-none' : 'max-w-[380px] mx-auto'
+                isList ? 'max-w-none' : 'max-w-95 mx-auto'
               }`}
             >
               {/* نمرر الـ isListView صراحة للكارت */}
@@ -69,7 +70,7 @@ export default function CourseList({ initialData = [] }: { initialData?: any[] }
         ) : (
           <motion.div layout className="col-span-full py-16 text-center border border-slate-100 rounded-xl bg-white shadow-sm">
             <div className="flex flex-col items-center gap-3 max-w-xs mx-auto px-4">
-              <div className="size-11 rounded-xl bg-slate-50 flex items-center justify-center border border-black/[0.02]">
+              <div className="size-11 rounded-xl bg-slate-50 flex items-center justify-center border border-black/2">
                  <Search className="text-slate-400" size={16} />
               </div>
               <div className="space-y-0.5">

@@ -11,12 +11,12 @@ export default function Loading() {
       </div>
 
       {/* Progress Card Loading */}
-      <div className="h-48 w-full bg-white/[0.02] border border-white/5 rounded-[2rem]" />
+      <div className="h-48 w-full bg-white/2 border border-white/5 rounded-4xl" />
 
       {/* Stats Grid Loading */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-32 bg-white/[0.01] border border-white/5 rounded-3xl" />
+          <div key={i} className="h-32 bg-white/1 border border-white/5 rounded-3xl" />
         ))}
       </div>
     </div>

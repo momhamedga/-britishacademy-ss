@@ -6,6 +6,10 @@ import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ShieldCheck } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import KineticText from "@/components/shared/KineticHeading";
+import MagneticButton from "@/components/home/hero/MagneticButton";
+import { useRouter } from "next/navigation";
+import type { Course } from "@/types";
 
 // ✅ استدعاء السكيلتون بشكل أسرع (SSR Disabled for performance)
 const CourseList = dynamic(() => import("@/components/courses/CourseList"), {
@@ -18,8 +22,9 @@ const subscribe = () => () => {};
 const getSnapshot = () => true;
 const getServerSnapshot = () => false;
 
-export default function HomeCoursesPreview({ initialCourses }: { initialCourses: any[] }) {
+export default function HomeCoursesPreview({ initialCourses }: { initialCourses: Course[] }) {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const router = useRouter();
   
   // ✅ الحل الاحترافي للـ Hydration (بيضمن إن الكود ميرندرش غير لما يوصل للكلينت)
   const isMounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
@@ -66,21 +71,21 @@ export default function HomeCoursesPreview({ initialCourses }: { initialCourses:
               <ShieldCheck size={14} className="text-gold" />
               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gold/80">Academy Programs</span>
             </div>
-            <h2 className="font-[var(--font-display)] text-5xl md:text-7xl lg:text-8xl font-black italic uppercase tracking-tighter text-white leading-[0.85]">
-                OUR <span className="text-transparent bg-clip-text bg-linear-to-b from-gold to-gold/60">TRAINING</span>
+            <h2 className="font-(--font-display) text-5xl md:text-7xl lg:text-8xl font-black italic uppercase tracking-tighter text-white leading-[0.85]">
+                <KineticText text="OUR" />
+                <span className="block text-transparent bg-clip-text bg-linear-to-b from-gold to-gold/60">
+                  <KineticText text="TRAINING" delayOffset={1} />
+                </span>
             </h2>
           </div>
 
           {isDesktop && (
-            <Link href="/courses">
-              <motion.button 
-                whileHover={{ scale: 1.05, y: -4 }}
-                whileTap={{ scale: 0.98 }}
-                className="px-10 py-5 bg-gold text-navy font-black uppercase tracking-[0.2em] text-[10px] rounded-full shadow-2xl transition-all flex items-center gap-4 group"
-              >
-                Explore Programs <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform duration-300" />
-              </motion.button>
-            </Link>
+            <MagneticButton
+              onClick={() => router.push("/courses")}
+              className="group relative px-10 py-5 bg-gold text-navy font-black uppercase tracking-[0.2em] text-[10px] rounded-full shadow-2xl transition-all flex items-center gap-4"
+            >
+              Explore Programs <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform duration-300" />
+            </MagneticButton>
           )}
         </header>
 
@@ -125,7 +130,7 @@ export default function HomeCoursesPreview({ initialCourses }: { initialCourses:
 const CourseListSkeleton = () => (
   <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
     {[1, 2, 3].map((i) => (
-      <div key={i} className="aspect-[4/5] bg-white/5 border border-white/10 rounded-[2.5rem] animate-pulse" />
+      <div key={i} className="aspect-4/5 bg-white/5 border border-white/10 rounded-[2.5rem] animate-pulse" />
     ))}
   </div>
 );

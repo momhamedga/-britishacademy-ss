@@ -1,11 +1,11 @@
 "use client";
 import { motion } from "framer-motion";
-import { ShieldAlert, Lock, Fingerprint, ArrowRight, Zap } from "lucide-react";
+import { ShieldAlert, Fingerprint, ArrowRight, Zap } from "lucide-react";
 import Link from "next/link";
 
 export default function AccessDenied() {
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-999 flex items-center justify-center p-4">
       {/* 🌌 Background Overlay with Blur & Darker Tint */}
       <motion.div 
         initial={{ opacity: 0 }}
@@ -17,14 +17,14 @@ export default function AccessDenied() {
       <motion.div 
         animate={{ top: ["0%", "100%", "0%"] }}
         transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-        className="absolute left-0 right-0 h-[2px] bg-red-600/40 shadow-[0_0_20px_rgba(220,38,38,0.8)] z-10 pointer-events-none"
+        className="absolute left-0 right-0 h-0.5 bg-red-600/40 shadow-[0_0_20px_rgba(220,38,38,0.8)] z-10 pointer-events-none"
       />
 
       {/* 🛸 The Security Card */}
       <motion.div 
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        className="relative z-20 w-full max-w-md p-8 md:p-12 border border-red-500/20 bg-gradient-to-b from-red-500/[0.05] to-transparent rounded-[2.5rem] overflow-hidden shadow-[0_0_100px_rgba(220,38,38,0.1)]"
+        className="relative z-20 w-full max-w-md p-8 md:p-12 border border-red-500/20 bg-linear-to-b from-red-500/5 to-transparent rounded-[2.5rem] overflow-hidden shadow-[0_0_100px_rgba(220,38,38,0.1)]"
       >
         {/* Background Grid Accent */}
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.03] pointer-events-none" />
@@ -50,7 +50,7 @@ export default function AccessDenied() {
           <h2 className="text-3xl md:text-4xl font-black italic uppercase text-white mb-3 tracking-tighter">
             Access <span className="text-red-500">Denied</span>
           </h2>
-          <p className="text-slate-400 text-[10px] md:text-xs leading-relaxed uppercase tracking-[0.15em] font-bold max-w-[280px] mx-auto opacity-70">
+          <p className="text-slate-400 text-[10px] md:text-xs leading-relaxed uppercase tracking-[0.15em] font-bold max-w-70 mx-auto opacity-70">
             Clearance Level Insufficient. Please initialize identity verification to proceed.
           </p>
         </div>
@@ -61,7 +61,7 @@ export default function AccessDenied() {
             <motion.button 
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full group bg-red-600 hover:bg-red-500 py-5 rounded-2xl text-white font-black uppercase italic text-xs tracking-[0.1em] transition-all flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(220,38,38,0.3)]"
+              className="w-full group bg-red-600 hover:bg-red-500 py-5 rounded-2xl text-white font-black uppercase italic text-xs tracking-widest transition-all flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(220,38,38,0.3)]"
             >
               <Fingerprint size={18} className="group-hover:animate-bounce" />
               Create Credentials

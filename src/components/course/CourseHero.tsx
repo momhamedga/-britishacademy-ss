@@ -8,17 +8,15 @@ interface CourseHeroProps {
 }
 
 export default function CourseHero({ course }: CourseHeroProps) {
-  
-  const getInitial = (name: string) => name?.charAt(0).toUpperCase() || "I";
 
   return (
     <section className="relative  min-h-screen w-full bg-navy overflow-hidden">
       
       {/* 🌌 Ultra-Modern Background Layer */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[-20%] right-[-10%] w-[80vw] h-[80vw] bg-gold/[0.07] blur-[160px] rounded-full animate-pulse" />
+        <div className="absolute top-[-20%] right-[-10%] w-[80vw] h-[80vw] bg-gold/7 blur-[160px] rounded-full animate-pulse" />
         <div className="absolute bottom-[-10%] left-[-10%] w-[70vw] h-[70vw] bg-gold/4 blur-[140px] rounded-full" />
-        <div className="absolute inset-0 bg-[url('/assets/noise.png')] opacity-[0.02] mix-blend-overlay" />
+        <div className="grain-overlay absolute inset-0 opacity-[0.02] mix-blend-overlay" />
       </div>
 
       <div className="relative z-10 max-w-450 mx-auto px-6 md:px-12 lg:px-20 py-20">
@@ -43,10 +41,10 @@ export default function CourseHero({ course }: CourseHeroProps) {
       {course.title}
     </span>
     {/* الخط الرفيع اللي في الصورة */}
-    <div className="absolute -bottom-2 left-0 w-full h-[1px] bg-gold/40 scale-x-100 origin-left transition-transform duration-500" />
+    <div className="absolute -bottom-2 left-0 w-full h-px bg-gold/40 scale-x-100 origin-left transition-transform duration-500" />
     
     {/* لمسة إضافية: توهج خفيف تحت الكلمة النشطة */}
-    <div className="absolute -bottom-2 left-0 w-full h-[4px] bg-gold/10 blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
+    <div className="absolute -bottom-2 left-0 w-full h-1 bg-gold/10 blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
   </div>
 </nav>
 
@@ -78,7 +76,7 @@ export default function CourseHero({ course }: CourseHeroProps) {
                   ))}
                   <div className="w-8 h-8 rounded-full border-2 border-navy bg-gold flex items-center justify-center text-[8px] font-black text-navy">+82</div>
                 </div>
-                <div className="h-4 w-[1px] bg-white/10" />
+                <div className="h-4 w-px bg-white/10" />
                 <div className="flex items-center gap-2">
                    <Star size={14} className="text-gold fill-gold" />
                    <span className="text-white font-black text-xs">4.9</span>
@@ -92,7 +90,7 @@ export default function CourseHero({ course }: CourseHeroProps) {
             </div>
 
             {/* 📊 High-Performance Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 p-8 bg-white/[0.02] border border-white/5 rounded-[2.5rem] backdrop-blur-3xl">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 p-8 bg-white/2 border border-white/5 rounded-[2.5rem] backdrop-blur-3xl">
               {[
                 { label: "Duration", val: course.duration, icon: Calendar },
                 { label: "Strength", val: "64kg Muscle Avg", icon: Users }, // لمسة شخصية لبايلوت
@@ -113,7 +111,7 @@ export default function CourseHero({ course }: CourseHeroProps) {
           {/* 🎬 Right Side: Cinematic Glass Player */}
           <div className="lg:col-span-5 relative">
             <div className="sticky top-32">
-              <div className="group relative aspect-[4/5] rounded-[3rem] overflow-hidden border border-white/10 p-3 bg-white/5 backdrop-blur-3xl shadow-2xl">
+              <div className="group relative aspect-4/5 rounded-[3rem] overflow-hidden border border-white/10 p-3 bg-white/5 backdrop-blur-3xl shadow-2xl">
                 <div className="relative h-full w-full rounded-[2.5rem] overflow-hidden">
                   <Image 
                     src={course.image_url || "/placeholder.jpg"} 
@@ -121,7 +119,7 @@ export default function CourseHero({ course }: CourseHeroProps) {
                     fill 
                     className="object-cover transition-transform duration-[2s] group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy via-transparent to-transparent opacity-60" />
+                  <div className="absolute inset-0 bg-linear-to-t from-navy via-transparent to-transparent opacity-60" />
                   
                   {/* Floating Action Buttons */}
                   <div className="absolute top-6 right-6 flex flex-col gap-3">

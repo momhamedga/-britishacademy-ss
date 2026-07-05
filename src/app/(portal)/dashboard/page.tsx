@@ -3,24 +3,18 @@ import ProgressCard from "@/components/portal/ProgressCard";
 import StatsGrid from "@/components/portal/StatsGrid";
 import { sql } from "@/lib/db";
 import { BookOpen, ShieldCheck, Activity } from 'lucide-react';
-import { cookies } from "next/headers";
+import { getCurrentStudentId } from "@/lib/session";
 
 export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
-  const cookieStore = await cookies();
-  const studentIdText = cookieStore.get("user_id")?.value || cookieStore.get("auth_token")?.value;
+  const studentId = await getCurrentStudentId();
 
-  if (!studentIdText) return null;
+  if (!studentId) return null;
 
-  const safeVector = studentIdText.length > 5 ? studentIdText.substring(1) : studentIdText;
-
-  // لقط الـ UUID الحقيقي والآمن للطالب
   const studentCheck = await sql`
-    SELECT id, name, rank FROM public.students 
-    WHERE student_id = ${studentIdText} 
-       OR student_id LIKE ${'%' + safeVector}
-       OR id::text = ${studentIdText}
+    SELECT id, name, rank FROM public.students
+    WHERE id = ${studentId}::uuid
     LIMIT 1
   `;
 
@@ -55,7 +49,7 @@ export default async function DashboardPage() {
 
       {/* 2️⃣ Progress Card - Ultra Compact Frame */}
       <div className="relative group w-full">
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-gold/5 to-transparent rounded-xl blur-lg opacity-10 pointer-events-none" />
+        <div className="absolute -inset-0.5 bg-linear-to-r from-gold/5 to-transparent rounded-xl blur-lg opacity-10 pointer-events-none" />
         <ProgressCard progress={overallProgress} />
       </div>
 
@@ -82,7 +76,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* 4️⃣ Intelligence Feed - Sharp Compact navy UI */}
-      <div className="border bg-navy border-white/[0.03] rounded-xl p-4 md:p-5 relative overflow-hidden shadow-2xl w-full">
+      <div className="border bg-navy border-white/3 rounded-xl p-4 md:p-5 relative overflow-hidden shadow-2xl w-full">
         <div className="relative z-10">
           <h3 className="text-white/40 font-black text-[9px] uppercase tracking-widest mb-3 flex items-center gap-2">
             <div className="size-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_6px_#10b981]" />

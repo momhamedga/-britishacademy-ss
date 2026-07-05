@@ -34,12 +34,12 @@ export async function sendContactEmail(formData: FormData) {
 
   try {
     // إرسال الإيميل باستخدام HTML مباشر (نفس اللي حطيته في Dashboard Resend)
-    const { data, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       // بما أن الدومين Verified، نستخدم البريد الرسمي
       from: 'British Academy <system@britishacademy-ss.com>', 
       to: ['info@britishacademy-ss.com'],
       subject: `New Inquiry: ${subject}`,
-      reply_to: user_email, // للرد على العميل مباشرة
+      replyTo: user_email, // للرد على العميل مباشرة
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #e1e8ed; border-radius: 16px; overflow: hidden;">
           <div style="background-color: #001f3f; padding: 30px; text-align: center; border-bottom: 4px solid #D4AF37;">

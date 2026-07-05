@@ -26,7 +26,7 @@ export default function AboutStats() {
               viewport={{ once: true }}
               className="relative group"
             >
-              <div className="flex flex-col items-center text-center p-6 md:p-10 rounded-[1.5rem] bg-white border border-black/[0.05] shadow-sm hover:shadow-md transition-all duration-500">
+              <div className="flex flex-col items-center text-center p-6 md:p-10 rounded-3xl bg-white border border-black/5 shadow-sm hover:shadow-md transition-all duration-500">
                 
                 {/* 1. الأيقونة (نفس ترتيب الصورة 213916) */}
                 <div className="mb-6 text-slate-400 group-hover:text-[#D4AF37] transition-colors">

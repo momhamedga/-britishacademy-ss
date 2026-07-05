@@ -4,16 +4,23 @@ import { motion } from 'framer-motion';
 import { Lock, Cpu } from 'lucide-react';
 import { updateSettings } from '@/actions/portal-auth';
 
-export default function SettingsForm({ initialData, studentId }: any) {
+export interface SettingsInitialData {
+  id: string;
+  student_id: string;
+  name: string;
+  rank: string;
+  email: string;
+}
+
+export default function SettingsForm({ initialData }: { initialData: SettingsInitialData }) {
   const [state, formAction, isPending] = useActionState(updateSettings, null);
 
   return (
     /* 📉 ترشيق الـ max-w لـ max-w-xl ليلتحم بالكامل مع الصفحة الممركزه */
     <form action={formAction} className="w-full max-w-xl mx-auto animate-in fade-in duration-500">
-      <input type="hidden" name="studentId" value={studentId} />
-      
+
       {/* 🛡️ تصغير الـ padding لـ p-6 والـ rounded لـ rounded-2xl لمنع الضخامة المفرطة */}
-      <div className="relative bg-navy border border-white/[0.03] rounded-2xl p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.3)] backdrop-blur-3xl overflow-hidden group">
+      <div className="relative bg-navy border border-white/3 rounded-2xl p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.3)] backdrop-blur-3xl overflow-hidden group">
         
         {/* Glow حركي ذهبي هادئ */}
         <div className="absolute -top-24 -right-24 size-72 bg-gold/5 blur-[80px] rounded-full pointer-events-none group-hover:bg-gold/10 transition-colors duration-700" />
@@ -21,7 +28,7 @@ export default function SettingsForm({ initialData, studentId }: any) {
         <div className="relative z-10 space-y-5">
           
           {/* Header Module - Compact Size */}
-          <div className="flex flex-col items-center text-center pb-4 border-b border-white/[0.04]">
+          <div className="flex flex-col items-center text-center pb-4 border-b border-white/4">
             <div className="flex items-center gap-2 mb-2">
                <Cpu size={12} className="text-gold/60 animate-pulse" />
                <h2 className="text-[8px] font-black uppercase tracking-[0.3em] text-gold/60 italic">Identity Node</h2>
@@ -39,9 +46,9 @@ export default function SettingsForm({ initialData, studentId }: any) {
             {/* Operational ID - Compact Section */}
             <div className="space-y-1.5">
               <label className="text-[8px] font-black uppercase tracking-[0.25em] text-slate-500 pl-1">Assigned Vector ID</label>
-              <div className="w-full bg-white/[0.015] border border-white/[0.04] rounded-xl px-4 py-3 flex items-center justify-between">
+              <div className="w-full bg-white/1.5 border border-white/4 rounded-xl px-4 py-3 flex items-center justify-between">
                 <code className="text-gold/50 font-mono font-black text-[11px] tracking-wide italic">
-                  {initialData?.student_id || studentId}
+                  {initialData?.student_id}
                 </code>
                 <Lock size={10} className="text-slate-600" />
               </div>
@@ -54,7 +61,7 @@ export default function SettingsForm({ initialData, studentId }: any) {
                 name="name"
                 type="text" 
                 defaultValue={initialData?.name}
-                className="w-full bg-navy border border-white/10 rounded-xl px-4 py-3 text-white font-bold outline-none focus:border-gold/30 transition-all text-xs uppercase italic bg-white/[0.005]"
+                className="w-full bg-navy border border-white/10 rounded-xl px-4 py-3 text-white font-bold outline-none focus:border-gold/30 transition-all text-xs uppercase italic bg-white/0.5"
               />
             </div>
 
@@ -64,7 +71,7 @@ export default function SettingsForm({ initialData, studentId }: any) {
               <input 
                 name="password"
                 type="password" 
-                className="w-full bg-navy border border-white/10 rounded-xl px-4 py-3 text-white font-bold outline-none focus:border-gold/30 transition-all text-xs tracking-widest bg-white/[0.005]"
+                className="w-full bg-navy border border-white/10 rounded-xl px-4 py-3 text-white font-bold outline-none focus:border-gold/30 transition-all text-xs tracking-widest bg-white/0.5"
                 placeholder="••••••••••••••••"
               />
             </div>
@@ -80,6 +87,17 @@ export default function SettingsForm({ initialData, studentId }: any) {
             >
               {isPending ? 'Syncing...' : 'Synchronize Identity'}
             </motion.button>
+
+            {state?.error && (
+              <p className="mt-3 text-center text-[9px] font-black uppercase tracking-widest text-red-400">
+                {state.error}
+              </p>
+            )}
+            {state?.success && (
+              <p className="mt-3 text-center text-[9px] font-black uppercase tracking-widest text-emerald-400">
+                {state.message}
+              </p>
+            )}
           </div>
 
         </div>

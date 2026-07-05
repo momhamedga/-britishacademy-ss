@@ -2,14 +2,21 @@
 
 import {  useSyncExternalStore } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, ShieldCheck } from 'lucide-react';
+import { Check } from 'lucide-react';
 
 // ✅ دالات الـ Sync لمنع الـ Hydration Error نهائياً
 const subscribe = () => () => {};
 const getSnapshot = () => true;
 const getServerSnapshot = () => false;
 
-const PRICING_DATA = {
+interface PricingPlan {
+  name: string;
+  price: string;
+  features: string[];
+  popular: boolean;
+}
+
+const PRICING_DATA: Record<'Individual' | 'Corporate', PricingPlan[]> = {
   Individual: [
     { name: "Basic", price: "99", features: ["3 courses per month", "Digital certificates", "Email support"], popular: false },
     { name: "Pro", price: "199", features: ["Unlimited courses", "Accredited certificates", "24/7 support", "Virtual labs access"], popular: true },
@@ -52,7 +59,7 @@ export default function PricingSection({ activeType }: { activeType: 'Corporate'
               className="mb-8 inline-flex items-center gap-3 rounded-full border border-slate-200 bg-white/50 px-6 py-2 backdrop-blur-md shadow-sm"
             >
               {/* ✅ v4: استخدام oklch مباشرة في الكلاسات */}
-              <Check size={14} className="text-[var(--color-jusoor-gold)]" />
+              <Check size={14} className="text-(--color-jusoor-gold)" />
               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-navy/40">
                 trusted 
               </span>
@@ -86,7 +93,7 @@ export default function PricingSection({ activeType }: { activeType: 'Corporate'
   );
 }
 
-function PricingCard({ plan, index }: any) {
+function PricingCard({ plan, index }: { plan: PricingPlan; index: number }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}

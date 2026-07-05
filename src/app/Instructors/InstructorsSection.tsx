@@ -16,14 +16,14 @@ export default function InstructorsSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // ✅ عرض الهيكل الخارجي (Skeleton) فقط أثناء الـ SSR
-  if (!isMounted) return <div className="pb-32 h-[600px] bg-black/20 animate-pulse rounded-[4rem] m-6" />;
+  if (!isMounted) return <div className="pb-32 h-150 bg-black/20 animate-pulse rounded-[4rem] m-6" />;
 
   return (
     <section className="pb-32 px-4 md:px-6 relative z-10 overflow-hidden">
       
       {/* 🌌 Cinematic Background */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(212,175,55,0.02)_0%,transparent_100%)] pointer-events-none" />
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-gold/10 to-transparent" />
+      <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-gold/10 to-transparent" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         
@@ -54,7 +54,7 @@ export default function InstructorsSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ delay: index * 0.1, duration: 0.8, ease: "circOut" }}
-                className="group relative flex-shrink-0 w-[85vw] snap-center h-[520px] md:w-full md:h-[580px] rounded-[3rem] md:rounded-[4.5rem] border border-white/5 bg-gradient-to-b from-white/[0.03] to-transparent flex items-center justify-center overflow-hidden p-6 md:p-10 hover:border-gold/20 transition-all duration-700 shadow-2xl touch-pan-x"
+                className="group relative flex-shrink-0 w-[85vw] snap-center h-130 md:w-full md:h-145 rounded-[3rem] md:rounded-[4.5rem] border border-white/5 bg-linear-to-b from-white/3 to-transparent flex items-center justify-center overflow-hidden p-6 md:p-10 hover:border-gold/20 transition-all duration-700 shadow-2xl touch-pan-x"
               >
                 {/* Tech Pattern Background */}
                 <div className="absolute inset-0 opacity-[0.03] group-hover:opacity-10 transition-opacity duration-700 pointer-events-none" 
@@ -102,7 +102,7 @@ export default function InstructorsSection() {
                       {instructor.name}
                     </h3>
                     
-                    <p className="text-slate-400 text-[10px] md:text-[12px] font-bold uppercase tracking-[0.2em] mb-5">
+                    <p className="text-slate-400 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] mb-5">
                       {instructor.role}
                     </p>
 

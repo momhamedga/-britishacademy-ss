@@ -11,9 +11,9 @@ export default function ProgressCard({ progress }: ProgressProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       /* ترشيق الـ rounded لـ rounded-xl وضغط الـ padding لـ p-4 md:p-5 */
-      className="relative p-4 md:p-5 bg-navy rounded-xl border border-white/[0.03] overflow-hidden shadow-xl w-full"
+      className="relative p-4 md:p-5 bg-navy rounded-xl border border-white/3 overflow-hidden shadow-xl w-full"
     >
-      <div className="absolute -top-16 -right-16 size-48 bg-gold/[0.02] blur-[60px] pointer-events-none" />
+      <div className="absolute -top-16 -right-16 size-48 bg-gold/2 blur-[60px] pointer-events-none" />
       
       <div className="flex justify-between items-center gap-4 mb-3 relative z-10">
         <div className="space-y-0.5">
@@ -31,17 +31,17 @@ export default function ProgressCard({ progress }: ProgressProps) {
       </div>
 
       {/* تصغير ارتفاع شريط التحميل لـ h-2 لقتل التضخم البصري */}
-      <div className="relative h-2 w-full bg-black/40 rounded-full border border-white/[0.02] p-[1px] overflow-hidden">
+      <div className="relative h-2 w-full bg-black/40 rounded-full border border-white/2 p-[1px] overflow-hidden">
         <motion.div 
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
           transition={{ duration: 1.5, ease: "circOut" }}
-          className="h-full rounded-full bg-gradient-to-r from-gold/50 via-gold to-gold/50 shadow-[0_0_10px_rgba(212,175,55,0.4)] relative"
+          className="h-full rounded-full bg-linear-to-r from-gold/50 via-gold to-gold/50 shadow-[0_0_10px_rgba(212,175,55,0.4)] relative"
         >
           <motion.div 
             animate={{ x: ['-100%', '300%'] }}
             transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 Tri-transparent w-10 skew-x-12"
+            className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 Tri-transparent w-10 skew-x-12"
           />
         </motion.div>
       </div>

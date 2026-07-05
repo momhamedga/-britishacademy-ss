@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Loader2, CheckCircle2, AlertCircle, ShieldCheck, User, Mail, MessageSquare, Zap } from 'lucide-react';
+import { Send, Loader2, CheckCircle2, AlertCircle, ShieldCheck, User, Mail, MessageSquare, Zap, type LucideIcon } from 'lucide-react';
 import { CONTACT_SUBJECTS } from '@/lib/constants';
 import { sendContactEmail } from '@/actions/contact';
 
@@ -34,7 +34,7 @@ export default function ContactForm() {
         setStatus('error');
         setErrorMessage(result.message || "Transmission failed");
       }
-    } catch (e) {
+    } catch {
       setStatus('error');
       setErrorMessage("System error occurred");
     } finally {
@@ -148,7 +148,7 @@ export default function ContactForm() {
                     required
                     value={selectedSubject}
                     onChange={(e) => setSelectedSubject(e.target.value)}
-                    className="w-full h-14 bg-navy/[0.03] border-none rounded-2xl px-5 text-xs font-black text-navy outline-none appearance-none"
+                    className="w-full h-14 bg-navy/3 border-none rounded-2xl px-5 text-xs font-black text-navy outline-none appearance-none"
                   >
                     <option value="">INQUIRY TYPE</option>
                     {CONTACT_SUBJECTS.map(s => <option key={s.value} value={s.value}>{s.label.toUpperCase()}</option>)}
@@ -157,7 +157,7 @@ export default function ContactForm() {
 
                 <textarea 
                   name="message" required rows={3}
-                  className="w-full bg-navy/[0.03] border-none rounded-2xl px-5 py-5 text-xs font-bold text-navy outline-none resize-none"
+                  className="w-full bg-navy/3 border-none rounded-2xl px-5 py-5 text-xs font-bold text-navy outline-none resize-none"
                   placeholder="HOW CAN WE ASSIST?"
                 />
 
@@ -180,7 +180,12 @@ const FormHeader = ({ title }: { title: string }) => (
   </div>
 );
 
-const InputGroup = ({ label, icon: Icon, ...props }: any) => (
+interface InputGroupProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label: string;
+  icon: LucideIcon;
+}
+
+const InputGroup = ({ label, icon: Icon, ...props }: InputGroupProps) => (
   <div className="space-y-3 group/input">
     <label className="text-[10px] font-black text-navy/40 uppercase tracking-[0.3em] ml-1 transition-colors group-focus-within/input:text-[#D4AF37]">{label}</label>
     <div className="relative">
@@ -198,7 +203,7 @@ const InputGroup = ({ label, icon: Icon, ...props }: any) => (
   </div>
 );
 
-const MobileInput = ({ label, ...props }: any) => (
+const MobileInput = ({ label, ...props }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) => (
   <div className="space-y-2">
     <label className="text-[9px] font-black text-navy/30 uppercase tracking-widest ml-1">{label}</label>
     <input 
@@ -206,7 +211,7 @@ const MobileInput = ({ label, ...props }: any) => (
       required
       onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please fill out this field.")}
       onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
-      className="w-full h-14 bg-navy/[0.03] border-none rounded-2xl px-5 text-xs font-bold text-navy outline-none"
+      className="w-full h-14 bg-navy/3 border-none rounded-2xl px-5 text-xs font-bold text-navy outline-none"
     />
   </div>
 );

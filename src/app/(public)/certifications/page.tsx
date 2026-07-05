@@ -7,25 +7,17 @@ import { ShieldCheck, Award, QrCode } from 'lucide-react';
 
 // 🚀 Dynamic Imports مع Skeleton احترافي لسرعة التحميل (LCP Optimization)
 const CertificationsPricePage = dynamic(() => import("@/components/certifications/certificationsprice"), {
-  loading: () => <div className="h-[500px] animate-pulse bg-white/40 rounded-[2.5rem] md:rounded-[4rem] border border-white m-4" />
+  loading: () => <div className="h-125 animate-pulse bg-white/40 rounded-[2.5rem] md:rounded-[4rem] border border-white m-4" />
 });
 
 const CertificateVerification = dynamic(() => import("@/components/certifications/CertificateVerification"), {
-  loading: () => <div className="h-[400px] animate-pulse bg-white/40 rounded-[2.5rem] md:rounded-[4rem] border border-white m-4" />
+  loading: () => <div className="h-100 animate-pulse bg-white/40 rounded-[2.5rem] md:rounded-[4rem] border border-white m-4" />
 });
 
 export default function CertificationsPage() {
   // 1️⃣ إنشاء مراجع (Refs) للتحكم في التنقل البرمجي
   const pricingRef = useRef<HTMLDivElement>(null);
   const verifyRef = useRef<HTMLDivElement>(null);
-
-  // 2️⃣ دالة الـ Scroll الناعم الموحدة
-  const scrollToSection = (elementRef: React.RefObject<HTMLDivElement>) => {
-    elementRef.current?.scrollIntoView({ 
-      behavior: 'smooth', 
-      block: 'start' 
-    });
-  };
 
   return (
     <main className="min-h-screen overflow-x-hidden selection:bg-gold/20 bg-[#FAFAFA]">
@@ -34,17 +26,17 @@ export default function CertificationsPage() {
       <CertificationsHero />
 
       {/* 📱 Mobile Quick Stats (Glassmorphism Style) */}
-      <div className="md:hidden flex justify-around p-6 bg-white/80 backdrop-blur-md border-b border-black/[0.02] -mt-8 relative z-20 rounded-t-[2.5rem] shadow-[-10px_0_30px_rgba(0,0,0,0.03)]">
+      <div className="md:hidden flex justify-around p-6 bg-white/80 backdrop-blur-md border-b border-black/2 -mt-8 relative z-20 rounded-t-[2.5rem] shadow-[-10px_0_30px_rgba(0,0,0,0.03)]">
          <div className="flex flex-col items-center gap-1.5">
             <ShieldCheck size={18} className="text-gold" />
             <span className="text-[8px] font-black uppercase tracking-tighter opacity-40">Accredited</span>
          </div>
-         <div className="w-[1px] h-6 bg-black/[0.05]" />
+         <div className="w-px h-6 bg-black/5" />
          <div className="flex flex-col items-center gap-1.5">
             <Award size={18} className="text-navy" />
             <span className="text-[8px] font-black uppercase tracking-tighter opacity-40">Verified</span>
          </div>
-         <div className="w-[1px] h-6 bg-black/[0.05]" />
+         <div className="w-px h-6 bg-black/5" />
          <div className="flex flex-col items-center gap-1.5">
             <QrCode size={18} className="text-navy" />
             <span className="text-[8px] font-black uppercase tracking-tighter opacity-40">E-Vault</span>
@@ -56,7 +48,7 @@ export default function CertificationsPage() {
         
         {/* Section 1: Pricing */}
         <section ref={pricingRef} className="px-2 md:px-8 max-w-7xl mx-auto w-full group scroll-mt-32">
-           <div className="md:group-hover:translate-y-[-10px] transition-all duration-700 ease-out">
+           <div className="md:group-hover:-translate-y-2.5 transition-all duration-700 ease-out">
               <CertificationsPricePage />
            </div>
         </section>
@@ -75,7 +67,7 @@ export default function CertificationsPage() {
 
      
       {/* Noise Texture for Cinematic Feel */}
-      <div className="fixed inset-0 bg-[url('/assets/noise.png')] opacity-[0.012] pointer-events-none z-[999]" />
+      <div className="grain-overlay fixed inset-0 opacity-[0.012] mix-blend-overlay pointer-events-none z-999" />
     </main>
   );
 }

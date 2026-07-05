@@ -20,15 +20,15 @@ export default function PortalLoginPage() {
       {/* 🌌 Background Elements - Soft Accents */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         {/* تصحيح كلاس الـ bg-size للـ Grid الهندسي */}
-        <div className="absolute inset-0 bg-grid-slate-200/[0.3] bg-[size:30px_30px] [mask-image:radial-gradient(white,transparent_85%)]" />
+        <div className="absolute inset-0 bg-grid-slate-200/30 bg-[size:30px_30px] [mask-image:radial-gradient(white,transparent_85%)]" />
         {/* هالة ضوئية ناعمة تتفاعل مع الإدخال */}
-        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] md:w-[500px] h-[280px] md:h-[500px] rounded-full blur-[80px] md:blur-[120px] transition-all duration-1000 ${isDetected ? 'bg-gold/20' : 'bg-slate-100'}`} />
+        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-70 md:w-125 h-70 md:h-125 rounded-full blur-[80px] md:blur-[120px] transition-all duration-1000 ${isDetected ? 'bg-gold/20' : 'bg-slate-100'}`} />
       </div>
 
       <motion.div 
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative z-10 w-full max-w-[360px] md:max-w-[420px] h-fit"
+        className="relative z-10 w-full max-w-90 md:max-w-105 h-fit"
       >
         {/* Main Card - Navy & Gold Theme */}
         <div className="relative bg-navy p-6 md:p-10 rounded-[1.8rem] md:rounded-[2.5rem] border border-white/5 backdrop-blur-[30px] shadow-2xl overflow-hidden group transition-all duration-500">
@@ -40,7 +40,7 @@ export default function PortalLoginPage() {
                 initial={{ top: "-10%" }}
                 animate={{ top: "110%" }}
                 transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
-                className="absolute left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-gold/50 to-transparent z-20 pointer-events-none"
+                className="absolute left-0 right-0 h-px bg-linear-to-r from-transparent via-gold/50 to-transparent z-20 pointer-events-none"
               />
             )}
           </AnimatePresence>
@@ -50,7 +50,7 @@ export default function PortalLoginPage() {
             <motion.div 
               animate={isDetected ? { scale: [1, 1.05, 1] } : {}}
               transition={{ repeat: Infinity, duration: 4 }}
-              className="w-14 h-14 md:w-20 md:h-20 bg-white/[0.03] border border-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-5 relative overflow-hidden shadow-2xl"
+              className="w-14 h-14 md:w-20 md:h-20 bg-white/3 border border-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-5 relative overflow-hidden shadow-2xl"
             >
               <div className={`absolute inset-0 transition-opacity duration-700 ${isDetected ? 'opacity-100' : 'opacity-0'} bg-gold/10`} />
               <ShieldCheck className={isDetected ? "text-gold drop-shadow-[0_0_15px_rgba(212,175,55,0.6)]" : "text-white/30"} size={28} />
@@ -79,7 +79,7 @@ export default function PortalLoginPage() {
                   name="studentId"
                   onChange={handleIdChange}
                   autoComplete="off"
-                  className="w-full bg-white/[0.02] border border-white/10 rounded-xl md:rounded-2xl pl-12 pr-6 py-4 md:py-5 text-white text-sm focus:border-gold/40 focus:bg-white/[0.05] transition-all outline-none placeholder:text-white/10 uppercase font-black tracking-widest"
+                  className="w-full bg-white/2 border border-white/10 rounded-xl md:rounded-2xl pl-12 pr-6 py-4 md:py-5 text-white text-sm focus:border-gold/40 focus:bg-white/5 transition-all outline-none placeholder:text-white/10 uppercase font-black tracking-widest"
                   placeholder="BA-XXXX-XXX"
                 />
               </div>
@@ -94,7 +94,7 @@ export default function PortalLoginPage() {
                   required
                   name="accessCode" 
                   type="password"
-                  className="w-full bg-white/[0.02] border border-white/10 rounded-xl md:rounded-2xl pl-12 pr-6 py-4 md:py-5 text-white text-sm focus:border-gold/40 focus:bg-white/[0.05] transition-all outline-none placeholder:text-white/10 font-bold"
+                  className="w-full bg-white/2 border border-white/10 rounded-xl md:rounded-2xl pl-12 pr-6 py-4 md:py-5 text-white text-sm focus:border-gold/40 focus:bg-white/5 transition-all outline-none placeholder:text-white/10 font-bold"
                   placeholder="••••••••••••"
                 />
               </div>
@@ -147,10 +147,10 @@ export default function PortalLoginPage() {
             <Link href="/register" className="block">
               <motion.div
                 whileTap={{ scale: 0.98 }}
-                className="w-full py-3 border border-white/5 rounded-xl flex items-center justify-center gap-3 bg-white/5 hover:bg-white/[0.08] transition-all"
+                className="w-full py-3 border border-white/5 rounded-xl flex items-center justify-center gap-3 bg-white/5 hover:bg-white/8 transition-all"
               >
                 <UserPlus size={14} className="text-gold/50" />
-                <span className="text-[9px] md:text-[10px] font-black text-white/60 uppercase tracking-[0.1em]">
+                <span className="text-[9px] md:text-[10px] font-black text-white/60 uppercase tracking-widest">
                    New Student
                 </span>
               </motion.div>

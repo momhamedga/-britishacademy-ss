@@ -28,19 +28,19 @@ export default function CourseCard({ course }: CourseCardProps) {
     'text-emerald-400 bg-emerald-400/10 border-emerald-400/20';
 
   return (
-    <Link href={`/courses/${slug}`} className="block group w-full max-w-[400px] mx-auto">
+    <Link href={`/courses/${slug}`} className="block group w-full max-w-100 mx-auto">
       {/* 🛡️ تقليص الـ border radius لـ rounded-2xl والـ padding لـ p-4 لراحة بصريّة فائقة */}
       <motion.div 
         whileHover={{ y: -4, scale: 1.005 }}
         whileTap={{ scale: 0.99 }}
-        className="relative border bg-navy border-white/[0.03] rounded-2xl p-4 transition-all duration-500 hover:border-[#D4AF37]/20 shadow-[0_15px_40px_rgba(0,0,0,0.5)] overflow-hidden group/card"
+        className="relative border bg-navy border-white/3 rounded-2xl p-4 transition-all duration-500 hover:border-[#D4AF37]/20 shadow-[0_15px_40px_rgba(0,0,0,0.5)] overflow-hidden group/card"
       >
         <div className="absolute inset-0 backdrop-blur-2xl pointer-events-none" />
         <div className="absolute inset-0 bg-[#D4AF37]/2 blur-[80px] rounded-full opacity-0 group-hover/card:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
         {/* 🖼️ Visual Area - ترشيق الطول لـ h-40 لقتل المسافات الزائدة سفلي الكارت */}
         <div className="relative h-40 w-full rounded-xl overflow-hidden flex items-center justify-center border border-white/5 shadow-inner">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#D4AF37]/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 z-10" />
+          <div className="absolute inset-0 bg-linear-to-b from-[#D4AF37]/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 z-10" />
           <div className="absolute size-32 bg-[#D4AF37]/5 blur-[50px] rounded-full z-10" />
 
           {/* Course Cover Image Frame */}
@@ -79,15 +79,15 @@ export default function CourseCard({ course }: CourseCardProps) {
                 <Activity size={10} className="animate-pulse" />
                 Active Deployment
               </div>
-              <div className="flex items-center gap-1 text-[#D4AF37] bg-white/[0.015] border border-white/5 rounded-md px-2 py-0.5 text-[7.5px] font-bold uppercase tracking-wider italic">
+              <div className="flex items-center gap-1 text-[#D4AF37] bg-white/1.5 border border-white/5 rounded-md px-2 py-0.5 text-[7.5px] font-bold uppercase tracking-wider italic">
                 <Zap size={9} className="text-[#D4AF37]/50" />
                 Verified Mission
               </div>
           </div>
 
           {/* Info Grid - ترشيق البادينج لـ py-3 لضغط طول الكارت */}
-          <div className="grid grid-cols-2 gap-2 border-y border-white/[0.03] py-3 relative">
-            <div className="absolute inset-y-0 left-1/2 w-px bg-white/[0.03] -translate-x-1/2" />
+          <div className="grid grid-cols-2 gap-2 border-y border-white/3 py-3 relative">
+            <div className="absolute inset-y-0 left-1/2 w-px bg-white/3 -translate-x-1/2" />
              <div className="flex items-center gap-1.5 justify-center">
                 <Clock size={12} className="text-[#D4AF37]/40" />
                 <span className="text-white/50 text-[9px] font-black uppercase tracking-wider font-mono">{duration}</span>
@@ -104,19 +104,19 @@ export default function CourseCard({ course }: CourseCardProps) {
               <span className="text-white/30 italic">Progress</span>
               <span className="text-[#D4AF37] font-mono font-black">{progress}%</span>
             </div>
-            <div className="h-2 w-full bg-black/40 rounded-lg overflow-hidden border border-white/[0.03] relative">
+            <div className="h-2 w-full bg-black/40 rounded-lg overflow-hidden border border-white/3 relative">
               <div className="absolute inset-0 w-full h-full" style={{ background: 'repeating-linear-gradient(-45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 6px)'}} />
               <motion.div 
                 initial={{ width: 0 }}
                 whileInView={{ width: `${progress}%` }}
                 transition={{ duration: 1, ease: "circOut", delay: 0.1 }}
-                className="h-full bg-gradient-to-r from-[#D4AF37]/40 via-[#F3D179] to-[#D4AF37] rounded-lg shadow-[0_0_8px_rgba(212,175,55,0.4)] relative z-10"
+                className="h-full bg-linear-to-r from-[#D4AF37]/40 via-[#F3D179] to-[#D4AF37] rounded-lg shadow-[0_0_8px_rgba(212,175,55,0.4)] relative z-10"
               />
             </div>
           </div>
 
           {/* Action Footer - ترشيق الـ Margin العلوي والـ Padding لقتل الفجوة السفلية */}
-          <div className="mt-4 flex justify-between items-center pt-3 border-t border-white/[0.03]">
+          <div className="mt-4 flex justify-between items-center pt-3 border-t border-white/3">
               <span className="text-[7px] text-white/10 font-bold uppercase tracking-widest font-mono">EST. 2026</span>
               <div className="flex items-center gap-2">
                   <span className="text-[8px] font-black text-[#D4AF37] uppercase tracking-widest opacity-0 group-hover/card:opacity-100 -translate-x-2 group-hover/card:translate-x-0 transition-all duration-300 italic">start</span>

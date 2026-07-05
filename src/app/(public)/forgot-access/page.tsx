@@ -15,13 +15,13 @@ export default function ForgotAccessPage() {
     <main className="min-h-screen w-full flex justify-center relative overflow-hidden px-4 pt-28 pb-16 md:pt-40 bg-transparent">
       
       {/* Background Elements */}
-      <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:30px_30px] z-0 pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-gold/5 blur-[120px] rounded-full animate-pulse pointer-events-none" />
+      <div className="absolute inset-0 bg-grid-white/2 bg-[size:30px_30px] z-0 pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-75 h-75 bg-gold/5 blur-[120px] rounded-full animate-pulse pointer-events-none" />
 
       <motion.div 
         initial={{ opacity: 0, scale: 0.98 }} 
         animate={{ opacity: 1, scale: 1 }} 
-        className="relative z-10 w-full max-w-[460px] h-fit"
+        className="relative z-10 w-full max-w-115 h-fit"
       >
         <div className="glass p-8 md:p-14 rounded-[2.5rem] md:rounded-[3.5rem] border border-white/10 bg-navy backdrop-blur-3xl shadow-2xl overflow-hidden">
           

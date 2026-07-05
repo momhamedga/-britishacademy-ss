@@ -12,7 +12,7 @@ export default function ContactPage() {
     <main className="relative min-h-screen bg-[oklch(98%_0.01_260)] overflow-hidden">
       {/* Background Decorative Elements */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.05] mix-blend-multiply" />
+        <div className="grain-overlay absolute inset-0 opacity-[0.05] mix-blend-multiply" />
         <div className="absolute top-[-10%] right-[-5%] w-[50vw] h-[50vw] bg-[oklch(45%_0.12_255)]/5 blur-[120px] rounded-full" />
       </div>
 

@@ -11,8 +11,8 @@ export default function Loading() {
       {/* Skeleton لشبكة الكورسات */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="h-[500px] glass rounded-[2.5rem] border border-white/5 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
+          <div key={i} className="h-125 glass rounded-[2.5rem] border border-white/5 relative overflow-hidden">
+            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
           </div>
         ))}
       </div>
